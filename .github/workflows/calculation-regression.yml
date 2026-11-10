@@ -1,0 +1,33 @@
+name: Calculation regression tests
+
+on:
+  push:
+    branches:
+      - main
+      - feature/neo-nutrition-v2
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  calculation-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run calculation regression tests
+        run: node --test tests/calculation-regression.test.cjs
+      - name: Check inline JavaScript syntax
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const match = html.match(/<script>([\s\S]*?)<\/script>/i);
+          if (!match) throw new Error('Inline application script not found');
+          new Function(match[1]);
+          console.log('Inline JavaScript syntax: OK');
+          NODE
