@@ -3617,10 +3617,10 @@
 
     summary.innerHTML = `
       <div class="readout">
-        <div class="rlabel"><span>Cumulative energy deficit</span><span>${sorted.length} day${sorted.length > 1 ? 's' : ''} logged</span></div>
+        <div class="rlabel"><span>Cumulative energy balance vs minimum phase target</span><span>${sorted.length} day${sorted.length > 1 ? 's' : ''} logged</span></div>
         <div class="rvalue">${cumulative > 0 ? '−' : '+'}${fmt(Math.abs(cumulative),0)} kcal/kg</div>
-        <div class="rsub">Average ${avgDeficit > 0 ? '−' : '+'}${fmt(Math.abs(avgDeficit),0)} kcal/kg/d over the logged period</div>
-        <span class="flag ${cumulative > 50 ? 'warn' : 'ok'}">${cumulative > 50 ? 'SIGNIFICANT SHORTFALL' : 'TRACKING'}</span>
+        <div class="rsub">Average ${avgDeficit > 0 ? '−' : '+'}${fmt(Math.abs(avgDeficit),0)} kcal/kg/d; mixed PN/enteral targets are estimated</div>
+        <span class="flag ${cumulative > 0 ? 'warn' : 'ok'}">${cumulative > 0 ? 'SHORTFALL RECORDED' : 'NO CUMULATIVE SHORTFALL'}</span>
       </div>
       <div class="readout">
         <div class="rlabel"><span>Days below protein target</span><span>of ${sorted.length} logged</span></div>
