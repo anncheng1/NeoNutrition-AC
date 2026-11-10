@@ -1323,7 +1323,7 @@
           <tr>
             <td>Vitamin D</td>
             <td><input type="number" id="microVitD" step="10" min="0" max="2000" style="width:70px;"> IU/day</td>
-            <td class="mono">400–1,000</td>
+            <td class="mono">400–700 IU/kg/day<br><small>upper limit &lt;1,000</small></td>
             <td id="microVitDStatus"></td>
           </tr>
           <tr>
@@ -2280,17 +2280,26 @@
   // ===========================================================================
   function getDOB(){
     const v = document.getElementById('bDobDt').value;
-    return v ? new Date(v) : null;
+    if (!v) return null;
+    // HTML date inputs are date-only. Parse at local midnight, not UTC.
+    const parts = v.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+    const dob = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
+    return Number.isNaN(dob.getTime()) ? null : dob;
   }
 
   function computeDOL(){
     const dob = getDOB();
     if (!dob || isNaN(dob.getTime())) return null;
     const now = new Date();
-    const diffMs = now - dob;
-    if (diffMs < 0) return null;
-    const dolFloat = diffMs / 86400000;
-    return { dolFloat, dolInt: Math.floor(dolFloat), dob, now };
+    // DOB is entered without a birth time, so use local calendar-day DOL.
+    const todayLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dobLocal = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+    const dayDiff = Math.round((todayLocal - dobLocal) / 86400000);
+    if (dayDiff < 0) return null;
+    const elapsedTodayMs = now - todayLocal;
+    const dolFloat = dayDiff + elapsedTodayMs / 86400000;
+    return { dolFloat, dolInt: dayDiff, dob, now };
   }
 
   function pctNumeric(metric, sex, pma, val){
@@ -2661,17 +2670,16 @@
 
   // ===========================================================================
   // TOTAL FLUID TARGET BY WEIGHT BAND & DAY OF LIFE
-  // "Day 1" = day field value ≤1 (covers 0- and 1-indexed charting conventions
-  // already used elsewhere in this app); Day 5+ uses the 150–170 band.
+  // Preterm schedule follows Malaysian Paediatric Protocols, 5th Edition (2025).
+  // Individualise for environment, losses, renal/cardiac status, serum sodium
+  // and weight trend. These starting values are not an individual prescription.
   // ===========================================================================
   function totalFluidTarget(weightG, dayNum){
     const d = dayNum <= 1 ? 1 : Math.min(dayNum, 5);
     if (typeof isPreterm === 'function' && !isPreterm()) {
       return { 1: { lo: 60, hi: 60 }, 2: { lo: 90, hi: 90 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 150 } }[d];
     }
-    const under1000 = { 1: { lo: 80, hi: 80 }, 2: { lo: 100, hi: 100 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 170 } };
-    const over1000 = { 1: { lo: 60, hi: 60 }, 2: { lo: 90, hi: 90 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 170 } };
-    return weightG < 1000 ? under1000[d] : over1000[d];
+    return { 1: { lo: 60, hi: 60 }, 2: { lo: 80, hi: 80 }, 3: { lo: 100, hi: 100 }, 4: { lo: 120, hi: 120 }, 5: { lo: 140, hi: 140 } }[d];
   }
 
   // Lipid staged target (mL/kg/d, 20% emulsion): D1 5, D2 10, D3+ 15
@@ -2732,6 +2740,8 @@
     const enteralMlKgDay = parseFloat(document.getElementById('vol').value) || 0;
     const lipidRateVal = parseFloat(document.getElementById('lipidRate').value) || 0;
     const lipidMlKgDay = (lipidRateVal * 24) / refKg;
+    const kvoRateVal = parseFloat(document.getElementById('kvoRate').value) || 0;
+    const kvoMlKgDay = (kvoRateVal * 24) / refKg;
 
     const isTrophic = enteralMlKgDay <= 20;
     const isLowLipid = lipidMlKgDay < 10;
@@ -2746,7 +2756,8 @@
     const effectiveEnteral = enteralToggle.checked ? enteralMlKgDay : 0;
     const effectiveLipid = lipidToggle.checked ? lipidMlKgDay : 0;
 
-    const suggestedIvMlKgDay = Math.max(0, targetMid - effectiveEnteral - effectiveLipid);
+    // KVO contributes to total fluid and must be deducted from the remaining allowance.
+    const suggestedIvMlKgDay = Math.max(0, targetMid - effectiveEnteral - effectiveLipid - kvoMlKgDay);
     const suggestedIvMlDay = suggestedIvMlKgDay * refKg;
     const suggestedIvMlHour = suggestedIvMlDay / 24;
 
@@ -2761,7 +2772,7 @@
 
     const tgtTxt = target.lo === target.hi ? fmt(target.lo,0) : `${target.lo}–${target.hi}`;
     el.innerHTML = `<div class="fluid-line">Fluid target <b>${tgtTxt} mL/kg/d</b> (day ${dayNum <= 1 ? 1 : dayNum}) → suggested IV/TPN <b>${fmtRate(suggestedIvMlHour)} mL/h</b>
-      <small>${fmt(suggestedIvMlKgDay,0)} mL/kg/d = ${fmt(targetMid,0)} − feeds ${fmtRate(effectiveEnteral)} − lipid ${fmtRate(effectiveLipid)}${!enteralToggle.checked && enteralMlKgDay > 0 ? ` · trophic feeds (${fmtRate(enteralMlKgDay)}) not counted` : ''}${!lipidToggle.checked && lipidMlKgDay > 0 ? ` · lipid (${fmtRate(lipidMlKgDay)}) not counted` : ''}${ivRateUserOverridden ? ' · IV rate set manually' : ''}</small></div>`;
+      <small>${fmt(suggestedIvMlKgDay,0)} mL/kg/d = ${fmt(targetMid,0)} − feeds ${fmtRate(effectiveEnteral)} − lipid ${fmtRate(effectiveLipid)} − KVO ${fmtRate(kvoMlKgDay)}${!enteralToggle.checked && enteralMlKgDay > 0 ? ` · trophic feeds (${fmtRate(enteralMlKgDay)}) not counted` : ''}${!lipidToggle.checked && lipidMlKgDay > 0 ? ` · lipid (${fmtRate(lipidMlKgDay)}) not counted` : ''}${kvoMlKgDay > 0 ? ' · KVO included' : ''}${ivRateUserOverridden ? ' · IV rate set manually' : ''}</small></div>`;
 
     renderTpnAdvisory(refWeight, dayNum, enteralMlKgDay);
   }
@@ -2863,8 +2874,10 @@
 
   // ===========================================================================
   // NUTRITION & GROWTH TARGETS — comprehensive intake calculation
-  // TPN composition per SGH NICU standard PN formulations (updated Sept 2024),
+  // Legacy reference values based on SGH NICU standard PN formulations (Sept 2024),
   // expressed per mL of bag (values ÷1000 from the per-litre bag contents).
+  // NOT verified against current Hospital Miri pharmacy formulations; verify every
+  // component with pharmacy before any clinical use.
   // Osmolarity is a fixed property of the bag (mOsm/L), independent of rate.
   // Glucose 3.4 kcal/g, protein/AA 4 kcal/g, lipid 20% emulsion 10 kcal/g (2 kcal/mL).
   // Mineral molar masses (mg/mmol): Na 23, K 39.1, Cl 35.45, Ca 40.08, Mg 24.3, P 30.97.
@@ -3132,7 +3145,12 @@
     const ratio = totalKcalKg > 0 ? (totalProtKg / totalKcalKg * 100) : 0;
 
     const proteinFlag = (totalProtKg < tgt.pMin || totalProtKg > tgt.pMax) ? 'warn' : 'ok';
-    const ratioFlag = (ratio < 3.0 || ratio > 4.0) ? 'warn' : 'ok';
+    // ESPGHAN 2022 enteral PER: 2.8–3.6 g/100 kcal. Do not apply this
+    // enteral reference to PN or interpret it when energy/protein targets are unmet.
+    const ratioApplicable = !tpnMode() && totalKcalKg >= tgt.eMin && totalKcalKg <= tgt.eMax &&
+      totalProtKg >= tgt.pMin && totalProtKg <= tgt.pMax;
+    const ratioFlag = ratioApplicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
+    const ratioStatus = !ratioApplicable ? 'NOT INTERPRETED' : (ratioFlag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
 
     // Ca:P molar ratio — ideal ~1.3–1.7:1 for bone mineralization
     const caMol = totalCaKg / MG_PER_MMOL.ca, pMol = totalPKg / MG_PER_MMOL.p;
@@ -3195,6 +3213,7 @@
     }
 
     el.innerHTML = `
+      <div class="fluid-line" style="grid-column:1/-1;"><b>Clinical verification required</b><small>Feed and PN composition values are reference estimates. Confirm current product labels, fortifier preparation and local pharmacy PN formulation before using these totals clinically.</small></div>
       <div class="readout" data-pn>
         <div class="rlabel"><span>GIR</span><span>${girBand.label}</span></div>
         <div class="rvalue">${fmt(gir,1)} mg/kg/min</div>
@@ -3278,8 +3297,8 @@
       <div class="readout">
         <div class="rlabel"><span>Protein : energy ratio</span><span>g/100kcal</span></div>
         <div class="rvalue">${fmt(ratio,2)}</div>
-        <div class="rsub">Target 3–4 g/100kcal for catch-up growth</div>
-        <span class="flag ${ratioFlag}">${ratioFlag === 'ok' ? 'BALANCED' : (ratio < 3.0 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY')}</span>
+        <div class="rsub">Enteral reference 2.8–3.6 g/100 kcal; meaningful only when energy and protein targets are met</div>
+        <span class="flag ${ratioApplicable ? ratioFlag : ''}">${ratioStatus}</span>
       </div>
       <div class="readout" data-pn>
         <div class="rlabel"><span>${IV_FLUID_LABELS[ivType]} osmolarity</span><span>bag property</span></div>
@@ -3321,7 +3340,10 @@
     if (totalProtKg < tgt.pMin) flags.push(`Protein intake (${fmt(totalProtKg,2)} g/kg/d) is below today's target (${fmt(tgt.pMin,1)} g/kg/d, ${tgt.label}, ${tgt.phase}). Consider increasing amino acids or feed fortification by ~0.5 g/kg/d.`);
     if (gir > 12) flags.push(`GIR is high (${fmt(gir,1)} mg/kg/min, above max oxidation). Consider reducing dextrose concentration or infusion rate, especially if hyperglycaemia persists.`);
     else if (tpnMode() && gir < girBand.lo) flags.push(`GIR is below the ${girBand.label.toLowerCase()} target (${girBand.lo}–${girBand.hi} mg/kg/min). Consider advancing dextrose delivery if glucose tolerance allows.`);
-    if (isPreterm() && totalKcalKg >= 80 && ratio < 3.0) flags.push(`Protein-energy ratio is low (${fmt(ratio,2)} g/100kcal). Increase protein rather than calories alone.`);
+    if (!tpnMode() && isPreterm() && totalKcalKg >= tgt.eMin && totalKcalKg <= tgt.eMax &&
+        totalProtKg >= tgt.pMin && totalProtKg <= tgt.pMax && ratio < 2.8) {
+      flags.push(`Enteral protein:energy ratio is below 2.8 g/100 kcal (${fmt(ratio,2)}). Review nutrient composition and feeding plan; do not use the ratio alone to direct changes.`);
+    }
     if (caPRatio > caPBand.hi && totalPKg > 0 && (tpnMode() || isPreterm())) flags.push(`Ca:P molar ratio is high (${fmt(caPRatio,2)}:1) — relative phosphate deficiency; watch for hypophosphatemia, especially early in refeeding.`);
     else if (caPRatio < caPBand.lo && caPRatio > 0 && (tpnMode() || isPreterm())) flags.push(`Ca:P molar ratio is low (${fmt(caPRatio,2)}:1) — relative calcium deficiency relative to phosphate intake.`);
     if (osm > 900) flags.push(`${IV_FLUID_LABELS[ivType]} osmolarity (${fmt(osm,0)} mOsm/L) exceeds the typical peripheral-line threshold — central access recommended.`);
@@ -3798,7 +3820,9 @@
 
     const energyFlag = (totalKcal < tgt.eMin || totalKcal > tgt.eMax) ? 'warn' : 'ok';
     const proteinFlag = (totalProt < tgt.pMin || totalProt > tgt.pMax) ? 'warn' : 'ok';
-    const ratioFlag = (ratio < 3.0 || ratio > 4.0) ? 'warn' : 'ok';
+    const ratioApplicable = totalKcal >= tgt.eMin && totalKcal <= tgt.eMax && totalProt >= tgt.pMin && totalProt <= tgt.pMax;
+    const ratioFlag = ratioApplicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
+    const ratioStatus = !ratioApplicable ? 'NOT INTERPRETED' : (ratioFlag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
 
     let velRangeParts = velTarget ? velTarget.range.split('–') : null;
     let velLo = velRangeParts ? parseFloat(velRangeParts[0]) : null;
@@ -3820,8 +3844,8 @@
       <div class="readout">
         <div class="rlabel"><span>Protein : energy ratio</span><span>g/100kcal</span></div>
         <div class="rvalue">${fmt(ratio,2)}</div>
-        <div class="rsub">Target 3–4 g/100kcal for catch-up growth</div>
-        <span class="flag ${ratioFlag}">${ratioFlag === 'ok' ? 'BALANCED' : (ratio < 3.0 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY')}</span>
+        <div class="rsub">Reference 2.8–3.6 g/100 kcal; interpret only when energy and protein targets are met</div>
+        <span class="flag ${ratioFlag}">${ratioStatus}</span>
       </div>
       ${velocity !== null ? `
       <div class="readout">
@@ -3880,8 +3904,8 @@
 
   // ===========================================================================
   // MICRONUTRIENT STATUS TRACKER
-  // Targets: ESPGHAN 2021 enteral recommendations (Nutritional Care of Preterm
-  // Infants, 2nd ed.). Iron target is birth/best-weight banded; others fixed.
+  // Targets: ESPGHAN 2022 enteral recommendations. Vitamin D is entered in IU/day
+  // and assessed after conversion to IU/kg/day using the current best weight.
   // ===========================================================================
   function ironTargetRange(bwG){
     if (bwG < 1500) return [2, 3];
@@ -3907,18 +3931,26 @@
 
     const checks = [
       { id: 'microFe', status: 'microFeStatus', lo: feLo, hi: feHi },
-      { id: 'microVitD', status: 'microVitDStatus', lo: 400, hi: 1000 },
+      { id: 'microVitD', status: 'microVitDStatus', lo: 400, hi: 700, upper: 1000, weightBased: true },
       { id: 'microZn', status: 'microZnStatus', lo: 2.0, hi: 3.0 },
       { id: 'microCu', status: 'microCuStatus', lo: 120, hi: 230 },
       { id: 'microSe', status: 'microSeStatus', lo: 7, hi: 10 },
       { id: 'microI', status: 'microIStatus', lo: 10, hi: 55 }
     ];
     checks.forEach(c => {
-      const val = parseFloat(document.getElementById(c.id).value);
+      const rawVal = parseFloat(document.getElementById(c.id).value);
       const statusEl = document.getElementById(c.status);
-      if (isNaN(val)) { statusEl.innerHTML = ''; return; }
-      const s = microStatus(val, c.lo, c.hi);
-      statusEl.innerHTML = `<span class="micro-badge ${s}">${microStatusLabel(s)}</span>`;
+      if (isNaN(rawVal)) { statusEl.innerHTML = ''; return; }
+      if (c.weightBased) {
+        if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
+        const val = rawVal / (refW / 1000);
+        const status = val < c.lo ? 'red' : (val <= c.hi ? 'green' : (val <= c.upper ? 'yellow' : 'red'));
+        const label = val < c.lo ? 'Below target' : (val <= c.hi ? 'Within target' : (val <= c.upper ? 'Above routine target' : 'Above upper limit'));
+        statusEl.innerHTML = `<span class="micro-badge ${status}">${label} · ${fmt(val,0)} IU/kg/d</span>`;
+      } else {
+        const status = microStatus(rawVal, c.lo, c.hi);
+        statusEl.innerHTML = `<span class="micro-badge ${status}">${microStatusLabel(status)}</span>`;
+      }
     });
   }
 
