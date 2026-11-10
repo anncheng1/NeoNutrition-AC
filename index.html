@@ -1905,6 +1905,8 @@
     return rounded.toFixed(1);
   }
 
+  // Reference weight velocity bands are descriptive estimates, not universal
+  // treatment targets; interpret with illness, fluid status and body composition.
   function growthTarget(ga){
     if(ga <= 32) return {label:'20 g/kg/d', range:'19–21 g/kg/d', band:'24–32 wk'};
     if(ga <= 37) return {label:'17 g/kg/d', range:'13–19 g/kg/d', band:'33–37 wk'};
@@ -2098,10 +2100,17 @@
       if (days > 0) { const avgKg = (Number(a.wt) + Number(b.wt)) / 2000; velocityText = fmt(((Number(b.wt)-Number(a.wt))/days)/avgKg,1) + ' g/kg/day'; }
     }
     if (first && last && first !== last && last.dol > first.dol) {
-      const z1 = zNumeric('w',GSEX,GA_WK+GA_DY/7+first.dol/7,Number(first.wt)/1000);
-      const z2 = zNumeric('w',GSEX,GA_WK+GA_DY/7+last.dol/7,Number(last.wt)/1000);
-      const delta = z2-z1; zText = (delta > 0 ? '+' : '') + fmt(delta,2) + ' SD';
-      zDetail = 'Approximate Z-score change from first to latest recorded weight; verify with official Fenton LMS calculator';
+      const firstPma = GA_WK + GA_DY / 7 + first.dol / 7;
+      const lastPma = GA_WK + GA_DY / 7 + last.dol / 7;
+      if (GA_WK + GA_DY / 7 >= 37 || firstPma < 22.5 || lastPma > 50) {
+        zText = 'Outside validated range';
+        zDetail = 'Use an appropriate term infant reference or official Fenton 2025 LMS calculator for these ages';
+      } else {
+        const z1 = zNumeric('w',GSEX,firstPma,Number(first.wt)/1000);
+        const z2 = zNumeric('w',GSEX,lastPma,Number(last.wt)/1000);
+        const delta = z2-z1; zText = (delta > 0 ? '+' : '') + fmt(delta,2) + ' SD';
+        zDetail = 'Approximate Z-score change from first to latest recorded weight; verify with official Fenton LMS calculator';
+      }
     }
     const logged = Array.isArray(energyLog) ? energyLog.slice().sort((a,b)=>a.dol-b.dol) : [];
     const balance = logged.reduce((sum,e)=>sum+(Number(e.eMax)||0)-(Number(e.totalKcalKg)||0),0);
@@ -2235,7 +2244,12 @@
   }
 
   function buildChart(){
-    document.getElementById('growthChartSvg').innerHTML = chartSvgMarkup(GMETRIC);
+    const gaBirth = GA_WK + GA_DY / 7;
+    const hasOutOfRangePma = entries.some(e => gaBirth + Number(e.dol) / 7 > 50 || gaBirth + Number(e.dol) / 7 < 22.5);
+    const warning = gaBirth >= 37
+      ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; this chart is shown for visual context only.</div>'
+      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (22+4 to 50 weeks PMA). Do not interpret clamped chart values beyond this range.</div>' : '');
+    document.getElementById('growthChartSvg').innerHTML = warning + chartSvgMarkup(GMETRIC);
   }
 
   // ---- Toolbar wiring ----
@@ -2339,6 +2353,10 @@
     if (isNaN(wt)) { el.innerHTML = ''; return; }
 
     const gaBirth = GA_WK + GA_DY / 7;
+    if (gaBirth >= 37) {
+      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The current embedded reference is the Fenton 2025 postnatal growth dataset, not the separate Fenton 2025 BirthSize dataset required for term-born infants. Do not use this app to classify term birth weight as SGA or LGA. Use an approved term birth reference or the official Fenton BirthSize calculator.</p><p><a href="https://fentongrowth.ca/" target="_blank" rel="noopener">Official Fenton 2025 calculator</a></p></div>';
+      return;
+    }
     const wtPctNum = pctNumeric('w', GSEX, gaBirth, wt / 1000);
     const lenPctNum = len != null ? pctNumeric('l', GSEX, gaBirth, len) : null;
     const ofcPctNum = ofc != null ? pctNumeric('h', GSEX, gaBirth, ofc) : null;
@@ -3331,7 +3349,7 @@
       <div class="readout">
         <div class="rlabel"><span>Weight velocity</span><span>average method</span></div>
         <div class="rvalue">${fmt(vel.velocity,1)} g/kg/d</div>
-        <div class="rsub">Target ${vel.velTarget.range} (${vel.velTarget.band})</div>
+        <div class="rsub">Reference ${vel.velTarget.range} (${vel.velTarget.band})</div>
         <span class="flag ${(vel.velocity < parseFloat(vel.velTarget.range.split('–')[0]) || vel.velocity > parseFloat(vel.velTarget.range.split('–')[1])) ? 'warn' : 'ok'}">MEASURED</span>
       </div>
       <div class="readout">
@@ -3871,7 +3889,7 @@
       <div class="readout">
         <div class="rlabel"><span>Measured weight gain</span><span>last interval</span></div>
         <div class="rvalue">${fmt(velocity,1)} g/kg/d</div>
-        <div class="rsub">Target ${velTarget.range} (${velTarget.band})</div>
+        <div class="rsub">Reference ${velTarget.range} (${velTarget.band})</div>
         <span class="flag ${(velLo!==null && velocity < velLo) || (velHi!==null && velocity > velHi) ? 'warn' : 'ok'}">MEASURED</span>
       </div>` : ''}
     `;
