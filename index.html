@@ -3272,7 +3272,7 @@
     }
 
     el.innerHTML = `
-      <div class="fluid-line" style="grid-column:1/-1;"><b>Clinical verification required</b><small>Feed and PN composition values are reference estimates. Confirm current product labels, fortifier preparation and local pharmacy PN formulation before using these totals clinically.</small></div>
+      <div class="fluid-line" style="grid-column:1/-1;"><b>Clinical verification required</b><small>Feed and fortifier compositions are reference estimates. PN presets are legacy SGH formulations and are not verified against current Hospital Miri pharmacy bags. Confirm current product labels, fortifier preparation and the actual prescribed PN formulation with pharmacy before using these totals clinically.</small></div>
       <div class="readout" data-pn>
         <div class="rlabel"><span>GIR</span><span>${girBand.label}</span></div>
         <div class="rvalue">${fmt(gir,1)} mg/kg/min</div>
