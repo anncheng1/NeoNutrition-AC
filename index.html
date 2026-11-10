@@ -693,6 +693,13 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
   }
 
+  .handover-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px;}
+  .handover-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .handover-head h3{margin:5px 0 0;color:var(--ink);font-size:17px;}
+  .handover-note{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 0 12px;}
+  .handover-text{display:block;width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--paper);color:var(--ink);font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .handover-status{min-height:16px;margin-top:6px;font-size:11.5px;color:var(--muted);}
+
 </style>
 </head>
 <body>
@@ -1016,6 +1023,15 @@
     <div class="section-divider" id="secNutrition" data-step="results">
       <span class="section-label">TODAY'S INTAKE VS TARGET</span>
       <div id="nutDashboard" style="margin-bottom:16px;"></div>
+      <section class="handover-card" aria-labelledby="handoverTitle">
+        <div class="handover-head">
+          <div><span class="section-label">CLINICAL HANDOVER</span><h3 id="handoverTitle">Daily nutrition snapshot</h3></div>
+          <button type="button" class="btn-add" id="copyHandoverBtn">Copy summary</button>
+        </div>
+        <p class="handover-note">Auto-generated from the current calculator values. Review patient details and verify against the clinical record before using.</p>
+        <textarea id="handoverText" class="handover-text" rows="7" readonly aria-label="Daily nutrition handover summary" placeholder="Enter patient details and nutrition data to generate a summary."></textarea>
+        <div id="handoverStatus" class="handover-status" role="status" aria-live="polite"></div>
+      </section>
       <div id="clinicalFlags" style="margin-bottom:18px;"></div>
       <details class="more-box">
         <summary>Detailed breakdown — calories by source, osmolarity, velocity, reference targets</summary>
@@ -3283,11 +3299,72 @@
 
     renderSodiumSupplement(totalNaKg, refKg);
 
-    latestNutritionSnapshot = { totalKcalKg, eMax: tgt.eMin, totalProtKg, pMax: tgt.pMin };
+    latestNutritionSnapshot = null; // populated below from the same existing calculation outputs
+
+
+  // ---- Daily nutrition handover summary: presentation only; reuses existing calculations ----
+  function renderHandoverSummary(snapshot){
+    const box = document.getElementById('handoverText');
+    if (!box || !snapshot) return;
+    const pid = (document.getElementById('bPid').value || '').trim() || 'Not entered';
+    const ga = document.getElementById('gGaWk').value
+      ? document.getElementById('gGaWk').value + 'w ' + (document.getElementById('gGaDy').value || '0') + 'd'
+      : 'Not entered';
+    const dob = document.getElementById('bDobDt').value || 'Not entered';
+    const birthWt = document.getElementById('bWt').value || 'Not entered';
+    const latestWt = document.getElementById('latestWt').value || 'Not entered';
+    const mode = snapshot.mode === 'tpn' ? 'Enteral + IV/PN' : 'Enteral only';
+    const velocity = snapshot.weightVelocity == null ? 'Not available (need serial weights)' : fmt(snapshot.weightVelocity,1) + ' g/kg/day';
+    const lines = [
+      'NEONUTRITION — DAILY NUTRITION SUMMARY',
+      'Generated: ' + new Date().toLocaleString(),
+      'Patient ID: ' + pid + ' | DOB: ' + dob + ' | GA at birth: ' + ga,
+      'Birth weight: ' + birthWt + ' g | Latest weight: ' + latestWt + ' g',
+      'Day of life: ' + snapshot.day + ' | Reference weight used: ' + fmt(snapshot.refWeight,0) + ' g',
+      'Regimen: ' + mode + ' | Enteral volume: ' + fmt(snapshot.feedVol,1) + ' mL/kg/day | Total fluid: ' + fmt(snapshot.tfi,1) + ' mL/kg/day',
+      'ENERGY: ' + fmt(snapshot.totalKcalKg,0) + ' kcal/kg/day (target minimum ' + fmt(snapshot.eMax,0) + ')',
+      '  Enteral ' + fmt(snapshot.enteralKcalKg,0) + ' + PN glucose ' + fmt(snapshot.pnGlucoseKcalKg,0) + ' + PN amino acids ' + fmt(snapshot.pnProteinKcalKg,0) + ' + lipid ' + fmt(snapshot.lipidKcalKg,0) + ' kcal/kg/day',
+      'PROTEIN: ' + fmt(snapshot.totalProtKg,2) + ' g/kg/day (target minimum ' + fmt(snapshot.pMax,2) + ')',
+      '  Enteral ' + fmt(snapshot.enteralProtKg,2) + ' + PN amino acids ' + fmt(snapshot.pnAaKg,2) + ' g/kg/day',
+      'WEIGHT VELOCITY: ' + velocity,
+      '',
+      'Clinical decision support only. Verify patient details, actual product composition, fluid balance and prescribed regimen against the patient record and local protocol.'
+    ];
+    box.value = lines.join(String.fromCharCode(10));
+  }
+
+  const copyHandoverBtn = document.getElementById('copyHandoverBtn');
+  if (copyHandoverBtn) copyHandoverBtn.addEventListener('click', async () => {
+    const box = document.getElementById('handoverText');
+    const status = document.getElementById('handoverStatus');
+    if (!box || !box.value.trim()) { if (status) status.textContent = 'No summary is available yet.'; return; }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(box.value);
+      } else {
+        box.focus(); box.select();
+        const copied = document.execCommand('copy');
+        if (!copied) throw new Error('Clipboard permission unavailable');
+        box.setSelectionRange(0,0);
+      }
+      if (status) status.textContent = 'Summary copied. Check patient identifiers before sharing.';
+    } catch (e) {
+      if (status) status.textContent = 'Copy was blocked by the browser. Select the summary text and copy it manually.';
+      box.focus(); box.select();
+    }
+  });
 
     // Feed the sticky live-summary strip so totals stay visible while scrolling
     const fluidTgtNow = totalFluidTarget(refWeight, dayNum);
     const tfiNow = volMlKgDay + ((ivType === 'none' ? 0 : ivMlDay) + lipidMlDay + kvoMlDayForCalc) / refKg;
+    latestNutritionSnapshot = {
+      totalKcalKg, eMax: tgt.eMin, totalProtKg, pMax: tgt.pMin,
+      enteralKcalKg, pnGlucoseKcalKg, pnProteinKcalKg, lipidKcalKg,
+      enteralProtKg, pnAaKg, feedVol: volMlKgDay, tfi: tfiNow,
+      day: dayNum, refWeight, mode: tpnMode() ? 'tpn' : 'enteral',
+      weightVelocity: vel.velocity
+    };
+    renderHandoverSummary(latestNutritionSnapshot);
     updateLiveSummary({
       tfi: tfiNow, tfiState: (tfiNow < fluidTgtNow.lo - 10 || tfiNow > fluidTgtNow.hi + 10) ? 'warn' : 'ok',
       kcal: totalKcalKg, kcalState: totalKcalKg < tgt.eMin ? 'warn' : 'ok',
