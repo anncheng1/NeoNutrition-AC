@@ -109,3 +109,12 @@ test('longitudinal deficit snapshots store minimum energy and protein targets', 
   assert.match(html, /Cumulative energy deficit/);
   assert.match(html, /Days below protein target/);
 });
+
+test('Fenton reference lower age boundary is metric-specific', () => {
+  const lengthAtLower = context.fentonRowInterp('boy', 22.0, 'l');
+  const lengthAtBoundary = context.fentonRowInterp('boy', 23.5, 'l');
+  lengthAtLower.forEach((value, i) => assert.ok(Math.abs(value - lengthAtBoundary[i]) < 1e-12));
+  const weightAtLower = context.fentonRowInterp('boy', 22.0, 'w');
+  const weightAtBoundary = context.fentonRowInterp('boy', 22.5, 'w');
+  weightAtLower.forEach((value, i) => assert.ok(Math.abs(value - weightAtBoundary[i]) < 1e-12));
+});
