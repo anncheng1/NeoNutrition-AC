@@ -1908,9 +1908,8 @@
   // Reference weight velocity bands are descriptive estimates, not universal
   // treatment targets; interpret with illness, fluid status and body composition.
   function growthTarget(ga){
-    if(ga <= 32) return {label:'20 g/kg/d', range:'19–21 g/kg/d', band:'24–32 wk'};
-    if(ga <= 37) return {label:'17 g/kg/d', range:'13–19 g/kg/d', band:'33–37 wk'};
-    return {label:'9 g/kg/d', range:'8–11 g/kg/d', band:'38–41 wk'};
+    if(ga < 37) return {label:'20 g/kg/d', range:'15–25 g/kg/d', band:'Preterm (MOH reference)'};
+    return {label:'9 g/kg/d', range:'8–11 g/kg/d', band:'Term-equivalent reference'};
   }
 
   function ironPlan(bw){
