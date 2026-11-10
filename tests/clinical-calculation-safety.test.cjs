@@ -144,8 +144,10 @@ test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
 });
 
 test('enteral advancement prompts stay within the Malaysian protocol range', () => {
-  assert.equal(context.enteralAdvance(850).start, '15–20 mL/kg/d');
-  assert.equal(context.enteralAdvance(1500).start, '20–30 mL/kg/d');
+  assert.equal(context.enteralAdvance(850).start, '15–20 mL/kg/day initial feed');
+  assert.equal(context.enteralAdvance(1500).start, '<25 mL/kg/day initial trophic feed');
+  preterm = false;
+  assert.equal(context.enteralAdvance(3200).start, 'Individualise');
 });
 
 test('term infants are not assigned the preterm iron supplementation schedule', () => {
