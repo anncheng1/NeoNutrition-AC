@@ -2034,7 +2034,9 @@
     const a = FENTON[sex][metric][lo - 22], b = FENTON[sex][metric][lo + 1 - 22];
     return a.map((v, i) => v + f * (b[i] - v));
   }
-  // Piecewise-linear z between the five Fenton percentile knots; tails extended with the outer segment slope
+  // APPROXIMATION ONLY: piecewise-linear z between five digitised percentile knots;
+  // this is not the official Fenton 2025 LMS calculation. Tails are extrapolated
+  // with the outer segment slope and must not be treated as validated Z-scores.
   function zFromRow(val, row){
     const Z = FENTON_Z;
     let z;
@@ -2367,6 +2369,7 @@
       <div class="sga-banner ${cls}">
         <h4>${category}</h4>
         <p>${detail}</p>
+        <p class="tt-note"><b>Screening estimate only:</b> percentile and Z-score are interpolated from five digitised curves, not the official Fenton LMS method. Confirm borderline SGA/LGA results using the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>.</p>
         <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${len != null ? pctLabelWrap(lenPctNum) + ' (z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : 'not entered'} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025</p>
       </div>`;
   }
@@ -2496,13 +2499,13 @@
     return (wk + dy / 7) < 37;
   }
 
-  // Full-enteral-feed targets (per kg/day)
+  // Full-enteral-feed targets (per kg/day). For stable growing preterm infants,
+  // use ESPGHAN 2022: energy 115–140 kcal/kg/d and protein 3.5–4.0 g/kg/d;
+  // up to 160 kcal and 4.5 g protein may be considered selectively after review.
+  // Term values are retained as a separate local reference and need local sign-off.
   function nutritionTargetForWeight(wtG){
     if (!isPreterm()) return { eMin: 100, eMax: 120, pMin: 2.0, pMax: 2.5, label: 'Term' };
-    if (wtG < 1000) return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.5, label: 'Preterm <1000 g' };
-    if (wtG < 1500) return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.5, label: 'Preterm 1000–1499 g' };
-    if (wtG < 2000) return { eMin: 110, eMax: 135, pMin: 3.0, pMax: 4.0, label: 'Preterm 1500–1999 g' };
-    return { eMin: 110, eMax: 130, pMin: 2.5, pMax: 3.5, label: 'Preterm ≥2000 g' };
+    return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.0, label: 'Preterm' };
   }
   function enteralMineralTargets(){
     // mmol/kg/d at full enteral feeds (ESPGHAN 2022 / WRND 122). Term infants: Na only.
@@ -2726,6 +2729,10 @@
   let enteralToggleUserSet = false;
   let lipidToggleUserSet = false;
 
+  function suggestedIvFluidMlKgDay(targetMid, enteralMlKgDay, lipidMlKgDay, kvoMlKgDay){
+    return Math.max(0, targetMid - enteralMlKgDay - lipidMlKgDay - kvoMlKgDay);
+  }
+
   function renderFluidTarget(){
     const el = document.getElementById('fluidTargetReadouts');
     renderPnDayTable(getRefWeight(), parseInt(document.getElementById('day').value) || 0);
@@ -2757,7 +2764,7 @@
     const effectiveLipid = lipidToggle.checked ? lipidMlKgDay : 0;
 
     // KVO contributes to total fluid and must be deducted from the remaining allowance.
-    const suggestedIvMlKgDay = Math.max(0, targetMid - effectiveEnteral - effectiveLipid - kvoMlKgDay);
+    const suggestedIvMlKgDay = suggestedIvFluidMlKgDay(targetMid, effectiveEnteral, effectiveLipid, kvoMlKgDay);
     const suggestedIvMlDay = suggestedIvMlKgDay * refKg;
     const suggestedIvMlHour = suggestedIvMlDay / 24;
 
@@ -2868,9 +2875,10 @@
     if (typeof renderNutritionSummary === 'function') renderNutritionSummary();
   }
 
-  document.getElementById('kvoRate').addEventListener('input', renderFluids);
-  document.getElementById('kvoRate').addEventListener('change', renderFluids);
-  document.getElementById('kvoType').addEventListener('change', renderFluids);
+  ['input', 'change'].forEach(evt => {
+    document.getElementById('kvoRate').addEventListener(evt, () => { renderFluidTarget(); renderFluids(); });
+    document.getElementById('kvoType').addEventListener(evt, () => { renderFluidTarget(); renderFluids(); });
+  });
 
   // ===========================================================================
   // NUTRITION & GROWTH TARGETS — comprehensive intake calculation
@@ -3723,7 +3731,7 @@
       ${chartSvgMarkup('h')}
       <h3 style="font-size:15px; margin:16px 0 6px;">Measurement log</h3>
       ${tableHtml}
-      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">Fenton third-generation preterm growth chart (2025), fentongrowth.ca — percentile curves digitised from the published chart. Generated ${new Date().toLocaleString()}. For clinical reference only.</p>
+      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">Fenton 2025 percentile curves are digitised approximations; Z-scores are interpolated from five percentile knots and are not official LMS values. Verify borderline results with the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>. Generated ${new Date().toLocaleString()}.</p>
     `;
     document.getElementById('printArea').querySelectorAll('.entries-table').forEach(t => t.style.display = '');
   }
@@ -3820,7 +3828,7 @@
 
     const energyFlag = (totalKcal < tgt.eMin || totalKcal > tgt.eMax) ? 'warn' : 'ok';
     const proteinFlag = (totalProt < tgt.pMin || totalProt > tgt.pMax) ? 'warn' : 'ok';
-    const ratioApplicable = totalKcal >= tgt.eMin && totalKcal <= tgt.eMax && totalProt >= tgt.pMin && totalProt <= tgt.pMax;
+    const ratioApplicable = !pnOn && totalKcal >= tgt.eMin && totalKcal <= tgt.eMax && totalProt >= tgt.pMin && totalProt <= tgt.pMax;
     const ratioFlag = ratioApplicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
     const ratioStatus = !ratioApplicable ? 'NOT INTERPRETED' : (ratioFlag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
 
