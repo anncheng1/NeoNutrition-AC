@@ -3263,7 +3263,8 @@
       }
       const body = rows.map(r => {
         const st = statusOf(parseFloat(r[1]), r[3]);
-        return `<tr><td>${r[0]}</td><td class="mono num">${r[1]} <small>${r[2]}</small></td><td class="mono">${rangeTxt(r[3], r[4])}</td><td><span class="flag ${st.cls}">${st.txt}</span></td></tr>`;
+        const targetText = r[0] === 'Ca : P (molar)' && !tpn ? '≤1.4' : rangeTxt(r[3], r[4]);
+        return `<tr><td>${r[0]}</td><td class="mono num">${r[1]} <small>${r[2]}</small></td><td class="mono">${targetText}</td><td><span class="flag ${st.cls}">${st.txt}</span></td></tr>`;
       }).join('');
       document.getElementById('nutDashboard').innerHTML = `
         <div class="tt-head"><b>${isPreterm() ? 'Preterm' : 'Term'}</b> · ${document.getElementById('gGaWk').value}+${document.getElementById('gGaDy').value} wk · ${fmt(refWeight,0)} g · day ${dayNum} · ${tpn ? 'Feeds + IV/TPN' : 'Feeds only'}<br><span>${tgt.label} · ${tgt.phase}</span></div>
