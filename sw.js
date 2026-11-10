@@ -1,6 +1,6 @@
 // NeoNutrition service worker — caches the app so it opens with no network.
 // Bump CACHE when index.html changes so devices pick up the new version.
-const CACHE = 'neonutrition-v2026-11-10c';
+const CACHE = 'neonutrition-v2026-11-10d';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
