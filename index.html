@@ -687,6 +687,12 @@
     border-radius:8px; border:1px solid rgba(127,189,179,.45); background:rgba(47,143,132,.25); color:#EAF2F0; cursor:pointer;}
   .apply-btn:active{background:rgba(47,143,132,.45);}
 
+  /* Accessibility refinements */
+  :focus-visible{outline:3px solid #F3C879;outline-offset:3px;border-radius:4px;}
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  }
+
 </style>
 </head>
 <body>
@@ -1065,6 +1071,10 @@
         <button class="btn-add" id="savePatientBtn" type="button" style="background:var(--teal-deep);">💾 Save current</button>
         <button class="btn-add" id="downloadPatientDocBtn" type="button" style="background:var(--ink);">⬇ Download as Word doc</button>
         <button class="btn-add" id="printPatientBtn" type="button" style="background:var(--ink);">🖨️ Print</button>
+        <button class="btn-add" id="backupPatientsBtn" type="button" style="background:var(--teal-deep);">⬇ Backup records</button>
+        <button class="btn-add" id="restorePatientsBtn" type="button" style="background:var(--ink);">⬆ Restore records</button>
+        <input id="restorePatientsFile" type="file" accept="application/json,.json" hidden>
+
       </div>
       <div id="patientActionStatus" style="position:relative; z-index:1; font-size:12.5px; color:#7FBDB3; min-height:16px;"></div>
     </div>
@@ -4633,6 +4643,79 @@
       navigator.serviceWorker.register('sw.js').then(reg => {
         navigator.serviceWorker.ready.then(() => { swReady = true; updateNetBadge(); });
       }).catch(() => updateNetBadge());
+    });
+  }
+
+
+  // ---- Patient data backup / restore (browser-local records only) ----
+  // Export a portable JSON backup. Restore merges records and never silently
+  // overwrites an existing record with the same key.
+  const backupPatientsBtn = document.getElementById('backupPatientsBtn');
+  const restorePatientsBtn = document.getElementById('restorePatientsBtn');
+  const restorePatientsFile = document.getElementById('restorePatientsFile');
+
+  if (backupPatientsBtn && restorePatientsBtn && restorePatientsFile) {
+    backupPatientsBtn.addEventListener('click', () => {
+      const patients = getSavedPatients();
+      const count = Object.keys(patients).length;
+      if (!count) { setPatientStatus('No saved patient records to back up.'); return; }
+      const backup = {
+        app: 'NeoNutrition',
+        backupVersion: 1,
+        createdAt: new Date().toISOString(),
+        note: 'Contains patient information. Store and transfer securely.',
+        patients
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'neonutrition-patient-backup-' + new Date().toISOString().slice(0,10) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setPatientStatus('Backup created for ' + count + ' saved record(s). Keep this file securely.');
+    });
+
+    restorePatientsBtn.addEventListener('click', () => restorePatientsFile.click());
+
+    restorePatientsFile.addEventListener('change', async () => {
+      const file = restorePatientsFile.files && restorePatientsFile.files[0];
+      restorePatientsFile.value = '';
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        setPatientStatus('Backup file is too large (maximum 5 MB).');
+        return;
+      }
+      try {
+        const parsed = JSON.parse(await file.text());
+        const imported = parsed && parsed.app === 'NeoNutrition' && parsed.backupVersion === 1
+          ? parsed.patients : null;
+        if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
+          throw new Error('This is not a supported NeoNutrition backup file.');
+        }
+        const keys = Object.keys(imported);
+        if (!keys.length) throw new Error('The backup contains no patient records.');
+        const validKeys = keys.filter(key => {
+          const record = imported[key];
+          return record && typeof record === 'object' && !Array.isArray(record)
+            && record.fields && typeof record.fields === 'object' && !Array.isArray(record.fields);
+        });
+        if (!validKeys.length) throw new Error('No valid patient records were found in the backup.');
+        const existing = getSavedPatients();
+        let added = 0, skipped = 0;
+        validKeys.forEach(key => {
+          if (Object.prototype.hasOwnProperty.call(existing, key)) { skipped++; return; }
+          existing[key] = imported[key];
+          added++;
+        });
+        if (!setSavedPatients(existing)) throw new Error('Unable to save restored records. Check available browser storage.');
+        refreshPatientList();
+        setPatientStatus('Restore complete: ' + added + ' added, ' + skipped + ' existing record(s) skipped.');
+      } catch (err) {
+        setPatientStatus('Restore failed: ' + (err && err.message ? err.message : 'Invalid backup file.'));
+      }
     });
   }
 
