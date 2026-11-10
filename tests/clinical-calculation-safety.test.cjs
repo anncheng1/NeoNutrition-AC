@@ -60,6 +60,7 @@ vm.runInContext([
   extractFunction('enteralAdvance'),
   extractFunction('ironPlan'),
   extractFunction('ironTargetRange'),
+  extractFunction('growthTarget'),
   extractFunction('renderSgaBanner'),
 ].join('\n'), context);
 
@@ -164,4 +165,10 @@ test('birth-size percentile is suppressed below the Fenton reference age', () =>
   context.GA_DY = 3;
   context.renderSgaBanner();
   assert.match(elements.sgaBanner.innerHTML, /begins at 22\+4 weeks/);
+});
+
+test('preterm weight-gain reference uses the MOH 15–25 g/kg/day range', () => {
+  assert.equal(context.growthTarget(32).range, '15–25 g/kg/d');
+  assert.equal(context.growthTarget(36.9).range, '15–25 g/kg/d');
+  assert.equal(context.growthTarget(38).range, '8–11 g/kg/d');
 });
