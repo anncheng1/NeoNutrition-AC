@@ -141,7 +141,9 @@ test('weight velocity is unavailable with fewer than two weights or duplicate DO
   assert.equal(context.computeWeightVelocity().velocity, null);
 });
 
-test('weight velocity returns no value for non-positive interval', () => {
-  context.entries = [{ dol: 5, wt: 900 }, { dol: 3, wt: 920 }];
-  assert.equal(context.computeWeightVelocity().velocity, null);
+test('weight velocity sorts measurements by DOL before selecting the latest interval', () => {
+  setGestation(28);
+  context.entries = [{ dol: 6, wt: 1000 }, { dol: 1, wt: 900 }];
+  const result = context.computeWeightVelocity();
+  assert.ok(Math.abs(result.velocity - (100 / 5 / 0.95)) < 1e-10);
 });
