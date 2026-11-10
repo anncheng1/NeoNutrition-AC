@@ -27,7 +27,7 @@ vm.runInContext([
   extractFunction('isFiniteBackupNumber'),
   extractFunction('validatePatientBackup'),
   extractFunction('mergePatientRecords'),
-].join('\\n'), context);
+].join('\n'), context);
 
 function validRecord(pid = 'TEST-001') {
   return {
