@@ -2101,7 +2101,7 @@
       const z1 = zNumeric('w',GSEX,GA_WK+GA_DY/7+first.dol/7,Number(first.wt)/1000);
       const z2 = zNumeric('w',GSEX,GA_WK+GA_DY/7+last.dol/7,Number(last.wt)/1000);
       const delta = z2-z1; zText = (delta > 0 ? '+' : '') + fmt(delta,2) + ' SD';
-      zDetail = 'Change from first to latest recorded weight; interpret with chart and measurement quality';
+      zDetail = 'Approximate Z-score change from first to latest recorded weight; verify with official Fenton LMS calculator';
     }
     const logged = Array.isArray(energyLog) ? energyLog.slice().sort((a,b)=>a.dol-b.dol) : [];
     const balance = logged.reduce((sum,e)=>sum+(Number(e.eMax)||0)-(Number(e.totalKcalKg)||0),0);
@@ -2370,7 +2370,7 @@
         <h4>${category}</h4>
         <p>${detail}</p>
         <p class="tt-note"><b>Screening estimate only:</b> percentile and Z-score are interpolated from five digitised curves, not the official Fenton LMS method. Confirm borderline SGA/LGA results using the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>.</p>
-        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${len != null ? pctLabelWrap(lenPctNum) + ' (z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : 'not entered'} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025</p>
+        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (approx. z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${len != null ? pctLabelWrap(lenPctNum) + ' (approx. z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : 'not entered'} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (approx. z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025 estimate</p>
       </div>`;
   }
 
@@ -3944,8 +3944,7 @@
 
   function renderMicroTracker(){
     const bwVal = parseFloat(document.getElementById('bWt').value);
-    const best = bestWeight();
-    const refW = best != null ? Math.max(bwVal || 0, best) : (bwVal || 0);
+    const refW = getRefWeight();
     const [feLo, feHi] = ironTargetRange(refW || 1000);
     document.getElementById('microFeTarget').textContent = `${feLo}–${feHi}`;
 
