@@ -2733,6 +2733,21 @@
     return Math.max(0, targetMid - enteralMlKgDay - lipidMlKgDay - kvoMlKgDay);
   }
 
+  function proteinEnergyRatioStatus(ratio, energy, protein, eMin, eMax, pMin, pMax, enteralOnly){
+    const applicable = !!enteralOnly && energy >= eMin && energy <= eMax && protein >= pMin && protein <= pMax;
+    const flag = applicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
+    const status = !applicable ? 'NOT INTERPRETED' : (flag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
+    return { applicable, flag, status };
+  }
+
+  function vitaminDIntakeStatus(iuPerDay, weightG){
+    if (!Number.isFinite(iuPerDay) || !Number.isFinite(weightG) || iuPerDay < 0 || weightG <= 0) return null;
+    const iuKgDay = iuPerDay / (weightG / 1000);
+    const status = iuKgDay < 400 ? 'red' : (iuKgDay <= 700 ? 'green' : (iuKgDay < 1000 ? 'yellow' : 'red'));
+    const label = iuKgDay < 400 ? 'Below target' : (iuKgDay <= 700 ? 'Within target' : (iuKgDay < 1000 ? 'Above routine target' : 'At/above upper limit'));
+    return { iuKgDay, status, label };
+  }
+
   function renderFluidTarget(){
     const el = document.getElementById('fluidTargetReadouts');
     renderPnDayTable(getRefWeight(), parseInt(document.getElementById('day').value) || 0);
@@ -3155,10 +3170,8 @@
     const proteinFlag = (totalProtKg < tgt.pMin || totalProtKg > tgt.pMax) ? 'warn' : 'ok';
     // ESPGHAN 2022 enteral PER: 2.8–3.6 g/100 kcal. Do not apply this
     // enteral reference to PN or interpret it when energy/protein targets are unmet.
-    const ratioApplicable = !tpnMode() && totalKcalKg >= tgt.eMin && totalKcalKg <= tgt.eMax &&
-      totalProtKg >= tgt.pMin && totalProtKg <= tgt.pMax;
-    const ratioFlag = ratioApplicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
-    const ratioStatus = !ratioApplicable ? 'NOT INTERPRETED' : (ratioFlag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
+    const per = proteinEnergyRatioStatus(ratio, totalKcalKg, totalProtKg, tgt.eMin, tgt.eMax, tgt.pMin, tgt.pMax, !tpnMode());
+    const ratioApplicable = per.applicable, ratioFlag = per.flag, ratioStatus = per.status;
 
     // Ca:P molar ratio — ideal ~1.3–1.7:1 for bone mineralization
     const caMol = totalCaKg / MG_PER_MMOL.ca, pMol = totalPKg / MG_PER_MMOL.p;
@@ -3828,9 +3841,8 @@
 
     const energyFlag = (totalKcal < tgt.eMin || totalKcal > tgt.eMax) ? 'warn' : 'ok';
     const proteinFlag = (totalProt < tgt.pMin || totalProt > tgt.pMax) ? 'warn' : 'ok';
-    const ratioApplicable = !pnOn && totalKcal >= tgt.eMin && totalKcal <= tgt.eMax && totalProt >= tgt.pMin && totalProt <= tgt.pMax;
-    const ratioFlag = ratioApplicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
-    const ratioStatus = !ratioApplicable ? 'NOT INTERPRETED' : (ratioFlag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
+    const per = proteinEnergyRatioStatus(ratio, totalKcal, totalProt, tgt.eMin, tgt.eMax, tgt.pMin, tgt.pMax, !pnOn);
+    const ratioApplicable = per.applicable, ratioFlag = per.flag, ratioStatus = per.status;
 
     let velRangeParts = velTarget ? velTarget.range.split('–') : null;
     let velLo = velRangeParts ? parseFloat(velRangeParts[0]) : null;
@@ -3951,10 +3963,8 @@
       if (isNaN(rawVal)) { statusEl.innerHTML = ''; return; }
       if (c.weightBased) {
         if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
-        const val = rawVal / (refW / 1000);
-        const status = val < c.lo ? 'red' : (val <= c.hi ? 'green' : (val <= c.upper ? 'yellow' : 'red'));
-        const label = val < c.lo ? 'Below target' : (val <= c.hi ? 'Within target' : (val <= c.upper ? 'Above routine target' : 'Above upper limit'));
-        statusEl.innerHTML = `<span class="micro-badge ${status}">${label} · ${fmt(val,0)} IU/kg/d</span>`;
+        const vitD = vitaminDIntakeStatus(rawVal, refW);
+        statusEl.innerHTML = `<span class="micro-badge ${vitD.status}">${vitD.label} · ${fmt(vitD.iuKgDay,0)} IU/kg/d</span>`;
       } else {
         const status = microStatus(rawVal, c.lo, c.hi);
         statusEl.innerHTML = `<span class="micro-badge ${status}">${microStatusLabel(status)}</span>`;
