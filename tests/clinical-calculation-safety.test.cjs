@@ -110,12 +110,18 @@ test('enteral protein-energy ratio is only interpreted within energy and protein
   assert.equal(onPN.applicable, false);
 });
 
-test('vitamin D status converts IU/day into IU/kg/day and distinguishes upper limit', () => {
-  assert.equal(context.vitaminDIntakeStatus(500, 1000).status, 'green');
-  assert.equal(context.vitaminDIntakeStatus(800, 1000).status, 'yellow');
-  assert.equal(context.vitaminDIntakeStatus(1000, 1000).status, 'red');
-  assert.equal(context.vitaminDIntakeStatus(300, 1000).status, 'red');
-  assert.equal(context.vitaminDIntakeStatus(500, 0), null);
+test('preterm vitamin D uses IU/kg/day target and an absolute 1,000 IU/day upper limit', () => {
+  assert.equal(context.vitaminDIntakeStatus(500, 1000, true).status, 'green');
+  assert.equal(context.vitaminDIntakeStatus(800, 1000, true).status, 'yellow');
+  assert.equal(context.vitaminDIntakeStatus(1001, 1000, true).status, 'red');
+  assert.equal(context.vitaminDIntakeStatus(300, 1000, true).status, 'red');
+  assert.equal(context.vitaminDIntakeStatus(500, 0, true), null);
+});
+
+test('term vitamin D status uses the fixed 400 IU/day MOH reference', () => {
+  assert.equal(context.vitaminDIntakeStatus(400, 3200, false).status, 'green');
+  assert.equal(context.vitaminDIntakeStatus(600, 3200, false).status, 'yellow');
+  assert.equal(context.vitaminDIntakeStatus(1100, 3200, false).status, 'red');
 });
 
 test('term-born infants are not classified using the embedded preterm growth dataset', () => {
