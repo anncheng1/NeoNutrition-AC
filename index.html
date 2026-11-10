@@ -1913,9 +1913,8 @@
   }
 
   function ironPlan(bw){
-    if (!isPreterm()) return {dose:'Individualise', start:'according to feeding and iron risk', dur:'per local guideline'};
-    if(bw < 2000) return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'3–4 mo post-discharge or review'};
-    return {dose:'1–2 mg/kg/d', start:'4–6 wks', dur:'6 mo'};
+    if (!isPreterm() || bw >= 2000) return {dose:'Individualise', start:'according to feeding, ferritin and iron risk', dur:'per local guideline'};
+    return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'3–4 mo post-discharge or review'};
   }
 
   function pnTargets(day){
@@ -3966,9 +3965,8 @@
   // and assessed after conversion to IU/kg/day using the current best weight.
   // ===========================================================================
   function ironTargetRange(bwG){
-    if (!isPreterm()) return null;
-    if (bwG < 2000) return [2, 3];
-    return [1, 2];
+    if (!isPreterm() || bwG >= 2000) return null;
+    return [2, 3];
   }
 
   function microStatus(value, lo, hi){
@@ -3998,7 +3996,7 @@
     checks.forEach(c => {
       const rawVal = parseFloat(document.getElementById(c.id).value);
       const statusEl = document.getElementById(c.status);
-      if (c.id === 'microFe' && !isPreterm()) { statusEl.innerHTML = '<span class="micro-badge yellow">Individualise by feeding and iron status</span>'; return; }
+      if (c.id === 'microFe' && !ironRange) { statusEl.innerHTML = '<span class="micro-badge yellow">Individualise by feeding and iron status</span>'; return; }
       if (isNaN(rawVal)) { statusEl.innerHTML = ''; return; }
       if (c.weightBased) {
         if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
