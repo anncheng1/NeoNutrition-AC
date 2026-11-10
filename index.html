@@ -2030,7 +2030,8 @@
 
   const FENTON_Z = [-1.8808, -1.2816, 0, 1.2816, 1.8808]; // z for P3, P10, P50, P90, P97
   function fentonRowInterp(sex, wk, metric){
-    const w = Math.max(22, Math.min(50, wk));
+    const minWeek = metric === 'l' ? 23.5 : 22.5;
+    const w = Math.max(minWeek, Math.min(50, wk));
     const lo = Math.min(49, Math.floor(w)), f = w - lo;
     const a = FENTON[sex][metric][lo - 22], b = FENTON[sex][metric][lo + 1 - 22];
     return a.map((v, i) => v + f * (b[i] - v));
@@ -2244,10 +2245,13 @@
 
   function buildChart(){
     const gaBirth = GA_WK + GA_DY / 7;
-    const hasOutOfRangePma = entries.some(e => gaBirth + Number(e.dol) / 7 > 50 || gaBirth + Number(e.dol) / 7 < 22.5);
+    const hasOutOfRangePma = entries.some(e => {
+      const pma = gaBirth + Number(e.dol) / 7;
+      return pma > 50 || pma < 22.5 || (e.len != null && pma < 23.5);
+    });
     const warning = gaBirth >= 37
       ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; this chart is shown for visual context only.</div>'
-      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (22+4 to 50 weeks PMA). Do not interpret clamped chart values beyond this range.</div>' : '');
+      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (weight/OFC 22+4 to 50 weeks; length 23+4 to 50 weeks PMA). Do not interpret clamped chart values beyond this range.</div>' : '');
     document.getElementById('growthChartSvg').innerHTML = warning + chartSvgMarkup(GMETRIC);
   }
 
