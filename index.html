@@ -4769,6 +4769,65 @@
   }
 
 
+  // Validate backup envelopes before touching local storage. Keep legacy v1
+  // records compatible, but reject malformed nested data and unsafe object keys.
+  function validatePatientBackup(parsed){
+    if (!parsed || parsed.app !== 'NeoNutrition' || parsed.backupVersion !== 1) {
+      throw new Error('This is not a supported NeoNutrition backup file.');
+    }
+    const imported = parsed.patients;
+    if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
+      throw new Error('The backup patient list is invalid.');
+    }
+    const keys = Object.keys(imported);
+    if (!keys.length) throw new Error('The backup contains no patient records.');
+    const dangerousKeys = ['__proto__', 'prototype', 'constructor'];
+    keys.forEach(key => {
+      const record = imported[key];
+      if (!key.trim() || dangerousKeys.includes(key)) throw new Error('The backup contains an invalid patient record key.');
+      if (!record || typeof record !== 'object' || Array.isArray(record)
+          || !record.fields || typeof record.fields !== 'object' || Array.isArray(record.fields)) {
+        throw new Error('A patient record is malformed. No records were restored.');
+      }
+      if (record.sex != null && !['boy', 'girl'].includes(record.sex)) throw new Error('A patient record has an invalid sex value.');
+      if (record.mode != null && !['tpn', 'enteral'].includes(record.mode)) throw new Error('A patient record has an invalid nutrition mode.');
+      if (record.toggles != null && (typeof record.toggles !== 'object' || Array.isArray(record.toggles))) {
+        throw new Error('A patient record has invalid toggle settings.');
+      }
+      Object.values(record.fields).forEach(value => {
+        if (value != null && !['string', 'number', 'boolean'].includes(typeof value)) {
+          throw new Error('A patient record contains an invalid form value.');
+        }
+      });
+      ['entries', 'energyLog'].forEach(name => {
+        if (record[name] != null && !Array.isArray(record[name])) throw new Error('A patient record contains invalid ' + name + ' data.');
+        (record[name] || []).forEach(item => {
+          if (!item || typeof item !== 'object' || Array.isArray(item) || !Number.isFinite(Number(item.dol))) {
+            throw new Error('A patient record contains malformed ' + name + ' data.');
+          }
+          if (name === 'entries' && !Number.isFinite(Number(item.wt))) {
+            throw new Error('A growth record is missing a valid weight.');
+          }
+          if (name === 'energyLog' && !['totalKcalKg', 'totalProtKg', 'eMax', 'pMax'].every(k => Number.isFinite(Number(item[k])))) {
+            throw new Error('A nutrition log record is incomplete.');
+          }
+        });
+      });
+    });
+    return imported;
+  }
+
+  function mergePatientRecords(existing, imported){
+    const merged = Object.assign(Object.create(null), existing || {});
+    let added = 0, skipped = 0;
+    Object.keys(imported).forEach(key => {
+      if (Object.prototype.hasOwnProperty.call(merged, key)) { skipped++; return; }
+      merged[key] = imported[key];
+      added++;
+    });
+    return { patients: merged, added, skipped };
+  }
+
   // ---- Patient data backup / restore (browser-local records only) ----
   // Export a portable JSON backup. Restore merges records and never silently
   // overwrites an existing record with the same key.
@@ -4812,29 +4871,11 @@
       }
       try {
         const parsed = JSON.parse(await file.text());
-        const imported = parsed && parsed.app === 'NeoNutrition' && parsed.backupVersion === 1
-          ? parsed.patients : null;
-        if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
-          throw new Error('This is not a supported NeoNutrition backup file.');
-        }
-        const keys = Object.keys(imported);
-        if (!keys.length) throw new Error('The backup contains no patient records.');
-        const validKeys = keys.filter(key => {
-          const record = imported[key];
-          return record && typeof record === 'object' && !Array.isArray(record)
-            && record.fields && typeof record.fields === 'object' && !Array.isArray(record.fields);
-        });
-        if (!validKeys.length) throw new Error('No valid patient records were found in the backup.');
-        const existing = getSavedPatients();
-        let added = 0, skipped = 0;
-        validKeys.forEach(key => {
-          if (Object.prototype.hasOwnProperty.call(existing, key)) { skipped++; return; }
-          existing[key] = imported[key];
-          added++;
-        });
-        if (!setSavedPatients(existing)) throw new Error('Unable to save restored records. Check available browser storage.');
+        const imported = validatePatientBackup(parsed);
+        const result = mergePatientRecords(getSavedPatients(), imported);
+        if (!setSavedPatients(result.patients)) throw new Error('Unable to save restored records. Check available browser storage.');
         refreshPatientList();
-        setPatientStatus('Restore complete: ' + added + ' added, ' + skipped + ' existing record(s) skipped.');
+        setPatientStatus('Restore complete: ' + result.added + ' added, ' + result.skipped + ' existing record(s) skipped.');
       } catch (err) {
         setPatientStatus('Restore failed: ' + (err && err.message ? err.message : 'Invalid backup file.'));
       }
