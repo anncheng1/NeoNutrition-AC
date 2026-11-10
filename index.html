@@ -2567,11 +2567,20 @@
   }
 
   // Today's energy/protein targets, blended between PN and full-enteral targets by the share of volume given enterally
+  function enteralVolumeFraction(enteralMlKg, pnIvMlKg, lipidMlKg){
+    const totalNutrientFluid = enteralMlKg + pnIvMlKg + lipidMlKg;
+    return totalNutrientFluid > 0 ? enteralMlKg / totalNutrientFluid : 0;
+  }
+
   function todayTargets(refWeight, dayNum){
     const en = nutritionTargetForWeight(refWeight);
     const vol = parseFloat(document.getElementById('vol').value) || 0;
-    const ivMlKg = tpnMode() ? ((parseFloat(document.getElementById('ivRate').value) || 0) * 24) / (refWeight / 1000) : 0;
-    const f = (vol + ivMlKg) > 0 ? vol / (vol + ivMlKg) : (tpnMode() ? 0 : 1);
+    const ivType = document.getElementById('ivType').value;
+    const ivMlKg = tpnMode() && ivType !== 'none' ? ((parseFloat(document.getElementById('ivRate').value) || 0) * 24) / (refWeight / 1000) : 0;
+    const lipidMlKg = tpnMode() ? ((parseFloat(document.getElementById('lipidRate').value) || 0) * 24) / (refWeight / 1000) : 0;
+    // Volume share is a pragmatic phase-estimation heuristic, not an evidence-based
+    // individualized nutrient target. KVO is excluded because it carries no nutrition.
+    const f = tpnMode() ? enteralVolumeFraction(vol, ivMlKg, lipidMlKg) : 1;
     if (!tpnMode()) return Object.assign({}, en, { f: 1, phase: 'Full enteral targets' });
     const pn = pnTargetsForDay(dayIndex(dayNum), refWeight);
     const mix = (a, b) => a * (1 - f) + b * f;
@@ -2579,7 +2588,7 @@
       eMin: mix(pn.kcal.lo, en.eMin), eMax: mix(pn.kcal.hi, en.eMax),
       pMin: mix(pn.aa.lo, en.pMin), pMax: mix(pn.aa.hi, en.pMax),
       label: en.label, f, pn,
-      phase: f < 0.05 ? `PN day ${dayIndex(dayNum)}${dayIndex(dayNum) === 5 ? '+' : ''} targets` : `Blended: ${Math.round(f * 100)}% enteral`
+      phase: f < 0.05 ? `PN day ${dayIndex(dayNum)}${dayIndex(dayNum) === 5 ? '+' : ''} targets` : `Estimated volume blend: ${Math.round(f * 100)}% enteral — clinician review required`
     };
   }
 
@@ -3266,7 +3275,7 @@
         return `<tr><td>${r[0]}</td><td class="mono num">${r[1]} <small>${r[2]}</small></td><td class="mono">${targetText}</td><td><span class="flag ${st.cls}">${st.txt}</span></td></tr>`;
       }).join('');
       document.getElementById('nutDashboard').innerHTML = `
-        <div class="tt-head"><b>${isPreterm() ? 'Preterm' : 'Term'}</b> · ${document.getElementById('gGaWk').value}+${document.getElementById('gGaDy').value} wk · ${fmt(refWeight,0)} g · day ${dayNum} · ${tpn ? 'Feeds + IV/TPN' : 'Feeds only'}<br><span>${tgt.label} · ${tgt.phase}</span></div>
+        <div class="tt-head"><b>${isPreterm() ? 'Preterm' : 'Term'}</b> · ${document.getElementById('gGaWk').value}+${document.getElementById('gGaDy').value} wk · ${fmt(refWeight,0)} g · day ${dayNum} · ${tpn ? 'Feeds + IV/TPN' : 'Feeds only'}<br><span>${tgt.label} · ${tgt.phase}</span>${tpn && tgt.f > 0.05 ? '<small>Energy/protein target blend is estimated from fluid-volume share; it is not a prescribed target.</small>' : ''}</div>
         <div class="table-scroll"><table class="today-tbl"><thead><tr><th>Today</th><th>Delivered</th><th>Target</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`;
     }
 
