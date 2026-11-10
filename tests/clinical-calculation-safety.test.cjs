@@ -56,6 +56,8 @@ vm.runInContext([
   extractFunction('suggestedIvFluidMlKgDay'),
   extractFunction('proteinEnergyRatioStatus'),
   extractFunction('vitaminDIntakeStatus'),
+  extractFunction('enteralMineralTargets'),
+  extractFunction('enteralAdvance'),
   extractFunction('renderSgaBanner'),
 ].join('\n'), context);
 
@@ -130,4 +132,16 @@ test('term-born infants are not classified using the embedded preterm growth dat
   context.renderSgaBanner();
   assert.match(elements.sgaBanner.innerHTML, /Birth-size percentile unavailable/);
   assert.match(elements.sgaBanner.innerHTML, /term-born infants/);
+});
+
+test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
+  preterm = true;
+  const targets = context.enteralMineralTargets();
+  assert.deepEqual(JSON.parse(JSON.stringify(targets.ca)), { lo: 3, hi: 5 });
+  assert.deepEqual(JSON.parse(JSON.stringify(targets.p)), { lo: 2.2, hi: 3.7 });
+});
+
+test('enteral advancement prompts stay within the Malaysian protocol range', () => {
+  assert.equal(context.enteralAdvance(850).start, '15–20 mL/kg/d');
+  assert.equal(context.enteralAdvance(1500).start, '20–30 mL/kg/d');
 });
