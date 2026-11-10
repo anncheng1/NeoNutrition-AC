@@ -2353,12 +2353,16 @@
     if (isNaN(wt)) { el.innerHTML = ''; return; }
 
     const gaBirth = GA_WK + GA_DY / 7;
+    if (gaBirth < 22.5) {
+      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The embedded Fenton 2025 reference begins at 22+4 weeks. Do not classify birth size below this gestation using this app.</p></div>';
+      return;
+    }
     if (gaBirth >= 37) {
       el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The current embedded reference is the Fenton 2025 postnatal growth dataset, not the separate Fenton 2025 BirthSize dataset required for term-born infants. Do not use this app to classify term birth weight as SGA or LGA. Use an approved term birth reference or the official Fenton BirthSize calculator.</p><p><a href="https://fentongrowth.ca/" target="_blank" rel="noopener">Official Fenton 2025 calculator</a></p></div>';
       return;
     }
     const wtPctNum = pctNumeric('w', GSEX, gaBirth, wt / 1000);
-    const lenPctNum = len != null ? pctNumeric('l', GSEX, gaBirth, len) : null;
+    const lenPctNum = len != null && gaBirth >= 23.5 ? pctNumeric('l', GSEX, gaBirth, len) : null;
     const ofcPctNum = ofc != null ? pctNumeric('h', GSEX, gaBirth, ofc) : null;
 
     let category, detail, cls = '';
@@ -2388,7 +2392,7 @@
         <h4>${category}</h4>
         <p>${detail}</p>
         <p class="tt-note"><b>Screening estimate only:</b> percentile and Z-score are interpolated from five digitised curves, not the official Fenton LMS method. Confirm borderline SGA/LGA results using the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>.</p>
-        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (approx. z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${len != null ? pctLabelWrap(lenPctNum) + ' (approx. z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : 'not entered'} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (approx. z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025 estimate</p>
+        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (approx. z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${lenPctNum != null ? pctLabelWrap(lenPctNum) + ' (approx. z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : (len != null ? 'outside Fenton length range' : 'not entered')} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (approx. z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025 estimate</p>
       </div>`;
   }
 
