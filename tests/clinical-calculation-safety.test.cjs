@@ -30,12 +30,23 @@ class FixedDate extends Date {
     else super('2026-11-10T07:59:00+08:00');
   }
 }
+const elements = {
+  bDobDt: { value: '2026-11-09' },
+  bWt: { value: '3200' },
+  bLen: { value: '' },
+  bOfc: { value: '' },
+  sgaBanner: { innerHTML: '' },
+};
 const context = {
   Date: FixedDate,
   Math,
   Number,
-  document: { getElementById: id => ({ value: id === 'bDobDt' ? '2026-11-09' : '' }) },
+  document: { getElementById: id => elements[id] || (elements[id] = { value: '', innerHTML: '' }) },
   isPreterm: () => preterm,
+  GA_WK: 38,
+  GA_DY: 0,
+  GSEX: 'boy',
+  pctNumeric: () => { throw new Error('Term SGA/LGA must not use the embedded preterm Growth dataset'); },
 };
 vm.createContext(context);
 vm.runInContext([
@@ -45,6 +56,7 @@ vm.runInContext([
   extractFunction('suggestedIvFluidMlKgDay'),
   extractFunction('proteinEnergyRatioStatus'),
   extractFunction('vitaminDIntakeStatus'),
+  extractFunction('renderSgaBanner'),
 ].join('\n'), context);
 
 test('date-only DOB is parsed at local midnight in Malaysia', () => {
@@ -104,4 +116,12 @@ test('vitamin D status converts IU/day into IU/kg/day and distinguishes upper li
   assert.equal(context.vitaminDIntakeStatus(1000, 1000).status, 'red');
   assert.equal(context.vitaminDIntakeStatus(300, 1000).status, 'red');
   assert.equal(context.vitaminDIntakeStatus(500, 0), null);
+});
+
+test('term-born infants are not classified using the embedded preterm growth dataset', () => {
+  context.GA_WK = 38;
+  context.GA_DY = 0;
+  context.renderSgaBanner();
+  assert.match(elements.sgaBanner.innerHTML, /Birth-size percentile unavailable/);
+  assert.match(elements.sgaBanner.innerHTML, /term-born infants/);
 });
