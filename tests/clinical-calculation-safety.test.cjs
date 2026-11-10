@@ -59,6 +59,7 @@ vm.runInContext([
   extractFunction('computeDOL'),
   extractFunction('totalFluidTarget'),
   extractFunction('suggestedIvFluidMlKgDay'),
+  extractFunction('enteralVolumeFraction'),
   extractFunction('proteinEnergyRatioStatus'),
   extractFunction('vitaminDIntakeStatus'),
   extractFunction('enteralMineralTargets'),
@@ -191,4 +192,10 @@ test('PN route suggestion uses gestational age and 72-hour feeding progress, not
   assert.equal(context.suggestedMode().mode, 'tpn');
   elements.vol.value = '110';
   assert.equal(context.suggestedMode().mode, 'enteral');
+});
+
+test('phase-estimated target blend includes PN lipid volume but excludes non-nutrient KVO', () => {
+  assert.equal(context.enteralVolumeFraction(60, 30, 10), 0.6);
+  assert.equal(context.enteralVolumeFraction(0, 30, 10), 0);
+  assert.equal(context.enteralVolumeFraction(0, 0, 0), 0);
 });
