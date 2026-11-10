@@ -61,16 +61,12 @@ function setGestation(weeks, days = 0) {
   context.GA_DY = days;
 }
 
-test('nutrition target bands: ELBW and VLBW boundaries', () => {
+test('preterm full-enteral targets follow ESPGHAN 2022 across weight bands', () => {
   setGestation(26);
-  assert.deepEqual(
-    JSON.parse(JSON.stringify(context.nutritionTargetForWeight(850))),
-    { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.5, label: 'Preterm <1000 g' }
-  );
-  assert.equal(context.nutritionTargetForWeight(1000).label, 'Preterm 1000–1499 g');
-  assert.equal(context.nutritionTargetForWeight(1499).eMin, 115);
-  assert.equal(context.nutritionTargetForWeight(1500).eMin, 110);
-  assert.equal(context.nutritionTargetForWeight(2000).pMin, 2.5);
+  const expected = { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4, label: 'Preterm' };
+  [850, 1000, 1499, 1500, 2000, 3000].forEach(weight => {
+    assert.deepEqual(JSON.parse(JSON.stringify(context.nutritionTargetForWeight(weight))), expected);
+  });
 });
 
 test('term gestation selects term nutrition target band', () => {
@@ -109,11 +105,13 @@ test('term PN targets use term bands', () => {
   assert.equal(d1.lipid.max, 3);
 });
 
-test('fluid target boundaries: preterm below and above 1000 g', () => {
+test('preterm fluid targets follow Malaysian Paediatric Protocols across weight bands', () => {
   setGestation(28);
-  assert.deepEqual(JSON.parse(JSON.stringify(context.totalFluidTarget(900, 1))), { lo: 80, hi: 80 });
-  assert.deepEqual(JSON.parse(JSON.stringify(context.totalFluidTarget(1000, 1))), { lo: 60, hi: 60 });
-  assert.deepEqual(JSON.parse(JSON.stringify(context.totalFluidTarget(900, 5))), { lo: 150, hi: 170 });
+  [900, 1000, 1800].forEach(weight => {
+    [60, 80, 100, 120, 140].forEach((value, i) => {
+      assert.deepEqual(JSON.parse(JSON.stringify(context.totalFluidTarget(weight, i + 1))), { lo: value, hi: value });
+    });
+  });
 });
 
 test('term fluid targets use term schedule', () => {
