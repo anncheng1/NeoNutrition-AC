@@ -2532,7 +2532,7 @@
   function enteralMineralTargets(){
     // mmol/kg/d at full enteral feeds (ESPGHAN 2022 / WRND 122). Term infants: Na only.
     return isPreterm()
-      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.0 }, p: { lo: 2.2, hi: 3.7 }, caP: { lo: 1.3, hi: 1.7 } }
+      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.0 }, p: { lo: 2.2, hi: 3.7 }, caP: { lo: 0, hi: 1.4 } }
       : { na: { lo: 1, hi: 3 }, ca: null, p: null, caP: null };
   }
   // Parenteral AA ceiling by current weight (WRND 122 appendix); term 3.0
@@ -3210,10 +3210,10 @@
     const per = proteinEnergyRatioStatus(ratio, totalKcalKg, totalProtKg, tgt.eMin, tgt.eMax, tgt.pMin, tgt.pMax, !tpnMode());
     const ratioApplicable = per.applicable, ratioFlag = per.flag, ratioStatus = per.status;
 
-    // Ca:P molar ratio — ideal ~1.3–1.7:1 for bone mineralization
+    // Ca:P molar ratio — ESPGHAN 2022 recommends an enteral molar ratio ≤1.4:1.
     const caMol = totalCaKg / MG_PER_MMOL.ca, pMol = totalPKg / MG_PER_MMOL.p;
-    const caPRatio = pMol > 0 ? caMol / pMol : 0;
-    const caPBand = tpnMode() ? (dayIndex(dayNum) <= 3 ? { lo: 0.8, hi: 1.3 } : { lo: 0.8, hi: 1.3 }) : (enteralMineralTargets().caP || { lo: 1.3, hi: 1.7 });
+    const caPRatio = pMol > 0 ? caMol / pMol : (caMol > 0 ? Infinity : 0);
+    const caPBand = tpnMode() ? { lo: 0.8, hi: 1.3 } : (enteralMineralTargets().caP || { lo: 0, hi: 1.4 });
     const caPFlag = (caPRatio < caPBand.lo || caPRatio > caPBand.hi) ? 'warn' : 'ok';
     const caPStatus = caPFlag === 'ok' ? 'IDEAL' : (caPRatio > caPBand.hi ? 'TOO MUCH CALCIUM' : 'TOO MUCH PHOSPHATE');
 
@@ -3349,7 +3349,7 @@
       <div class="readout">
         <div class="rlabel"><span>Ca : P molar ratio</span><span>bone mineralization</span></div>
         <div class="rvalue">${fmt(caPRatio,2)} : 1</div>
-        <div class="rsub">Target ${caPBand.lo}–${caPBand.hi} : 1 (${tpnMode() ? 'parenteral' : 'enteral'})</div>
+        <div class="rsub">Target ${tpnMode() ? `${caPBand.lo}–${caPBand.hi}` : '≤1.4'} : 1 (${tpnMode() ? 'parenteral' : 'enteral'})</div>
         <span class="flag ${caPFlag}">${caPStatus}</span>
       </div>
       <div class="readout">
