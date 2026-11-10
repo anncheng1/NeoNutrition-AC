@@ -13,7 +13,7 @@ const assert = require('node:assert/strict');
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
 function extractFunction(name) {
-  const match = new RegExp('function\\s+' + name + '\\s*\\(').exec(html);
+  const match = new RegExp('function\s+' + name + '\s*\\(').exec(html);
   assert.ok(match, 'Missing application function: ' + name);
   const open = html.indexOf('{', match.index);
   let depth = 0;
@@ -104,8 +104,8 @@ test('weight velocity ignores duplicate days consistently and sorts out-of-order
 });
 
 test('longitudinal deficit snapshots store minimum energy and protein targets', () => {
-  assert.match(html, /latestNutritionSnapshot\\s*=\\s*\\{[\\s\\S]*?eMax:\\s*tgt\\.eMin/);
-  assert.match(html, /latestNutritionSnapshot\\s*=\\s*\\{[\\s\\S]*?pMax:\\s*tgt\\.pMin/);
+  assert.match(html, /latestNutritionSnapshot\s*=\s*\\{[\s\S]*?eMax:\s*tgt\.eMin/);
+  assert.match(html, /latestNutritionSnapshot\s*=\s*\\{[\s\S]*?pMax:\s*tgt\.pMin/);
   assert.match(html, /Cumulative energy deficit/);
   assert.match(html, /Days below protein target/);
 });
