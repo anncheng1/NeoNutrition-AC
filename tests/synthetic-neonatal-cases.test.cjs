@@ -43,7 +43,7 @@ const context = {
   Math,
 };
 vm.createContext(context);
-vm.runInContext('FEED_PRESETS = ' + presetMatch[1] + ';\n' + extractFunction('computeNutrition'), context);
+vm.runInContext('FEED_PRESETS = ' + presetMatch[1] + ';\n' + extractFunction('proteinEnergyRatioStatus') + '\n' + extractFunction('computeNutrition'), context);
 
 function runCase(input) {
   Object.assign(elements.nWt, { value: String(input.weightG) });
