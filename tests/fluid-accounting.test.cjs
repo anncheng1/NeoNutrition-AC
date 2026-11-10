@@ -62,7 +62,7 @@ test('feeds + IV + lipid + KVO are all included once in total fluid', () => {
   // + lipid 0.2 mL/h*24 = 4.8 + KVO 0.1 mL/h*24 = 2.4
   // Expected total = 95.2 mL/day = 95.2 mL/kg/day.
   const out = setCase({ weightG: 1000, feeds: 40, ivType: 'D10', ivRate: 2, lipidRate: 0.2, kvoType: 'NS', kvoRate: 0.1 });
-  assert.match(out, /95 mL\\/day/);
+  assert.match(out, /95 mL\/day/);
   assert.match(out, />95\.2</);
   assert.match(out, /Feeds/);
   assert.match(out, /D10/);
@@ -90,7 +90,7 @@ test('KVO is added to the total and opens its detail panel', () => {
   // 1.5 kg: feeds 80 mL/kg/d = 120 mL/day; IV 0.5 mL/h = 12;
   // KVO 0.2 mL/h = 4.8; total 136.8 mL/day = 91.2 mL/kg/day.
   const out = setCase({ weightG: 1500, feeds: 80, ivType: 'D10', ivRate: 0.5, lipidRate: 0, kvoType: 'heparinSaline', kvoRate: 0.2 });
-  assert.match(out, /137 mL\\/day/);
+  assert.match(out, /137 mL\/day/);
   assert.match(out, />91\.2</);
   assert.equal(els.kvoBox.open, true);
 });
