@@ -142,6 +142,7 @@ test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
   const targets = context.enteralMineralTargets();
   assert.deepEqual(JSON.parse(JSON.stringify(targets.ca)), { lo: 3, hi: 5 });
   assert.deepEqual(JSON.parse(JSON.stringify(targets.p)), { lo: 2.2, hi: 3.7 });
+  assert.deepEqual(JSON.parse(JSON.stringify(targets.caP)), { lo: 0, hi: 1.4 });
 });
 
 test('enteral advancement prompts stay within the Malaysian protocol range', () => {
