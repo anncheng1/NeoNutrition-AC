@@ -30,9 +30,13 @@ The following software-level corrections have been implemented and require regre
 - Preterm first-five-day fluid targets are aligned to the Malaysian Paediatric Protocols, 5th Edition (2025): 60, 80, 100, 120 and 140 mL/kg/day. Term schedule remains 60, 90, 120, 150 and 150 mL/kg/day.
 - Stable growing preterm full-enteral targets use ESPGHAN 2022 energy 115–140 kcal/kg/day and protein 3.5–4.0 g/kg/day. Higher intakes are not automatic targets.
 - Enteral protein:energy ratio uses 2.8–3.6 g/100 kcal and is not interpreted for PN or when energy/protein targets are outside their recommended ranges.
-- Vitamin D is entered as IU/day, converted to IU/kg/day, with 400–700 IU/kg/day as the routine range and 1,000 IU/kg/day as the upper limit.
+- Vitamin D is entered as IU/day. For preterm infants, the tracker assesses 400–700 IU/kg/day while enforcing an absolute 1,000 IU/day upper limit; for term infants it displays the Malaysian routine reference of 400 IU/day. The separate Growth tab shows the MOH 400 IU/day supplementation prompt after day 14 once full feeds are reached.
 - Fenton 2025 percentile/Z-score outputs remain explicitly labelled as approximations from five digitised percentile curves. They are not official LMS calculations; borderline preterm SGA/LGA results must be checked using the official Fenton calculator. Term-born SGA/LGA classification is disabled because the separate Fenton 2025 BirthSize dataset is not embedded. The growth chart warns when term-born infants or measurements outside 22+4 to 50 weeks PMA are entered; longitudinal Z-score change is suppressed outside the embedded reference range.
 - Feed and PN compositions remain reference estimates. Existing PN composition values are based on SGH formulations and have not been verified against current Hospital Miri pharmacy formulations. Product labels, fortifier recipes and local PN formulations require pharmacist/dietitian confirmation before clinical use.
+
+- Enteral mineral reference ranges are aligned to ESPGHAN 2022 (calcium 3.0–5.0 mmol/kg/day; phosphate 2.2–3.7 mmol/kg/day; magnesium 0.4–0.5 mmol/kg/day, represented as approximately 9.7–12.2 mg/kg/day in the Growth tab).
+- Enteral advancement prompts are aligned to the Malaysian protocol's typical 20–30 mL/kg/day range for larger preterm infants; ELBW prompts remain more conservative.
+- PN initiation prompts now follow Malaysian Paediatric Protocols 5th Edition gestational-age criteria (<31+0 weeks: consider PN from birth; ≥31+0 weeks: consider PN if insufficient enteral progress by 72 hours). PN weaning prompts now use the national preterm 100–120 mL/kg/day range; term PN withdrawal is explicitly individualised.
 
 These changes do not constitute clinical sign-off. The official Fenton 2025 data/calculation method and current local product/PN compositions must be validated before release.
 
@@ -155,3 +159,10 @@ Every defect should include reproducible synthetic inputs, expected result, actu
 | Software/technical reviewer |  | Pending |  |
 
 **Current release status: NOT CLINICALLY VALIDATED.** The feature branch is for review and testing only.
+
+## 9. Reference sources for clinical review
+
+- Malaysian Ministry of Health. *Paediatric Protocols for Malaysian Hospitals*, 5th Edition (2025), Chapter 15 (preterm fluids and enteral advancement), Chapter 16 (feeding and micronutrient supplementation), and Chapter 17 (PN indications and stopping PN): https://www2.moh.gov.my/images/04-penerbitan/penerbitan-klinikal/perkhidmatan-OG-dan-pediatrik/pediatrik/FA_-_Paediatric_Protocols_5th_Edition_MOH_PDF_1-compressed.pdf
+- Embleton ND et al. *Enteral Nutrition in Preterm Infants: ESPGHAN Position Paper 2022*. J Pediatr Gastroenterol Nutr. 2023;76(2):248–268. doi:10.1097/MPG.0000000000003642.
+- ESPGHAN/ESPEN/ESPR/CSPEN. *Pediatric Parenteral Nutrition: Carbohydrates*. Clin Nutr. 2018. https://www.clinicalnutritionjournal.com/article/S0261-5614(18)31166-X/fulltext
+- Fenton TR et al. *Fenton Third-Generation Growth Charts of Preterm Infants Without Abnormal Fetal Growth*. Paediatr Perinat Epidemiol. 2025;39:543–555. doi:10.1111/ppe.70035. Official plotter and data access: https://fentongrowth.ca/
