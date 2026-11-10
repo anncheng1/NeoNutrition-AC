@@ -51,7 +51,7 @@ vm.runInContext([
   extractFunction('zFromRow'),
   extractFunction('zNumeric'),
   extractFunction('computeWeightVelocity'),
-].join('\\n'), context);
+].join('\n'), context);
 
 test('Fenton weight percentile knots map to their documented z values', () => {
   const row = context.fentonRowInterp('boy', 28, 'w');
