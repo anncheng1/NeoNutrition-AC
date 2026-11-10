@@ -13,7 +13,7 @@ const assert = require('node:assert/strict');
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
 function extractFunction(name) {
-  const match = new RegExp('function\s+' + name + '\s*\\(').exec(html);
+  const match = new RegExp('function\\s+' + name + '\\s*\\(').exec(html);
   assert.ok(match, 'Missing application function: ' + name);
   const open = html.indexOf('{', match.index);
   let depth = 0;
