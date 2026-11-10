@@ -1323,7 +1323,7 @@
           <tr>
             <td>Vitamin D</td>
             <td><input type="number" id="microVitD" step="10" min="0" max="2000" style="width:70px;"> IU/day</td>
-            <td class="mono">400–700 IU/kg/day<br><small>upper limit &lt;1,000</small></td>
+            <td class="mono">Preterm: 400–700 IU/kg/day<br><small>max 1,000 IU/day; term: 400 IU/day</small></td>
             <td id="microVitDStatus"></td>
           </tr>
           <tr>
@@ -1914,8 +1914,7 @@
   }
 
   function ironPlan(bw){
-    if(bw < 1500) return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'6–12 mo'};
-    if(bw < 2000) return {dose:'2 mg/kg/d', start:'2–4 wks', dur:'6–12 mo'};
+    if(bw < 2000) return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'3–4 mo post-discharge or review'};
     return {dose:'1–2 mg/kg/d', start:'4–6 wks', dur:'6 mo'};
   }
 
@@ -1926,8 +1925,8 @@
   }
 
   function enteralAdvance(bw){
-    if(bw < 1000) return {start:'15–20 mL/kg/d', note:'Consider increasing after 2–3 days if tolerated'};
-    return {start:'30–35 mL/kg/d', note:'Faster advancement does not increase NEC risk (SIFT trial)'};
+    if(bw < 1000) return {start:'15–20 mL/kg/d', note:'Consider advancing by about 15–20 mL/kg/day after 2–3 days if tolerated; individualise for clinical risk'};
+    return {start:'20–30 mL/kg/d', note:'Typical advancement range in Malaysian Paediatric Protocols; individualise for clinical risk'};
   }
 
   function render(){
@@ -1953,9 +1952,9 @@
 
     // enteral mineral totals (mg/day) using enteral ranges: Ca 120-220 mg/kg/d, P 70-120 mg/kg/d, Mg 8-15 mg/kg/d
     const kg = bw/1000;
-    const caRange = `${Math.round(120*kg)}–${Math.round(220*kg)} mg/d`;
-    const pRange = `${Math.round(70*kg)}–${Math.round(120*kg)} mg/d`;
-    const mgRange = `${Math.round(8*kg)}–${Math.round(15*kg)} mg/d`;
+    const caRange = `${Math.round(120*kg)}–${Math.round(200*kg)} mg/d`;
+    const pRange = `${Math.round(68*kg)}–${Math.round(115*kg)} mg/d`;
+    const mgRange = `${Math.round(9.7*kg)}–${Math.round(12.2*kg)} mg/d`;
 
     readouts.innerHTML = `
       <div class="readout" data-pn>
@@ -1987,7 +1986,7 @@
       <div class="readout">
         <div class="rlabel"><span>Enteral minerals · daily total</span><span>at full feeds</span></div>
         <div class="rvalue" style="font-size:15px; line-height:1.6;">Ca ${caRange}<br>P ${pRange}<br>Mg ${mgRange}</div>
-        <div class="rsub">Vitamin D 400–1,000 IU/day (fixed, not weight-based)</div>
+        <div class="rsub">Vitamin D 400 IU/day from day 14 once full feeds are reached (MOH Paediatric Protocols 5th Ed.); individualise if deficient or high risk</div>
       </div>
     `;
     if (!tpnMode()) readouts.querySelectorAll('[data-pn]').forEach(n => n.remove());
@@ -2528,7 +2527,7 @@
   function enteralMineralTargets(){
     // mmol/kg/d at full enteral feeds (ESPGHAN 2022 / WRND 122). Term infants: Na only.
     return isPreterm()
-      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.5 }, p: { lo: 2.2, hi: 3.9 }, caP: { lo: 1.3, hi: 1.7 } }
+      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.0 }, p: { lo: 2.2, hi: 3.7 }, caP: { lo: 1.3, hi: 1.7 } }
       : { na: { lo: 1, hi: 3 }, ca: null, p: null, caP: null };
   }
   // Parenteral AA ceiling by current weight (WRND 122 appendix); term 3.0
@@ -2758,12 +2757,18 @@
     return { applicable, flag, status };
   }
 
-  function vitaminDIntakeStatus(iuPerDay, weightG){
+  function vitaminDIntakeStatus(iuPerDay, weightG, preterm){
     if (!Number.isFinite(iuPerDay) || !Number.isFinite(weightG) || iuPerDay < 0 || weightG <= 0) return null;
     const iuKgDay = iuPerDay / (weightG / 1000);
-    const status = iuKgDay < 400 ? 'red' : (iuKgDay <= 700 ? 'green' : (iuKgDay < 1000 ? 'yellow' : 'red'));
-    const label = iuKgDay < 400 ? 'Below target' : (iuKgDay <= 700 ? 'Within target' : (iuKgDay < 1000 ? 'Above routine target' : 'At/above upper limit'));
-    return { iuKgDay, status, label };
+    if (!preterm) {
+      const status = iuPerDay < 400 ? 'red' : (iuPerDay <= 400 ? 'green' : (iuPerDay <= 1000 ? 'yellow' : 'red'));
+      const label = iuPerDay < 400 ? 'Below 400 IU/day' : (iuPerDay <= 400 ? 'MOH routine dose' : (iuPerDay <= 1000 ? 'Above routine dose — review' : 'Above 1,000 IU/day'));
+      return { iuKgDay, status, label, basis: 'term' };
+    }
+    // ESPGHAN 2022: 400–700 IU/kg/day, with an absolute maximum routine dose of 1,000 IU/day.
+    const status = iuKgDay < 400 ? 'red' : (iuKgDay <= 700 && iuPerDay <= 1000 ? 'green' : (iuPerDay <= 1000 ? 'yellow' : 'red'));
+    const label = iuKgDay < 400 ? 'Below 400 IU/kg/day' : (iuPerDay > 1000 ? 'Above 1,000 IU/day upper limit' : (iuKgDay <= 700 ? 'Within target' : 'Above 700 IU/kg/day — review'));
+    return { iuKgDay, status, label, basis: 'preterm' };
   }
 
   function renderFluidTarget(){
@@ -2840,7 +2845,7 @@
   function renderTpnAdvisory(refWeight, dayNum, enteralMlKgDay){
     const el = document.getElementById('tpnAdvisory');
     const d = dayNum <= 1 ? 1 : dayNum;
-    const weanThreshold = refWeight <= 1250 ? 130 : 120;
+    const weanThreshold = 120;
     const notes = [];
 
     if (refWeight < 1250) {
@@ -2849,10 +2854,16 @@
       notes.push({ title: 'Consider starting TPN', text: 'Enteral feeds have not reached ≥50 mL/kg/day by day 3 for this ≥1250 g infant — consider starting supplemental TPN.', cls: 'warn' });
     }
 
-    if (enteralMlKgDay < weanThreshold) {
-      notes.push({ title: 'Continue TPN', text: `Continue TPN until enteral feeds reach ${weanThreshold} mL/kg/day (weaning threshold for ${refWeight <= 1250 ? '≤1250 g' : '>1250 g'} infants).`, cls: '' });
+    if (isPreterm()) {
+      if (enteralMlKgDay < 100) {
+        notes.push({ title: 'Continue TPN', text: 'Continue PN while enteral intake remains below 100 mL/kg/day, unless an individual clinical decision supports earlier withdrawal.', cls: '' });
+      } else if (enteralMlKgDay < weanThreshold) {
+        notes.push({ title: 'Review PN weaning', text: 'Enteral intake is 100–120 mL/kg/day. Malaysian Paediatric Protocols 5th Edition advises considering PN cessation in this range once feeds are tolerated.', cls: '' });
+      } else {
+        notes.push({ title: 'Consider stopping PN', text: 'Enteral intake has reached 120 mL/kg/day. Confirm tolerance, nutrient adequacy and the local PN-weaning plan before stopping.', cls: '' });
+      }
     } else {
-      notes.push({ title: 'Consider stopping TPN', text: `Enteral feeds have reached the ${weanThreshold} mL/kg/day weaning threshold for ${refWeight <= 1250 ? '≤1250 g' : '>1250 g'} infants.`, cls: '' });
+      notes.push({ title: 'Review PN requirement', text: 'For term infants, individualise PN withdrawal according to clinical condition, feed tolerance and nutrient adequacy; this preterm threshold is not a term stop rule.', cls: '' });
     }
 
     if (enteralMlKgDay >= 100) {
@@ -3946,8 +3957,7 @@
   // and assessed after conversion to IU/kg/day using the current best weight.
   // ===========================================================================
   function ironTargetRange(bwG){
-    if (bwG < 1500) return [2, 3];
-    if (bwG < 2000) return [2, 2];
+    if (bwG < 2000) return [2, 3];
     return [1, 2];
   }
 
@@ -3980,7 +3990,7 @@
       if (isNaN(rawVal)) { statusEl.innerHTML = ''; return; }
       if (c.weightBased) {
         if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
-        const vitD = vitaminDIntakeStatus(rawVal, refW);
+        const vitD = vitaminDIntakeStatus(rawVal, refW, isPreterm());
         statusEl.innerHTML = `<span class="micro-badge ${vitD.status}">${vitD.label} · ${fmt(vitD.iuKgDay,0)} IU/kg/d</span>`;
       } else {
         const status = microStatus(rawVal, c.lo, c.hi);
