@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 22
       - name: Run calculation regression tests
-        run: node --test tests/calculation-regression.test.cjs tests/synthetic-neonatal-cases.test.cjs tests/fluid-accounting.test.cjs tests/growth-regression.test.cjs
+        run: node --test tests/calculation-regression.test.cjs tests/synthetic-neonatal-cases.test.cjs tests/fluid-accounting.test.cjs tests/growth-regression.test.cjs tests/backup-restore.test.cjs
       - name: Check inline JavaScript syntax
         run: |
           node - <<'NODE'
