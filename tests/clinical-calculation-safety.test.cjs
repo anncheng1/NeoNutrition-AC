@@ -35,6 +35,8 @@ const elements = {
   bWt: { value: '3200' },
   bLen: { value: '' },
   bOfc: { value: '' },
+  day: { value: '1' },
+  vol: { value: '0' },
   sgaBanner: { innerHTML: '' },
 };
 const context = {
@@ -47,6 +49,9 @@ const context = {
   GA_DY: 0,
   GSEX: 'boy',
   pctNumeric: () => { throw new Error('Term SGA/LGA must not use the embedded preterm Growth dataset'); },
+  getRefWeight: () => 1000,
+  totalFluidTarget: () => ({ lo: 60, hi: 60 }),
+  fmt: value => String(Math.round(value)),
 };
 vm.createContext(context);
 vm.runInContext([
@@ -61,6 +66,7 @@ vm.runInContext([
   extractFunction('ironPlan'),
   extractFunction('ironTargetRange'),
   extractFunction('growthTarget'),
+  extractFunction('suggestedMode'),
   extractFunction('renderSgaBanner'),
 ].join('\n'), context);
 
@@ -172,4 +178,15 @@ test('preterm weight-gain reference uses the MOH 15–25 g/kg/day range', () => 
   assert.equal(context.growthTarget(32).range, '15–25 g/kg/d');
   assert.equal(context.growthTarget(36.9).range, '15–25 g/kg/d');
   assert.equal(context.growthTarget(38).range, '8–11 g/kg/d');
+});
+
+test('PN route suggestion uses gestational age and 72-hour feeding progress, not birth-weight cut-offs', () => {
+  context.GA_WK = 30; context.GA_DY = 0;
+  elements.day.value = '1'; elements.vol.value = '0';
+  assert.equal(context.suggestedMode().mode, 'tpn');
+  context.GA_WK = 32; context.GA_DY = 0;
+  elements.day.value = '3'; elements.vol.value = '40';
+  assert.equal(context.suggestedMode().mode, 'tpn');
+  elements.vol.value = '110';
+  assert.equal(context.suggestedMode().mode, 'enteral');
 });
