@@ -165,6 +165,8 @@ test('term infants are not assigned the preterm iron supplementation schedule', 
   preterm = true;
   assert.deepEqual(JSON.parse(JSON.stringify(context.ironTargetRange(1800))), [2, 3]);
   assert.equal(context.ironPlan(1800).start, '2 wks');
+  assert.equal(context.ironTargetRange(2200), null);
+  assert.equal(context.ironPlan(2200).dose, 'Individualise');
 });
 
 test('birth-size percentile is suppressed below the Fenton reference age', () => {
