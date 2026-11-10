@@ -106,7 +106,7 @@ test('weight velocity ignores duplicate days consistently and sorts out-of-order
 test('longitudinal deficit snapshots store minimum energy and protein targets', () => {
   assert.match(html, /latestNutritionSnapshot\s*=\s*\{[\s\S]*?eMax:\s*tgt\.eMin/);
   assert.match(html, /latestNutritionSnapshot\s*=\s*\{[\s\S]*?pMax:\s*tgt\.pMin/);
-  assert.match(html, /Cumulative energy deficit/);
+  assert.match(html, /Cumulative energy balance vs minimum phase target/);
   assert.match(html, /Days below protein target/);
 });
 
