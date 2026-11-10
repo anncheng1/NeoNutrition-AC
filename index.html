@@ -2848,10 +2848,13 @@
     const weanThreshold = 120;
     const notes = [];
 
-    if (refWeight < 1250) {
-      notes.push({ title: 'TPN recommended from Day 1', text: 'Infants <1250 g should be started on TPN on day 1 of life per unit protocol.', cls: 'warn' });
-    } else if (d >= 3 && enteralMlKgDay < 50) {
-      notes.push({ title: 'Consider starting TPN', text: 'Enteral feeds have not reached ≥50 mL/kg/day by day 3 for this ≥1250 g infant — consider starting supplemental TPN.', cls: 'warn' });
+    const gaBirth = GA_WK + GA_DY / 7;
+    if (isPreterm() && gaBirth < 31) {
+      notes.push({ title: 'Consider PN from birth', text: 'Malaysian Paediatric Protocols 5th Edition recommends considering PN for infants born before 31+0 weeks.', cls: 'warn' });
+    } else if (isPreterm() && d >= 3 && enteralMlKgDay < 50) {
+      notes.push({ title: 'Consider starting PN', text: 'For infants born at or after 31+0 weeks, consider PN if sufficient progress has not been made with enteral feeding in the first 72 hours.', cls: 'warn' });
+    } else if (!isPreterm()) {
+      notes.push({ title: 'Individualise PN indication', text: 'For term infants, consider PN when enteral feeding is unlikely to be established (for example, critical illness or congenital gut disorder).', cls: '' });
     }
 
     if (isPreterm()) {
@@ -3991,7 +3994,8 @@
       if (c.weightBased) {
         if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
         const vitD = vitaminDIntakeStatus(rawVal, refW, isPreterm());
-        statusEl.innerHTML = `<span class="micro-badge ${vitD.status}">${vitD.label} · ${fmt(vitD.iuKgDay,0)} IU/kg/d</span>`;
+        const vitDDisplay = vitD.basis === 'preterm' ? `${fmt(vitD.iuKgDay,0)} IU/kg/d` : `${fmt(rawVal,0)} IU/day`;
+        statusEl.innerHTML = `<span class="micro-badge ${vitD.status}">${vitD.label} · ${vitDDisplay}</span>`;
       } else {
         const status = microStatus(rawVal, c.lo, c.hi);
         statusEl.innerHTML = `<span class="micro-badge ${status}">${microStatusLabel(status)}</span>`;
