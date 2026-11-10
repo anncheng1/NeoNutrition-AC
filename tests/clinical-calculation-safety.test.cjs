@@ -58,6 +58,8 @@ vm.runInContext([
   extractFunction('vitaminDIntakeStatus'),
   extractFunction('enteralMineralTargets'),
   extractFunction('enteralAdvance'),
+  extractFunction('ironPlan'),
+  extractFunction('ironTargetRange'),
   extractFunction('renderSgaBanner'),
 ].join('\n'), context);
 
@@ -144,4 +146,20 @@ test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
 test('enteral advancement prompts stay within the Malaysian protocol range', () => {
   assert.equal(context.enteralAdvance(850).start, '15–20 mL/kg/d');
   assert.equal(context.enteralAdvance(1500).start, '20–30 mL/kg/d');
+});
+
+test('term infants are not assigned the preterm iron supplementation schedule', () => {
+  preterm = false;
+  assert.equal(context.ironTargetRange(3200), null);
+  assert.equal(context.ironPlan(3200).dose, 'Individualise');
+  preterm = true;
+  assert.deepEqual(JSON.parse(JSON.stringify(context.ironTargetRange(1800))), [2, 3]);
+  assert.equal(context.ironPlan(1800).start, '2 wks');
+});
+
+test('birth-size percentile is suppressed below the Fenton reference age', () => {
+  context.GA_WK = 22;
+  context.GA_DY = 3;
+  context.renderSgaBanner();
+  assert.match(elements.sgaBanner.innerHTML, /begins at 22\+4 weeks/);
 });
