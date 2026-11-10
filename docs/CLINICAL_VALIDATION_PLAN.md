@@ -21,6 +21,21 @@ Validate the existing app functions, including:
 
 Out of scope for this phase: introducing new dosing recommendations, changing nutrient targets, adding new product compositions, or changing growth references.
 
+## 1.1 Corrections made in the V2 review branch
+
+The following software-level corrections have been implemented and require regression testing plus clinical review:
+
+- KVO volume is deducted from the automatic main IV/TPN suggestion and KVO edits refresh the suggestion.
+- Date-only DOB values are parsed as local dates; DOL uses local calendar-day boundaries.
+- Preterm first-five-day fluid targets are aligned to the Malaysian Paediatric Protocols, 5th Edition (2025): 60, 80, 100, 120 and 140 mL/kg/day. Term schedule remains 60, 90, 120, 150 and 150 mL/kg/day.
+- Stable growing preterm full-enteral targets use ESPGHAN 2022 energy 115–140 kcal/kg/day and protein 3.5–4.0 g/kg/day. Higher intakes are not automatic targets.
+- Enteral protein:energy ratio uses 2.8–3.6 g/100 kcal and is not interpreted for PN or when energy/protein targets are outside their recommended ranges.
+- Vitamin D is entered as IU/day, converted to IU/kg/day, with 400–700 IU/kg/day as the routine range and 1,000 IU/kg/day as the upper limit.
+- Fenton 2025 percentile/Z-score outputs remain explicitly labelled as approximations from five digitised percentile curves. They are not official LMS calculations; borderline SGA/LGA results must be checked using the official Fenton calculator.
+- Feed and PN compositions remain reference estimates. Existing PN composition values are based on SGH formulations and have not been verified against current Hospital Miri pharmacy formulations. Product labels, fortifier recipes and local PN formulations require pharmacist/dietitian confirmation before clinical use.
+
+These changes do not constitute clinical sign-off. The official Fenton 2025 data/calculation method and current local product/PN compositions must be validated before release.
+
 ## 2. Test governance and safety
 
 1. Use synthetic cases only. Never enter identifiable patient data into a test environment or attach real patient exports to test reports.
@@ -54,7 +69,7 @@ The matrix below defines scenarios, not pre-computed clinical answers. Populate 
 | PN-05 | PN with zero or blank component | PN totals | Distinguish zero from missing input |
 | PN-06 | PN with high/low component input | Validation and display | Boundary handling; no invalid negative values |
 | FLU-01 | Enteral feeds plus maintenance IV fluid | Total fluid | Avoid double counting or omitted routes |
-| FLU-02 | Enteral feeds plus PN and lipid infusion | Total fluid | Check whether lipid volume is included per app design |
+| FLU-02 | Enteral feeds plus PN, lipid and KVO infusions | Total fluid | Verify each running infusion is counted exactly once |
 | FLU-03 | Fluid restriction with multiple infusions | Total fluid | Consistent mL/kg/day denominator |
 | FLU-04 | Weight changed during admission | Weight-based calculations | Explicitly identify which weight is used |
 | GRW-01 | First growth entry only | Growth chart and Z-score | No velocity shown without an interval |
