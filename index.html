@@ -4771,6 +4771,8 @@
 
   // Validate backup envelopes before touching local storage. Keep legacy v1
   // records compatible, but reject malformed nested data and unsafe object keys.
+  function isFiniteBackupNumber(value){ return value != null && value !== '' && Number.isFinite(Number(value)); }
+
   function validatePatientBackup(parsed){
     if (!parsed || parsed.app !== 'NeoNutrition' || parsed.backupVersion !== 1) {
       throw new Error('This is not a supported NeoNutrition backup file.');
@@ -4802,13 +4804,13 @@
       ['entries', 'energyLog'].forEach(name => {
         if (record[name] != null && !Array.isArray(record[name])) throw new Error('A patient record contains invalid ' + name + ' data.');
         (record[name] || []).forEach(item => {
-          if (!item || typeof item !== 'object' || Array.isArray(item) || !Number.isFinite(Number(item.dol))) {
+          if (!item || typeof item !== 'object' || Array.isArray(item) || !isFiniteBackupNumber(item.dol)) {
             throw new Error('A patient record contains malformed ' + name + ' data.');
           }
-          if (name === 'entries' && !Number.isFinite(Number(item.wt))) {
+          if (name === 'entries' && !isFiniteBackupNumber(item.wt)) {
             throw new Error('A growth record is missing a valid weight.');
           }
-          if (name === 'energyLog' && !['totalKcalKg', 'totalProtKg', 'eMax', 'pMax'].every(k => Number.isFinite(Number(item[k])))) {
+          if (name === 'energyLog' && !['totalKcalKg', 'totalProtKg', 'eMax', 'pMax'].every(k => isFiniteBackupNumber(item[k]))) {
             throw new Error('A nutrition log record is incomplete.');
           }
         });
