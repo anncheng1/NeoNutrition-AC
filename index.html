@@ -1408,8 +1408,14 @@
       <p style="margin:0;"><strong>Birth details, SGA classification, feed volume, and the monitoring schedule are now set in the Bedside Target Calculator</strong> at the top of the page — everything below reads from those same values live, so you only enter them once.</p>
     </div>
 
+    <div class="card" id="longitudinalCard">
+      <h3><span class="num">02</span>Longitudinal growth &amp; nutrition review</h3>
+      <p class="tt-note">A summary of recorded serial measurements and logged daily nutrition snapshots. This is a trend aid, not a substitute for reviewing the full growth chart and clinical context.</p>
+      <div id="longitudinalDashboard" class="readout-grid" aria-live="polite"></div>
+    </div>
+
     <div class="card">
-      <h3><span class="num">02</span>Plot on the Fenton growth chart</h3>
+      <h3><span class="num">03</span>Plot on the Fenton growth chart</h3>
       <p>Birth measurements are plotted automatically as day 0. Log further serial measurements below to build the trajectory against the Fenton third-generation (2025) percentile curves (P3 · P10 · P50 · P90 · P97) by postmenstrual age. Curve values were digitised from the published 2025 charts (agreement within ~0.02 kg / ~0.2 cm of the printed lines); confirm borderline calls near the 3rd or 10th percentile against the paper chart.</p>
 
       <div class="growth-toolbar">
@@ -2076,10 +2082,44 @@
     return e.hc != null ? e.hc : null;
   }
 
+  // ---- Longitudinal overview: descriptive summaries of recorded data ----
+  function renderLongitudinalDashboard(){
+    const el = document.getElementById('longitudinalDashboard');
+    if (!el) return;
+    const weights = entries.filter(e => Number.isFinite(Number(e.wt)) && Number(e.wt) > 0).slice().sort((a,b) => a.dol - b.dol);
+    const distinct = weights.filter((e,i,arr) => i === 0 || e.dol !== arr[i-1].dol);
+    const first = distinct[0] || null, last = distinct[distinct.length-1] || null;
+    let velocityText = 'Not available — record two weights on different days';
+    let zText = 'Not available', zDetail = 'Record birth and follow-up weights to compare weight Z-scores';
+    if (distinct.length >= 2) {
+      const a = distinct[distinct.length-2], b = distinct[distinct.length-1], days = b.dol - a.dol;
+      if (days > 0) { const avgKg = (Number(a.wt) + Number(b.wt)) / 2000; velocityText = fmt(((Number(b.wt)-Number(a.wt))/days)/avgKg,1) + ' g/kg/day'; }
+    }
+    if (first && last && first !== last && last.dol > first.dol) {
+      const z1 = zNumeric('w',GSEX,GA_WK+GA_DY/7+first.dol/7,Number(first.wt)/1000);
+      const z2 = zNumeric('w',GSEX,GA_WK+GA_DY/7+last.dol/7,Number(last.wt)/1000);
+      const delta = z2-z1; zText = (delta > 0 ? '+' : '') + fmt(delta,2) + ' SD';
+      zDetail = 'Change from first to latest recorded weight; interpret with chart and measurement quality';
+    }
+    const logged = Array.isArray(energyLog) ? energyLog.slice().sort((a,b)=>a.dol-b.dol) : [];
+    const balance = logged.reduce((sum,e)=>sum+(Number(e.eMax)||0)-(Number(e.totalKcalKg)||0),0);
+    const proteinBelow = logged.filter(e=>Number(e.totalProtKg)<Number(e.pMax)).length;
+    const firstText = first ? fmt(Number(first.wt),0)+' g (DOL '+first.dol+')' : '—';
+    const lastText = last ? fmt(Number(last.wt),0)+' g (DOL '+last.dol+')' : 'No weight entries';
+    const cards = [];
+    cards.push('<div class="readout"><div class="rlabel"><span>Serial weight records</span><span>distinct days</span></div><div class="rvalue">'+distinct.length+'</div><div class="rsub">First: '+firstText+'<br>Latest: '+lastText+'</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Recent weight velocity</span><span>last two records</span></div><div class="rvalue">'+velocityText+'</div><div class="rsub">Average-weight method using the last two recorded weights</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Weight Z-score change</span><span>first to latest</span></div><div class="rvalue">'+zText+'</div><div class="rsub">'+zDetail+'</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Cumulative energy balance</span><span>'+logged.length+' logged day(s)</span></div><div class="rvalue">'+(logged.length ? (balance>0?'−':'+')+fmt(Math.abs(balance),0)+' kcal/kg' : 'Not logged')+'</div><div class="rsub">Sum of recorded daily minimum-target minus delivered energy; positive indicates a recorded shortfall</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Days below protein minimum</span><span>logged days only</span></div><div class="rvalue">'+(logged.length ? proteinBelow+' / '+logged.length : 'Not logged')+'</div><div class="rsub">Missing days are not assumed to be adequate or deficient</div></div>');
+    el.innerHTML = cards.join('');
+  }
+
   // ---- Entries table ----
   function renderEntriesTable(){
     const tbl = document.getElementById('entriesTable');
     const body = document.getElementById('entriesBody');
+    renderLongitudinalDashboard();
     if (entries.length === 0) { tbl.style.display = 'none'; return; }
     tbl.style.display = '';
     const gaBirth = GA_WK + GA_DY / 7;
@@ -3460,7 +3500,7 @@
     const table = document.getElementById('deficitTable');
     const body = document.getElementById('deficitBody');
     const summary = document.getElementById('deficitSummary');
-    if (energyLog.length === 0) { table.style.display = 'none'; body.innerHTML = ''; summary.innerHTML = ''; return; }
+    if (energyLog.length === 0) { table.style.display = 'none'; body.innerHTML = ''; summary.innerHTML = ''; renderLongitudinalDashboard(); return; }
     table.style.display = '';
 
     const sorted = energyLog.slice().sort((a, b) => a.dol - b.dol);
@@ -3495,6 +3535,7 @@
         <div class="rsub">${proteinShortDays > 0 ? 'Consider whether protein has kept pace with energy advancement' : 'Protein has met target on every logged day'}</div>
       </div>
     `;
+    renderLongitudinalDashboard();
   }
 
   document.getElementById('logDeficitBtn').addEventListener('click', () => {
