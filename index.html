@@ -1926,8 +1926,9 @@
   }
 
   function enteralAdvance(bw){
-    if(bw < 1000) return {start:'15–20 mL/kg/d', note:'Consider advancing by about 15–20 mL/kg/day after 2–3 days if tolerated; individualise for clinical risk'};
-    return {start:'20–30 mL/kg/d', note:'Typical advancement range in Malaysian Paediatric Protocols; individualise for clinical risk'};
+    if (!isPreterm()) return {start:'Individualise', note:'Use the term feeding protocol; this preterm trophic-feeding prompt does not apply.'};
+    if (bw < 1000) return {start:'15–20 mL/kg/day initial feed', note:'Typical subsequent advancement is 20–30 mL/kg/day; consider slower advancement for IUGR with reversed end-diastolic flow or other clinical risk.'};
+    return {start:'<25 mL/kg/day initial trophic feed', note:'Typical subsequent advancement is 20–30 mL/kg/day; consider slower advancement for IUGR with reversed end-diastolic flow or other clinical risk.'};
   }
 
   function render(){
