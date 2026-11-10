@@ -2455,9 +2455,13 @@
   }
 
   function computeWeightVelocity(){
+    // Match the longitudinal dashboard: one measurement per DOL, retaining the
+    // first recorded value for that day. Duplicate same-day entries must not
+    // make velocity unavailable or produce a zero-day interval.
     const sorted = entries.slice().sort((a, b) => a.dol - b.dol);
-    if (sorted.length < 2) return { velocity: null, velocityExp: null, velTarget: null };
-    const a = sorted[sorted.length - 2], b = sorted[sorted.length - 1];
+    const distinct = sorted.filter((e, i, arr) => i === 0 || e.dol !== arr[i - 1].dol);
+    if (distinct.length < 2) return { velocity: null, velocityExp: null, velTarget: null };
+    const a = distinct[distinct.length - 2], b = distinct[distinct.length - 1];
     const days = b.dol - a.dol;
     if (days <= 0) return { velocity: null, velocityExp: null, velTarget: null };
     const avgKg = ((a.wt + b.wt) / 2) / 1000;
