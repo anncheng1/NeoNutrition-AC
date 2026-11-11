@@ -693,6 +693,166 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
   }
 
+  .handover-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px;}
+  .handover-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .handover-head h3{margin:5px 0 0;color:var(--ink);font-size:17px;}
+  .handover-note{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 0 12px;}
+  .handover-text{display:block;width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--paper);color:var(--ink);font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .handover-status{min-height:16px;margin-top:6px;font-size:11.5px;color:var(--muted);}
+
+
+  /* =========================================================
+     NeoNutrition UI refresh — clinical workspace
+     Presentation-only overrides; calculator logic is unchanged.
+     ========================================================= */
+  :root{
+    --bg:#F3F6F7;
+    --paper:#FFFFFF;
+    --ink:#172B3A;
+    --ink-soft:#536575;
+    --line:#DCE5E8;
+    --teal:#21877D;
+    --teal-deep:#17665F;
+    --amber:#D99A32;
+    --coral:#D65F50;
+    --muted:#71808D;
+    --mono-bg:#132832;
+    --safe-top:env(safe-area-inset-top,0px);
+  }
+  html{scroll-behavior:smooth;scroll-padding-top:118px;}
+  body{background:var(--bg);color:var(--ink);font-size:14.5px;}
+  .hero{
+    max-width:1320px;padding:18px 30px 16px!important;
+    border:0;background:rgba(255,255,255,.94);
+    box-shadow:0 1px 0 rgba(21,48,61,.06);
+  }
+  .hero .brand-logo{width:44px;height:44px;border-radius:13px;box-shadow:0 3px 10px rgba(23,102,95,.12);}
+  .app-title{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:22px;font-weight:750;letter-spacing:-.045em;}
+  .hero .eyebrow{font-family:Inter,-apple-system,sans-serif;font-size:10px;font-weight:750;letter-spacing:.13em;color:#64808A;}
+  .hero-right{display:flex;align-items:center;gap:12px;}
+  .view-tabs{padding:3px;background:#F0F4F5;border:1px solid #E1E9EB;border-radius:12px;gap:2px;}
+  .view-tabs button{border:0!important;border-radius:9px!important;padding:8px 13px!important;font-weight:700!important;color:#60727E!important;background:transparent!important;}
+  .view-tabs button.active{background:#fff!important;color:var(--teal-deep)!important;box-shadow:0 1px 4px rgba(20,48,60,.12);}
+  .net-badge{font-family:Inter,-apple-system,sans-serif;font-weight:700;font-size:11px;background:#EAF6F2;border-color:#CDE8DF;color:#17665F;padding:6px 11px;}
+  .calc-section{max-width:1320px;padding:24px 30px 42px;}
+  .jump-nav{
+    margin:-24px -30px 20px;padding:12px 30px 13px;
+    background:rgba(243,246,247,.94);border-bottom:1px solid #DCE5E8;
+    box-shadow:0 5px 16px rgba(23,43,58,.035);
+  }
+  .jump-row.steps{gap:8px;}
+  .jump-row.steps .jump-chip{
+    min-height:40px;padding:8px 12px;border:1px solid #DCE5E8;
+    border-radius:10px;background:#fff;color:#526875;font-weight:700;
+    box-shadow:0 1px 2px rgba(20,48,60,.03);transition:background .18s,border-color .18s,transform .18s;
+  }
+  .jump-row.steps .jump-chip.active{background:#E5F3F0;border-color:#A9D6CD;color:#145E57;}
+  .jump-chip .step-n{background:#EAF0F2;color:#506875;}
+  .jump-chip.active .step-n{background:#17665F;color:#fff;}
+  .live-sum{gap:8px;margin-top:10px;}
+  .ls-item{
+    min-height:54px;padding:7px 12px;border:1px solid #E0E8EA!important;
+    border-radius:11px!important;background:#fff!important;
+    box-shadow:0 1px 3px rgba(20,48,60,.035);text-align:left;
+  }
+  .ls-item .ls-val{font-size:17px!important;font-weight:800!important;color:#17665F!important;letter-spacing:-.03em;}
+  .ls-item .ls-lbl{font-size:10px!important;font-weight:700!important;color:#71828D!important;letter-spacing:.025em;}
+  .calc-panel{
+    border-radius:18px;padding:24px 28px;
+    background:linear-gradient(145deg,#142D37 0%,#10232D 100%);
+    box-shadow:0 12px 34px rgba(16,35,45,.12),0 2px 5px rgba(16,35,45,.08);
+    border:1px solid rgba(255,255,255,.07);
+  }
+  .patient-bar{gap:9px;padding-bottom:18px;margin-bottom:20px;border-color:rgba(181,220,212,.18);}
+  .patient-bar select{min-height:46px;border-radius:11px;background:#0D2029;border-color:#35535B;font-size:14px;}
+  .pb-btn{min-height:44px;border-radius:10px;padding:0 15px;background:rgba(48,139,127,.2);border-color:rgba(131,202,189,.32);font-size:13px;}
+  .pb-btn:hover{background:rgba(48,139,127,.34);border-color:rgba(143,224,210,.65);}
+  .pb-btn.danger{background:rgba(214,95,80,.13);}
+  .calc-panel .section-divider{margin:22px 0 20px;padding-top:20px;border-color:rgba(181,220,212,.17);}
+  .calc-panel .section-label{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8FC8BE;}
+  .calc-panel .field label,.calc-panel .mini-field label,.calc-panel .entry-form label{
+    color:#B9D0CE;font-size:11px;font-weight:700;letter-spacing:.025em;margin-bottom:7px;
+  }
+  .calc-panel .field input,.calc-panel .field select,
+  .calc-panel .mini-field input,.calc-panel .entry-form input,.calc-panel .entry-form select{
+    min-height:45px;padding:10px 12px;border-radius:10px;
+    border:1px solid #38535B;background:#0C2029;color:#F3F8F7;
+    font-size:14px;box-shadow:inset 0 1px 2px rgba(0,0,0,.12);
+    transition:border-color .15s,box-shadow .15s;
+  }
+  .calc-panel .field input:focus,.calc-panel .field select:focus,
+  .calc-panel .mini-field input:focus,.calc-panel .entry-form input:focus{
+    border-color:#6DC3B4;box-shadow:0 0 0 3px rgba(75,173,157,.16);outline:none;
+  }
+  .calc-panel .readout-grid{gap:10px;}
+  .calc-panel .readout{
+    min-height:84px;padding:13px 14px;border:1px solid rgba(152,201,192,.2);
+    border-radius:12px;background:rgba(255,255,255,.055);
+  }
+  .calc-panel .readout .rlabel{color:#A9C4C1;font-size:10px;font-weight:750;letter-spacing:.08em;}
+  .calc-panel .readout .rvalue{font-size:21px;font-weight:800;letter-spacing:-.035em;color:#F6FBFA;}
+  .calc-panel .readout .rsub{color:#9DB9B5;}
+  .calc-panel .seg{background:#0B2028;border:1px solid #38535B;border-radius:11px;padding:4px;gap:4px;}
+  .calc-panel .seg button{border:0;border-radius:8px;color:#B8CECB;padding:9px 12px;min-height:40px;font-weight:700;}
+  .calc-panel .seg button.active{background:#DDF2ED;color:#155E56;box-shadow:0 1px 4px rgba(0,0,0,.16);}
+  .calc-panel .mode-seg{padding:4px;}
+  .calc-panel .mode-seg button{min-height:54px;}
+  .calc-panel .chip,.calc-panel .micro-badge{border-radius:8px;}
+  .calc-panel .more-box{border-color:rgba(152,201,192,.22);border-radius:12px;background:rgba(255,255,255,.025);}
+  .calc-panel .supp-row{border-radius:11px;padding:10px 12px;}
+  .calc-panel .supp-row select,.calc-panel .supp-row input{border-radius:9px;min-height:42px;}
+  .calc-panel .step-nav button{border-radius:11px;min-height:50px;font-weight:750;}
+  .calc-panel .step-nav .next{background:#8FE0D2;color:#123B3A;box-shadow:0 3px 8px rgba(0,0,0,.12);}
+  .calc-panel .step-nav .next:hover{background:#B0EBDD;}
+  .calc-panel .step-nav .back{background:rgba(255,255,255,.04);}
+  .lib-section{max-width:1320px;padding:12px 30px 80px;}
+  .lib-head{margin-bottom:20px;}
+  .lib-head h2{font-family:Inter,-apple-system,sans-serif;font-weight:800;letter-spacing:-.04em;font-size:25px;}
+  .lib-head p{color:#60717D;}
+  .tabs{gap:7px;padding-bottom:12px;margin-bottom:22px;border-color:#DCE5E8;}
+  .tab-btn{border-radius:10px!important;padding:10px 14px!important;font-weight:700!important;border:1px solid transparent!important;}
+  .tab-btn.active{background:#E4F2EF!important;border-color:#C5E2DC!important;color:#17665F!important;}
+  .card{border-radius:15px;padding:22px;border-color:#DCE5E8;box-shadow:0 3px 12px rgba(23,43,58,.035);}
+  .card h3{font-family:Inter,-apple-system,sans-serif;font-size:17px;font-weight:800;letter-spacing:-.025em;}
+  .card p,.card li{color:#526575;}
+  .handover-card{border-radius:14px;box-shadow:0 2px 8px rgba(23,43,58,.035);}
+  .chart-wrap{border-radius:12px;}
+  .btn-add,.btn-ghost{border-radius:10px!important;min-height:42px;font-weight:700!important;}
+  button,select,input,textarea{font-family:inherit;}
+  button{transition:background .16s,border-color .16s,box-shadow .16s,transform .16s;}
+  button:active{transform:translateY(1px);}
+  :focus-visible{outline:3px solid #E9B85E!important;outline-offset:3px!important;}
+  @media(max-width:760px){
+    .hero{padding:12px 16px!important;align-items:flex-start;}
+    .hero-right{gap:7px;flex-wrap:wrap;justify-content:flex-end;}
+    .hero .brand-logo{width:38px;height:38px;}
+    .app-title{font-size:19px;}
+    .view-tabs button{padding:7px 10px!important;font-size:12px;}
+    .net-badge{font-size:10px;padding:5px 8px;}
+    .calc-section{padding:16px 14px 32px;}
+    .jump-nav{margin:-16px -14px 14px;padding:10px 14px 11px;}
+    .jump-row.steps{overflow-x:auto;justify-content:flex-start;}
+    .jump-row.steps .jump-chip{flex:0 0 auto;min-width:92px;}
+    .live-sum{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .ls-item{min-height:48px;}
+    .calc-panel{padding:17px 15px;border-radius:14px;}
+    .calc-panel .section-divider{margin:17px 0 15px;padding-top:16px;}
+    .calc-panel .readout{min-height:76px;padding:10px 11px;}
+    .calc-panel .readout .rvalue{font-size:18px;}
+    .lib-section{padding:8px 14px 60px;}
+    .card{padding:17px;}
+  }
+  @media(max-width:420px){
+    .hero{gap:7px;}
+    .hero-right{max-width:52%;}
+    .view-tabs button{padding:7px 8px!important;}
+    .net-badge{display:none;}
+    .calc-panel .calc-inputs{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+    .calc-panel .field.full{grid-column:1/-1;}
+    .calc-panel .supp-row{grid-template-columns:1fr 1fr;}
+    .calc-panel .supp-name{grid-column:1/-1;}
+  }
+
 </style>
 </head>
 <body>
@@ -1016,6 +1176,15 @@
     <div class="section-divider" id="secNutrition" data-step="results">
       <span class="section-label">TODAY'S INTAKE VS TARGET</span>
       <div id="nutDashboard" style="margin-bottom:16px;"></div>
+      <section class="handover-card" aria-labelledby="handoverTitle">
+        <div class="handover-head">
+          <div><span class="section-label">CLINICAL HANDOVER</span><h3 id="handoverTitle">Daily nutrition snapshot</h3></div>
+          <button type="button" class="btn-add" id="copyHandoverBtn">Copy summary</button>
+        </div>
+        <p class="handover-note">Auto-generated from the current calculator values. Review patient details and verify against the clinical record before using.</p>
+        <textarea id="handoverText" class="handover-text" rows="7" readonly aria-label="Daily nutrition handover summary" placeholder="Enter patient details and nutrition data to generate a summary."></textarea>
+        <div id="handoverStatus" class="handover-status" role="status" aria-live="polite"></div>
+      </section>
       <div id="clinicalFlags" style="margin-bottom:18px;"></div>
       <details class="more-box">
         <summary>Detailed breakdown — calories by source, osmolarity, velocity, reference targets</summary>
@@ -1157,16 +1326,17 @@
       <h3><span class="num">02</span>Advancement rates</h3>
       <table>
         <tr><th>Birth weight</th><th>Initial rate</th><th>Notes</th></tr>
-        <tr><td>&lt;1,000 g</td><td class="mono">15–20 mL/kg/d</td><td>Consider increasing after 2–3 days if tolerated</td></tr>
-        <tr><td>≥1,000 g</td><td class="mono">30–35 mL/kg/d</td><td>Faster increases (up to ~30–35) do not raise NEC risk</td></tr>
+        <tr><td>Preterm initial trophic feed</td><td class="mono">&lt;25 mL/kg/day</td><td>Start early when clinically stable; MOM/DHM preferred</td></tr>
+        <tr><td>ELBW initial prompt</td><td class="mono">15–20 mL/kg/day</td><td>Conservative starting volume; individualise</td></tr>
+        <tr><td>Subsequent advancement</td><td class="mono">20–30 mL/kg/day</td><td>Advance more slowly in IUGR with reversed end-diastolic flow or other clinical risk</td></tr>
       </table>
-      <p>The SIFT trial (Cochrane) found no difference in NEC between slow and fast advancement (RR 1.07, 95% CI 0.83–1.39). Full enteral feeding is usually 150–160 mL/kg/day; up to 180–200 mL/kg/day is tolerated by many HM-fed infants.</p>
+      <p>Malaysian Paediatric Protocols 5th Edition recommends a typical advancement rate of 20–30 mL/kg/day and a full enteral target of 150–180 mL/kg/day. Individualise for IUGR with reversed end-diastolic flow, clinical instability and feeding tolerance.</p>
     </div>
 
     <div class="grid-2">
       <div class="card">
         <h3><span class="num">03</span>Continuous vs. bolus, PN taper</h3>
-        <p>No consistent difference in days to full feeds, growth, or NEC between continuous and bolus/intermittent feeding — choose what the infant tolerates. Because 40–50% of enteral amino acids are used in first-pass gut/liver metabolism (up to 70% for threonine), don't taper PN amino acids before enteral intake reaches at least <strong>75 mL/kg/day</strong>, and don't stop PN before full enteral feeding.</p>
+        <p>No consistent difference in days to full feeds, growth, or NEC between continuous and bolus/intermittent feeding — choose what the infant tolerates. For preterm infants, consider PN cessation when tolerated enteral intake reaches <strong>100–120 mL/kg/day</strong>, provided nutrient intake is adequate and the clinical course permits. This is a review threshold, not an automatic stop instruction; term infants require individualised decisions.</p>
       </div>
       <div class="card">
         <h3><span class="num">04</span>Standardizable protocol elements</h3>
@@ -1236,12 +1406,12 @@
       <h3><span class="num">01</span>Calcium, phosphorus, magnesium, vitamin D — full table</h3>
       <table>
         <tr><th>Nutrient</th><th>Parenteral, first days</th><th>Parenteral, after first days</th><th>Enteral</th></tr>
-        <tr><td>Calcium</td><td class="mono">≥1 mmol/kg/d (40 mg); optimally 1.5–2 (60–80 mg)</td><td class="mono">1.25–2 mmol/kg/d (50–80 mg)</td><td class="mono">3–5.5 mmol/kg/d (120–220 mg)</td></tr>
-        <tr><td>Phosphorus</td><td class="mono">1–2 mmol/kg/d (31–62 mg)</td><td class="mono">1.25–3 mmol/kg/d (39–93 mg), often capped 1.5–2</td><td class="mono">2.3–3.9 mmol/kg/d (70–120 mg)</td></tr>
-        <tr><td>Magnesium</td><td class="mono">0.1–0.2 mmol/kg/d (2.5–5 mg)</td><td class="mono">0.2–0.3 mmol/kg/d (5–7.5 mg)</td><td class="mono">0.33–0.62 mmol/kg/d (8–15 mg)</td></tr>
-        <tr><td>Vitamin D</td><td class="mono">400 IU/day*</td><td class="mono">400 IU/day*</td><td class="mono">400–1,000 IU/day</td></tr>
+        <tr><td>Calcium</td><td class="mono">≥1 mmol/kg/d (40 mg); optimally 1.5–2 (60–80 mg)</td><td class="mono">1.25–2 mmol/kg/d (50–80 mg)</td><td class="mono">3–5 mmol/kg/d (120–200 mg)</td></tr>
+        <tr><td>Phosphorus</td><td class="mono">1–2 mmol/kg/d (31–62 mg)</td><td class="mono">1.25–3 mmol/kg/d (39–93 mg), often capped 1.5–2</td><td class="mono">2.2–3.7 mmol/kg/d (70–115 mg)</td></tr>
+        <tr><td>Magnesium</td><td class="mono">0.1–0.2 mmol/kg/d (2.5–5 mg)</td><td class="mono">0.2–0.3 mmol/kg/d (5–7.5 mg)</td><td class="mono">0.4–0.5 mmol/kg/d (9–12.5 mg)</td></tr>
+        <tr><td>Vitamin D</td><td class="mono">Use pharmacy-approved PN multivitamin dose</td><td class="mono">Use pharmacy-approved PN multivitamin dose</td><td class="mono">Preterm: 400–700 IU/kg/day (max 1,000 IU/day); term: 400 IU/day</td></tr>
       </table>
-      <p style="font-size:12.5px;">*Parenteral multivitamin preparations may only deliver 160 IU/kg until the infant reaches 2.5 kg.</p>
+      <p style="font-size:12.5px;">For PN, verify actual vitamin D delivery from the pharmacy-approved multivitamin product and count it in total intake. For preterm enteral intake, ESPGHAN 2022 recommends 400–700 IU/kg/day (maximum routine dose 1,000 IU/day); Malaysian Paediatric Protocols also provide a 400 IU/day supplementation prompt after day 14 once full feeds are reached.</p>
     </div>
     <div class="grid-2">
       <div class="card">
@@ -1268,9 +1438,8 @@
       <h3><span class="num">01</span>Iron</h3>
       <table>
         <tr><th>Birth weight</th><th>Dose</th><th>Start</th><th>Duration</th></tr>
-        <tr><td class="mono">&lt;1,500 g</td><td class="mono">2–3 mg/kg/d</td><td class="mono">2 wks</td><td class="mono">6–12 months</td></tr>
-        <tr><td class="mono">1,500–2,000 g</td><td class="mono">2 mg/kg/d</td><td class="mono">2–4 wks</td><td class="mono">6–12 months</td></tr>
-        <tr><td class="mono">2,000–2,500 g</td><td class="mono">1–2 mg/kg/d</td><td class="mono">4–6 wks</td><td class="mono">6 months</td></tr>
+        <tr><td class="mono">&lt;2,000 g</td><td class="mono">2–3 mg/kg/day</td><td class="mono">Day 14</td><td class="mono">3–4 months post-discharge or review</td></tr>
+        <tr><td class="mono">≥2,000 g</td><td class="mono">Individualise</td><td class="mono">Based on risk and feeding</td><td class="mono">Per local guideline</td></tr>
       </table>
       <p>Not routinely added to PN (overload risk, no approved IV product). Follow ferritin serially; if &lt;35–70 µg/L, increase dose up to 3–4 (max 6) mg/kg/day for a limited period. Infants on erythropoietin need up to 6 mg/kg/day. Iron is not risk-free: excess is linked to diarrhea, infection risk, and impaired growth/neurodevelopment.</p>
     </div>
@@ -1307,7 +1476,7 @@
           <tr>
             <td>Vitamin D</td>
             <td><input type="number" id="microVitD" step="10" min="0" max="2000" style="width:70px;"> IU/day</td>
-            <td class="mono">400–1,000</td>
+            <td class="mono">Preterm: 400–700 IU/kg/day<br><small>max 1,000 IU/day; term: 400 IU/day</small></td>
             <td id="microVitDStatus"></td>
           </tr>
           <tr>
@@ -1392,8 +1561,14 @@
       <p style="margin:0;"><strong>Birth details, SGA classification, feed volume, and the monitoring schedule are now set in the Bedside Target Calculator</strong> at the top of the page — everything below reads from those same values live, so you only enter them once.</p>
     </div>
 
+    <div class="card" id="longitudinalCard">
+      <h3><span class="num">02</span>Longitudinal growth &amp; nutrition review</h3>
+      <p class="tt-note">A summary of recorded serial measurements and logged daily nutrition snapshots. This is a trend aid, not a substitute for reviewing the full growth chart and clinical context.</p>
+      <div id="longitudinalDashboard" class="readout-grid" aria-live="polite"></div>
+    </div>
+
     <div class="card">
-      <h3><span class="num">02</span>Plot on the Fenton growth chart</h3>
+      <h3><span class="num">03</span>Plot on the Fenton growth chart</h3>
       <p>Birth measurements are plotted automatically as day 0. Log further serial measurements below to build the trajectory against the Fenton third-generation (2025) percentile curves (P3 · P10 · P50 · P90 · P97) by postmenstrual age. Curve values were digitised from the published 2025 charts (agreement within ~0.02 kg / ~0.2 cm of the printed lines); confirm borderline calls near the 3rd or 10th percentile against the paper chart.</p>
 
       <div class="growth-toolbar">
@@ -1701,7 +1876,7 @@
     <div class="card">
       <h3><span class="num">01</span>Appeton Baby Drops (multivitamin)</h3>
       <p>Locally available oral multivitamin drops for infants ≤12 months, commonly used in Malaysian NICUs/discharge follow-up. Composition per 1 mL: vitamin A 1,333 IU, vitamin D3 438 IU, vitamin E 6.57 IU, vitamin B1 218 mcg, vitamin B2 336 mcg, vitamin B6 108 mcg, nicotinamide 2.15 mg, taurine 15 mg, L-lysine 20 mg.</p>
-      <div class="callout">Standard dose: <strong>1 mL once daily</strong> with a feed (directly into the mouth or mixed with milk). This alone delivers ~438 IU of vitamin D — near the top of the general 400–1,000 IU/day target. If a separate vitamin D preparation is also started for suspected metabolic bone disease, reduce or account for this contribution to avoid inadvertent over-supplementation.</div>
+      <div class="callout">Standard dose: <strong>1 mL once daily</strong> with a feed (directly into the mouth or mixed with milk). This alone delivers ~438 IU/day of vitamin D. Count this in total intake: for preterm infants compare with the ESPGHAN 400–700 IU/kg/day range and absolute 1,000 IU/day maximum; for term infants the MOH routine reference is 400 IU/day. Avoid adding a separate preparation without reviewing total intake and vitamin D status.</div>
     </div>
     <div class="grid-2">
       <div class="card">
@@ -1883,16 +2058,16 @@
     return rounded.toFixed(1);
   }
 
+  // Reference weight velocity bands are descriptive estimates, not universal
+  // treatment targets; interpret with illness, fluid status and body composition.
   function growthTarget(ga){
-    if(ga <= 32) return {label:'20 g/kg/d', range:'19–21 g/kg/d', band:'24–32 wk'};
-    if(ga <= 37) return {label:'17 g/kg/d', range:'13–19 g/kg/d', band:'33–37 wk'};
-    return {label:'9 g/kg/d', range:'8–11 g/kg/d', band:'38–41 wk'};
+    if(ga < 37) return {label:'20 g/kg/d', range:'15–25 g/kg/d', band:'Preterm (MOH reference)'};
+    return {label:'9 g/kg/d', range:'8–11 g/kg/d', band:'Term-equivalent reference'};
   }
 
   function ironPlan(bw){
-    if(bw < 1500) return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'6–12 mo'};
-    if(bw < 2000) return {dose:'2 mg/kg/d', start:'2–4 wks', dur:'6–12 mo'};
-    return {dose:'1–2 mg/kg/d', start:'4–6 wks', dur:'6 mo'};
+    if (!isPreterm() || bw >= 2000) return {dose:'Individualise', start:'according to feeding, ferritin and iron risk', dur:'per local guideline'};
+    return {dose:'2–3 mg/kg/d', start:'2 wks', dur:'3–4 mo post-discharge or review'};
   }
 
   function pnTargets(day){
@@ -1902,8 +2077,9 @@
   }
 
   function enteralAdvance(bw){
-    if(bw < 1000) return {start:'15–20 mL/kg/d', note:'Consider increasing after 2–3 days if tolerated'};
-    return {start:'30–35 mL/kg/d', note:'Faster advancement does not increase NEC risk (SIFT trial)'};
+    if (!isPreterm()) return {start:'Individualise', note:'Use the term feeding protocol; this preterm trophic-feeding prompt does not apply.'};
+    if (bw < 1000) return {start:'15–20 mL/kg/day initial feed', note:'Typical subsequent advancement is 20–30 mL/kg/day; consider slower advancement for IUGR with reversed end-diastolic flow or other clinical risk.'};
+    return {start:'<25 mL/kg/day initial trophic feed', note:'Typical subsequent advancement is 20–30 mL/kg/day; consider slower advancement for IUGR with reversed end-diastolic flow or other clinical risk.'};
   }
 
   function render(){
@@ -1929,9 +2105,9 @@
 
     // enteral mineral totals (mg/day) using enteral ranges: Ca 120-220 mg/kg/d, P 70-120 mg/kg/d, Mg 8-15 mg/kg/d
     const kg = bw/1000;
-    const caRange = `${Math.round(120*kg)}–${Math.round(220*kg)} mg/d`;
-    const pRange = `${Math.round(70*kg)}–${Math.round(120*kg)} mg/d`;
-    const mgRange = `${Math.round(8*kg)}–${Math.round(15*kg)} mg/d`;
+    const caRange = `${Math.round(120*kg)}–${Math.round(200*kg)} mg/d`;
+    const pRange = `${Math.round(68*kg)}–${Math.round(115*kg)} mg/d`;
+    const mgRange = `${Math.round(9.7*kg)}–${Math.round(12.2*kg)} mg/d`;
 
     readouts.innerHTML = `
       <div class="readout" data-pn>
@@ -1963,7 +2139,7 @@
       <div class="readout">
         <div class="rlabel"><span>Enteral minerals · daily total</span><span>at full feeds</span></div>
         <div class="rvalue" style="font-size:15px; line-height:1.6;">Ca ${caRange}<br>P ${pRange}<br>Mg ${mgRange}</div>
-        <div class="rsub">Vitamin D 400–1,000 IU/day (fixed, not weight-based)</div>
+        <div class="rsub">Vitamin D 400 IU/day from day 14 once full feeds are reached (MOH Paediatric Protocols 5th Ed.); individualise if deficient or high risk</div>
       </div>
     `;
     if (!tpnMode()) readouts.querySelectorAll('[data-pn]').forEach(n => n.remove());
@@ -2007,12 +2183,15 @@
 
   const FENTON_Z = [-1.8808, -1.2816, 0, 1.2816, 1.8808]; // z for P3, P10, P50, P90, P97
   function fentonRowInterp(sex, wk, metric){
-    const w = Math.max(22, Math.min(50, wk));
+    const minWeek = metric === 'l' ? 23.5 : 22.5;
+    const w = Math.max(minWeek, Math.min(50, wk));
     const lo = Math.min(49, Math.floor(w)), f = w - lo;
     const a = FENTON[sex][metric][lo - 22], b = FENTON[sex][metric][lo + 1 - 22];
     return a.map((v, i) => v + f * (b[i] - v));
   }
-  // Piecewise-linear z between the five Fenton percentile knots; tails extended with the outer segment slope
+  // APPROXIMATION ONLY: piecewise-linear z between five digitised percentile knots;
+  // this is not the official Fenton 2025 LMS calculation. Tails are extrapolated
+  // with the outer segment slope and must not be treated as validated Z-scores.
   function zFromRow(val, row){
     const Z = FENTON_Z;
     let z;
@@ -2060,10 +2239,51 @@
     return e.hc != null ? e.hc : null;
   }
 
+  // ---- Longitudinal overview: descriptive summaries of recorded data ----
+  function renderLongitudinalDashboard(){
+    const el = document.getElementById('longitudinalDashboard');
+    if (!el) return;
+    const weights = entries.filter(e => Number.isFinite(Number(e.wt)) && Number(e.wt) > 0).slice().sort((a,b) => a.dol - b.dol);
+    const distinct = weights.filter((e,i,arr) => i === 0 || e.dol !== arr[i-1].dol);
+    const first = distinct[0] || null, last = distinct[distinct.length-1] || null;
+    let velocityText = 'Not available — record two weights on different days';
+    let zText = 'Not available', zDetail = 'Record birth and follow-up weights to compare weight Z-scores';
+    if (distinct.length >= 2) {
+      const a = distinct[distinct.length-2], b = distinct[distinct.length-1], days = b.dol - a.dol;
+      if (days > 0) { const avgKg = (Number(a.wt) + Number(b.wt)) / 2000; velocityText = fmt(((Number(b.wt)-Number(a.wt))/days)/avgKg,1) + ' g/kg/day'; }
+    }
+    if (first && last && first !== last && last.dol > first.dol) {
+      const firstPma = GA_WK + GA_DY / 7 + first.dol / 7;
+      const lastPma = GA_WK + GA_DY / 7 + last.dol / 7;
+      if (GA_WK + GA_DY / 7 >= 37 || firstPma < 22.5 || lastPma > 50) {
+        zText = 'Outside validated range';
+        zDetail = 'Use an appropriate term infant reference or official Fenton 2025 LMS calculator for these ages';
+      } else {
+        const z1 = zNumeric('w',GSEX,firstPma,Number(first.wt)/1000);
+        const z2 = zNumeric('w',GSEX,lastPma,Number(last.wt)/1000);
+        const delta = z2-z1; zText = (delta > 0 ? '+' : '') + fmt(delta,2) + ' SD';
+        zDetail = 'Approximate Z-score change from first to latest recorded weight; verify with official Fenton LMS calculator';
+      }
+    }
+    const logged = Array.isArray(energyLog) ? energyLog.slice().sort((a,b)=>a.dol-b.dol) : [];
+    const balance = logged.reduce((sum,e)=>sum+(Number(e.eMax)||0)-(Number(e.totalKcalKg)||0),0);
+    const proteinBelow = logged.filter(e=>Number(e.totalProtKg)<Number(e.pMax)).length;
+    const firstText = first ? fmt(Number(first.wt),0)+' g (DOL '+first.dol+')' : '—';
+    const lastText = last ? fmt(Number(last.wt),0)+' g (DOL '+last.dol+')' : 'No weight entries';
+    const cards = [];
+    cards.push('<div class="readout"><div class="rlabel"><span>Serial weight records</span><span>distinct days</span></div><div class="rvalue">'+distinct.length+'</div><div class="rsub">First: '+firstText+'<br>Latest: '+lastText+'</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Recent weight velocity</span><span>last two records</span></div><div class="rvalue">'+velocityText+'</div><div class="rsub">Average-weight method using the last two recorded weights</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Weight Z-score change</span><span>first to latest</span></div><div class="rvalue">'+zText+'</div><div class="rsub">'+zDetail+'</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Cumulative energy balance</span><span>'+logged.length+' logged day(s)</span></div><div class="rvalue">'+(logged.length ? (balance>0?'−':'+')+fmt(Math.abs(balance),0)+' kcal/kg' : 'Not logged')+'</div><div class="rsub">Sum of recorded daily minimum-target minus delivered energy; positive indicates a recorded shortfall</div></div>');
+    cards.push('<div class="readout"><div class="rlabel"><span>Days below protein minimum</span><span>logged days only</span></div><div class="rvalue">'+(logged.length ? proteinBelow+' / '+logged.length : 'Not logged')+'</div><div class="rsub">Missing days are not assumed to be adequate or deficient</div></div>');
+    el.innerHTML = cards.join('');
+  }
+
   // ---- Entries table ----
   function renderEntriesTable(){
     const tbl = document.getElementById('entriesTable');
     const body = document.getElementById('entriesBody');
+    renderLongitudinalDashboard();
     if (entries.length === 0) { tbl.style.display = 'none'; return; }
     tbl.style.display = '';
     const gaBirth = GA_WK + GA_DY / 7;
@@ -2177,7 +2397,15 @@
   }
 
   function buildChart(){
-    document.getElementById('growthChartSvg').innerHTML = chartSvgMarkup(GMETRIC);
+    const gaBirth = GA_WK + GA_DY / 7;
+    const hasOutOfRangePma = entries.some(e => {
+      const pma = gaBirth + Number(e.dol) / 7;
+      return pma > 50 || pma < 22.5 || (e.len != null && pma < 23.5);
+    });
+    const warning = gaBirth >= 37
+      ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; this chart is shown for visual context only.</div>'
+      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (weight/OFC 22+4 to 50 weeks; length 23+4 to 50 weeks PMA). Do not interpret clamped chart values beyond this range.</div>' : '');
+    document.getElementById('growthChartSvg').innerHTML = warning + chartSvgMarkup(GMETRIC);
   }
 
   // ---- Toolbar wiring ----
@@ -2224,17 +2452,26 @@
   // ===========================================================================
   function getDOB(){
     const v = document.getElementById('bDobDt').value;
-    return v ? new Date(v) : null;
+    if (!v) return null;
+    // HTML date inputs are date-only. Parse at local midnight, not UTC.
+    const parts = v.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+    const dob = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
+    return Number.isNaN(dob.getTime()) ? null : dob;
   }
 
   function computeDOL(){
     const dob = getDOB();
     if (!dob || isNaN(dob.getTime())) return null;
     const now = new Date();
-    const diffMs = now - dob;
-    if (diffMs < 0) return null;
-    const dolFloat = diffMs / 86400000;
-    return { dolFloat, dolInt: Math.floor(dolFloat), dob, now };
+    // DOB is entered without a birth time, so use local calendar-day DOL.
+    const todayLocal = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dobLocal = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+    const dayDiff = Math.round((todayLocal - dobLocal) / 86400000);
+    if (dayDiff < 0) return null;
+    const elapsedTodayMs = now - todayLocal;
+    const dolFloat = dayDiff + elapsedTodayMs / 86400000;
+    return { dolFloat, dolInt: dayDiff, dob, now };
   }
 
   function pctNumeric(metric, sex, pma, val){
@@ -2272,8 +2509,16 @@
     if (isNaN(wt)) { el.innerHTML = ''; return; }
 
     const gaBirth = GA_WK + GA_DY / 7;
+    if (gaBirth < 22.5) {
+      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The embedded Fenton 2025 reference begins at 22+4 weeks. Do not classify birth size below this gestation using this app.</p></div>';
+      return;
+    }
+    if (gaBirth >= 37) {
+      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The current embedded reference is the Fenton 2025 postnatal growth dataset, not the separate Fenton 2025 BirthSize dataset required for term-born infants. Do not use this app to classify term birth weight as SGA or LGA. Use an approved term birth reference or the official Fenton BirthSize calculator.</p><p><a href="https://fentongrowth.ca/" target="_blank" rel="noopener">Official Fenton 2025 calculator</a></p></div>';
+      return;
+    }
     const wtPctNum = pctNumeric('w', GSEX, gaBirth, wt / 1000);
-    const lenPctNum = len != null ? pctNumeric('l', GSEX, gaBirth, len) : null;
+    const lenPctNum = len != null && gaBirth >= 23.5 ? pctNumeric('l', GSEX, gaBirth, len) : null;
     const ofcPctNum = ofc != null ? pctNumeric('h', GSEX, gaBirth, ofc) : null;
 
     let category, detail, cls = '';
@@ -2302,7 +2547,8 @@
       <div class="sga-banner ${cls}">
         <h4>${category}</h4>
         <p>${detail}</p>
-        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${len != null ? pctLabelWrap(lenPctNum) + ' (z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : 'not entered'} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025</p>
+        <p class="tt-note"><b>Screening estimate only:</b> percentile and Z-score are interpolated from five digitised curves, not the official Fenton LMS method. Confirm borderline SGA/LGA results using the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>.</p>
+        <p style="margin-top:8px;">Weight ${pctLabelWrap(wtPctNum)} (approx. z ${zNumeric('w', GSEX, gaBirth, wt / 1000).toFixed(2)}) · Length ${lenPctNum != null ? pctLabelWrap(lenPctNum) + ' (approx. z ' + zNumeric('l', GSEX, gaBirth, len).toFixed(2) + ')' : (len != null ? 'outside Fenton length range' : 'not entered')} · OFC ${ofc != null ? pctLabelWrap(ofcPctNum) + ' (approx. z ' + zNumeric('h', GSEX, gaBirth, ofc).toFixed(2) + ')' : 'not entered'} · Fenton 2025 estimate</p>
       </div>`;
   }
 
@@ -2399,9 +2645,13 @@
   }
 
   function computeWeightVelocity(){
+    // Match the longitudinal dashboard: one measurement per DOL, retaining the
+    // first recorded value for that day. Duplicate same-day entries must not
+    // make velocity unavailable or produce a zero-day interval.
     const sorted = entries.slice().sort((a, b) => a.dol - b.dol);
-    if (sorted.length < 2) return { velocity: null, velocityExp: null, velTarget: null };
-    const a = sorted[sorted.length - 2], b = sorted[sorted.length - 1];
+    const distinct = sorted.filter((e, i, arr) => i === 0 || e.dol !== arr[i - 1].dol);
+    if (distinct.length < 2) return { velocity: null, velocityExp: null, velTarget: null };
+    const a = distinct[distinct.length - 2], b = distinct[distinct.length - 1];
     const days = b.dol - a.dol;
     if (days <= 0) return { velocity: null, velocityExp: null, velTarget: null };
     const avgKg = ((a.wt + b.wt) / 2) / 1000;
@@ -2427,18 +2677,18 @@
     return (wk + dy / 7) < 37;
   }
 
-  // Full-enteral-feed targets (per kg/day)
+  // Full-enteral-feed targets (per kg/day). For stable growing preterm infants,
+  // use ESPGHAN 2022: energy 115–140 kcal/kg/d and protein 3.5–4.0 g/kg/d;
+  // up to 160 kcal and 4.5 g protein may be considered selectively after review.
+  // Term values are retained as a separate local reference and need local sign-off.
   function nutritionTargetForWeight(wtG){
     if (!isPreterm()) return { eMin: 100, eMax: 120, pMin: 2.0, pMax: 2.5, label: 'Term' };
-    if (wtG < 1000) return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.5, label: 'Preterm <1000 g' };
-    if (wtG < 1500) return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.5, label: 'Preterm 1000–1499 g' };
-    if (wtG < 2000) return { eMin: 110, eMax: 135, pMin: 3.0, pMax: 4.0, label: 'Preterm 1500–1999 g' };
-    return { eMin: 110, eMax: 130, pMin: 2.5, pMax: 3.5, label: 'Preterm ≥2000 g' };
+    return { eMin: 115, eMax: 140, pMin: 3.5, pMax: 4.0, label: 'Preterm' };
   }
   function enteralMineralTargets(){
     // mmol/kg/d at full enteral feeds (ESPGHAN 2022 / WRND 122). Term infants: Na only.
     return isPreterm()
-      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.5 }, p: { lo: 2.2, hi: 3.9 }, caP: { lo: 1.3, hi: 1.7 } }
+      ? { na: { lo: 3, hi: 5, max: 8 }, ca: { lo: 3.0, hi: 5.0 }, p: { lo: 2.2, hi: 3.7 }, caP: { lo: 0, hi: 1.4 } }
       : { na: { lo: 1, hi: 3 }, ca: null, p: null, caP: null };
   }
   // Parenteral AA ceiling by current weight (WRND 122 appendix); term 3.0
@@ -2474,11 +2724,20 @@
   }
 
   // Today's energy/protein targets, blended between PN and full-enteral targets by the share of volume given enterally
+  function enteralVolumeFraction(enteralMlKg, pnIvMlKg, lipidMlKg){
+    const totalNutrientFluid = enteralMlKg + pnIvMlKg + lipidMlKg;
+    return totalNutrientFluid > 0 ? enteralMlKg / totalNutrientFluid : 0;
+  }
+
   function todayTargets(refWeight, dayNum){
     const en = nutritionTargetForWeight(refWeight);
     const vol = parseFloat(document.getElementById('vol').value) || 0;
-    const ivMlKg = tpnMode() ? ((parseFloat(document.getElementById('ivRate').value) || 0) * 24) / (refWeight / 1000) : 0;
-    const f = (vol + ivMlKg) > 0 ? vol / (vol + ivMlKg) : (tpnMode() ? 0 : 1);
+    const ivType = document.getElementById('ivType').value;
+    const ivMlKg = tpnMode() && ivType !== 'none' ? ((parseFloat(document.getElementById('ivRate').value) || 0) * 24) / (refWeight / 1000) : 0;
+    const lipidMlKg = tpnMode() ? ((parseFloat(document.getElementById('lipidRate').value) || 0) * 24) / (refWeight / 1000) : 0;
+    // Volume share is a pragmatic phase-estimation heuristic, not an evidence-based
+    // individualized nutrient target. KVO is excluded because it carries no nutrition.
+    const f = tpnMode() ? enteralVolumeFraction(vol, ivMlKg, lipidMlKg) : 1;
     if (!tpnMode()) return Object.assign({}, en, { f: 1, phase: 'Full enteral targets' });
     const pn = pnTargetsForDay(dayIndex(dayNum), refWeight);
     const mix = (a, b) => a * (1 - f) + b * f;
@@ -2486,7 +2745,7 @@
       eMin: mix(pn.kcal.lo, en.eMin), eMax: mix(pn.kcal.hi, en.eMax),
       pMin: mix(pn.aa.lo, en.pMin), pMax: mix(pn.aa.hi, en.pMax),
       label: en.label, f, pn,
-      phase: f < 0.05 ? `PN day ${dayIndex(dayNum)}${dayIndex(dayNum) === 5 ? '+' : ''} targets` : `Blended: ${Math.round(f * 100)}% enteral`
+      phase: f < 0.05 ? `PN day ${dayIndex(dayNum)}${dayIndex(dayNum) === 5 ? '+' : ''} targets` : `Estimated volume blend: ${Math.round(f * 100)}% enteral — clinician review required`
     };
   }
 
@@ -2601,17 +2860,16 @@
 
   // ===========================================================================
   // TOTAL FLUID TARGET BY WEIGHT BAND & DAY OF LIFE
-  // "Day 1" = day field value ≤1 (covers 0- and 1-indexed charting conventions
-  // already used elsewhere in this app); Day 5+ uses the 150–170 band.
+  // Preterm schedule follows Malaysian Paediatric Protocols, 5th Edition (2025).
+  // Individualise for environment, losses, renal/cardiac status, serum sodium
+  // and weight trend. These starting values are not an individual prescription.
   // ===========================================================================
   function totalFluidTarget(weightG, dayNum){
     const d = dayNum <= 1 ? 1 : Math.min(dayNum, 5);
     if (typeof isPreterm === 'function' && !isPreterm()) {
       return { 1: { lo: 60, hi: 60 }, 2: { lo: 90, hi: 90 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 150 } }[d];
     }
-    const under1000 = { 1: { lo: 80, hi: 80 }, 2: { lo: 100, hi: 100 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 170 } };
-    const over1000 = { 1: { lo: 60, hi: 60 }, 2: { lo: 90, hi: 90 }, 3: { lo: 120, hi: 120 }, 4: { lo: 150, hi: 150 }, 5: { lo: 150, hi: 170 } };
-    return weightG < 1000 ? under1000[d] : over1000[d];
+    return { 1: { lo: 60, hi: 60 }, 2: { lo: 80, hi: 80 }, 3: { lo: 100, hi: 100 }, 4: { lo: 120, hi: 120 }, 5: { lo: 140, hi: 140 } }[d];
   }
 
   // Lipid staged target (mL/kg/d, 20% emulsion): D1 5, D2 10, D3+ 15
@@ -2658,6 +2916,31 @@
   let enteralToggleUserSet = false;
   let lipidToggleUserSet = false;
 
+  function suggestedIvFluidMlKgDay(targetMid, enteralMlKgDay, lipidMlKgDay, kvoMlKgDay){
+    return Math.max(0, targetMid - enteralMlKgDay - lipidMlKgDay - kvoMlKgDay);
+  }
+
+  function proteinEnergyRatioStatus(ratio, energy, protein, eMin, eMax, pMin, pMax, enteralOnly){
+    const applicable = !!enteralOnly && energy >= eMin && energy <= eMax && protein >= pMin && protein <= pMax;
+    const flag = applicable && (ratio < 2.8 || ratio > 3.6) ? 'warn' : 'ok';
+    const status = !applicable ? 'NOT INTERPRETED' : (flag === 'ok' ? 'WITHIN RANGE' : (ratio < 2.8 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY'));
+    return { applicable, flag, status };
+  }
+
+  function vitaminDIntakeStatus(iuPerDay, weightG, preterm){
+    if (!Number.isFinite(iuPerDay) || !Number.isFinite(weightG) || iuPerDay < 0 || weightG <= 0) return null;
+    const iuKgDay = iuPerDay / (weightG / 1000);
+    if (!preterm) {
+      const status = iuPerDay < 400 ? 'red' : (iuPerDay <= 400 ? 'green' : (iuPerDay <= 1000 ? 'yellow' : 'red'));
+      const label = iuPerDay < 400 ? 'Below 400 IU/day' : (iuPerDay <= 400 ? 'MOH routine dose' : (iuPerDay <= 1000 ? 'Above routine dose — review' : 'Above 1,000 IU/day'));
+      return { iuKgDay, status, label, basis: 'term' };
+    }
+    // ESPGHAN 2022: 400–700 IU/kg/day, with an absolute maximum routine dose of 1,000 IU/day.
+    const status = iuKgDay < 400 ? 'red' : (iuKgDay <= 700 && iuPerDay <= 1000 ? 'green' : (iuPerDay <= 1000 ? 'yellow' : 'red'));
+    const label = iuKgDay < 400 ? 'Below 400 IU/kg/day' : (iuPerDay > 1000 ? 'Above 1,000 IU/day upper limit' : (iuKgDay <= 700 ? 'Within target' : 'Above 700 IU/kg/day — review'));
+    return { iuKgDay, status, label, basis: 'preterm' };
+  }
+
   function renderFluidTarget(){
     const el = document.getElementById('fluidTargetReadouts');
     renderPnDayTable(getRefWeight(), parseInt(document.getElementById('day').value) || 0);
@@ -2672,6 +2955,8 @@
     const enteralMlKgDay = parseFloat(document.getElementById('vol').value) || 0;
     const lipidRateVal = parseFloat(document.getElementById('lipidRate').value) || 0;
     const lipidMlKgDay = (lipidRateVal * 24) / refKg;
+    const kvoRateVal = parseFloat(document.getElementById('kvoRate').value) || 0;
+    const kvoMlKgDay = (kvoRateVal * 24) / refKg;
 
     const isTrophic = enteralMlKgDay <= 20;
     const isLowLipid = lipidMlKgDay < 10;
@@ -2686,7 +2971,8 @@
     const effectiveEnteral = enteralToggle.checked ? enteralMlKgDay : 0;
     const effectiveLipid = lipidToggle.checked ? lipidMlKgDay : 0;
 
-    const suggestedIvMlKgDay = Math.max(0, targetMid - effectiveEnteral - effectiveLipid);
+    // KVO contributes to total fluid and must be deducted from the remaining allowance.
+    const suggestedIvMlKgDay = suggestedIvFluidMlKgDay(targetMid, effectiveEnteral, effectiveLipid, kvoMlKgDay);
     const suggestedIvMlDay = suggestedIvMlKgDay * refKg;
     const suggestedIvMlHour = suggestedIvMlDay / 24;
 
@@ -2701,7 +2987,7 @@
 
     const tgtTxt = target.lo === target.hi ? fmt(target.lo,0) : `${target.lo}–${target.hi}`;
     el.innerHTML = `<div class="fluid-line">Fluid target <b>${tgtTxt} mL/kg/d</b> (day ${dayNum <= 1 ? 1 : dayNum}) → suggested IV/TPN <b>${fmtRate(suggestedIvMlHour)} mL/h</b>
-      <small>${fmt(suggestedIvMlKgDay,0)} mL/kg/d = ${fmt(targetMid,0)} − feeds ${fmtRate(effectiveEnteral)} − lipid ${fmtRate(effectiveLipid)}${!enteralToggle.checked && enteralMlKgDay > 0 ? ` · trophic feeds (${fmtRate(enteralMlKgDay)}) not counted` : ''}${!lipidToggle.checked && lipidMlKgDay > 0 ? ` · lipid (${fmtRate(lipidMlKgDay)}) not counted` : ''}${ivRateUserOverridden ? ' · IV rate set manually' : ''}</small></div>`;
+      <small>${fmt(suggestedIvMlKgDay,0)} mL/kg/d = ${fmt(targetMid,0)} − feeds ${fmtRate(effectiveEnteral)} − lipid ${fmtRate(effectiveLipid)} − KVO ${fmtRate(kvoMlKgDay)}${!enteralToggle.checked && enteralMlKgDay > 0 ? ` · trophic feeds (${fmtRate(enteralMlKgDay)}) not counted` : ''}${!lipidToggle.checked && lipidMlKgDay > 0 ? ` · lipid (${fmtRate(lipidMlKgDay)}) not counted` : ''}${kvoMlKgDay > 0 ? ' · KVO included' : ''}${ivRateUserOverridden ? ' · IV rate set manually' : ''}</small></div>`;
 
     renderTpnAdvisory(refWeight, dayNum, enteralMlKgDay);
   }
@@ -2729,19 +3015,28 @@
   function renderTpnAdvisory(refWeight, dayNum, enteralMlKgDay){
     const el = document.getElementById('tpnAdvisory');
     const d = dayNum <= 1 ? 1 : dayNum;
-    const weanThreshold = refWeight <= 1250 ? 130 : 120;
+    const weanThreshold = 120;
     const notes = [];
 
-    if (refWeight < 1250) {
-      notes.push({ title: 'TPN recommended from Day 1', text: 'Infants <1250 g should be started on TPN on day 1 of life per unit protocol.', cls: 'warn' });
-    } else if (d >= 3 && enteralMlKgDay < 50) {
-      notes.push({ title: 'Consider starting TPN', text: 'Enteral feeds have not reached ≥50 mL/kg/day by day 3 for this ≥1250 g infant — consider starting supplemental TPN.', cls: 'warn' });
+    const gaBirth = GA_WK + GA_DY / 7;
+    if (isPreterm() && gaBirth < 31) {
+      notes.push({ title: 'Consider PN from birth', text: 'Malaysian Paediatric Protocols 5th Edition recommends considering PN for infants born before 31+0 weeks.', cls: 'warn' });
+    } else if (isPreterm() && d >= 3 && enteralMlKgDay < 50) {
+      notes.push({ title: 'Consider starting PN', text: 'For infants born at or after 31+0 weeks, consider PN if sufficient progress has not been made with enteral feeding in the first 72 hours.', cls: 'warn' });
+    } else if (!isPreterm()) {
+      notes.push({ title: 'Individualise PN indication', text: 'For term infants, consider PN when enteral feeding is unlikely to be established (for example, critical illness or congenital gut disorder).', cls: '' });
     }
 
-    if (enteralMlKgDay < weanThreshold) {
-      notes.push({ title: 'Continue TPN', text: `Continue TPN until enteral feeds reach ${weanThreshold} mL/kg/day (weaning threshold for ${refWeight <= 1250 ? '≤1250 g' : '>1250 g'} infants).`, cls: '' });
+    if (isPreterm()) {
+      if (enteralMlKgDay < 100) {
+        notes.push({ title: 'Continue TPN', text: 'Continue PN while enteral intake remains below 100 mL/kg/day, unless an individual clinical decision supports earlier withdrawal.', cls: '' });
+      } else if (enteralMlKgDay < weanThreshold) {
+        notes.push({ title: 'Review PN weaning', text: 'Enteral intake is 100–120 mL/kg/day. Malaysian Paediatric Protocols 5th Edition advises considering PN cessation in this range once feeds are tolerated.', cls: '' });
+      } else {
+        notes.push({ title: 'Consider stopping PN', text: 'Enteral intake has reached 120 mL/kg/day. Confirm tolerance, nutrient adequacy and the local PN-weaning plan before stopping.', cls: '' });
+      }
     } else {
-      notes.push({ title: 'Consider stopping TPN', text: `Enteral feeds have reached the ${weanThreshold} mL/kg/day weaning threshold for ${refWeight <= 1250 ? '≤1250 g' : '>1250 g'} infants.`, cls: '' });
+      notes.push({ title: 'Review PN requirement', text: 'For term infants, individualise PN withdrawal according to clinical condition, feed tolerance and nutrient adequacy; this preterm threshold is not a term stop rule.', cls: '' });
     }
 
     if (enteralMlKgDay >= 100) {
@@ -2797,14 +3092,17 @@
     if (typeof renderNutritionSummary === 'function') renderNutritionSummary();
   }
 
-  document.getElementById('kvoRate').addEventListener('input', renderFluids);
-  document.getElementById('kvoRate').addEventListener('change', renderFluids);
-  document.getElementById('kvoType').addEventListener('change', renderFluids);
+  ['input', 'change'].forEach(evt => {
+    document.getElementById('kvoRate').addEventListener(evt, () => { renderFluidTarget(); renderFluids(); });
+    document.getElementById('kvoType').addEventListener(evt, () => { renderFluidTarget(); renderFluids(); });
+  });
 
   // ===========================================================================
   // NUTRITION & GROWTH TARGETS — comprehensive intake calculation
-  // TPN composition per SGH NICU standard PN formulations (updated Sept 2024),
+  // Legacy reference values based on SGH NICU standard PN formulations (Sept 2024),
   // expressed per mL of bag (values ÷1000 from the per-litre bag contents).
+  // NOT verified against current Hospital Miri pharmacy formulations; verify every
+  // component with pharmacy before any clinical use.
   // Osmolarity is a fixed property of the bag (mOsm/L), independent of rate.
   // Glucose 3.4 kcal/g, protein/AA 4 kcal/g, lipid 20% emulsion 10 kcal/g (2 kcal/mL).
   // Mineral molar masses (mg/mmol): Na 23, K 39.1, Cl 35.45, Ca 40.08, Mg 24.3, P 30.97.
@@ -3072,12 +3370,15 @@
     const ratio = totalKcalKg > 0 ? (totalProtKg / totalKcalKg * 100) : 0;
 
     const proteinFlag = (totalProtKg < tgt.pMin || totalProtKg > tgt.pMax) ? 'warn' : 'ok';
-    const ratioFlag = (ratio < 3.0 || ratio > 4.0) ? 'warn' : 'ok';
+    // ESPGHAN 2022 enteral PER: 2.8–3.6 g/100 kcal. Do not apply this
+    // enteral reference to PN or interpret it when energy/protein targets are unmet.
+    const per = proteinEnergyRatioStatus(ratio, totalKcalKg, totalProtKg, tgt.eMin, tgt.eMax, tgt.pMin, tgt.pMax, !tpnMode());
+    const ratioApplicable = per.applicable, ratioFlag = per.flag, ratioStatus = per.status;
 
-    // Ca:P molar ratio — ideal ~1.3–1.7:1 for bone mineralization
+    // Ca:P molar ratio — ESPGHAN 2022 recommends an enteral molar ratio ≤1.4:1.
     const caMol = totalCaKg / MG_PER_MMOL.ca, pMol = totalPKg / MG_PER_MMOL.p;
-    const caPRatio = pMol > 0 ? caMol / pMol : 0;
-    const caPBand = tpnMode() ? (dayIndex(dayNum) <= 3 ? { lo: 0.8, hi: 1.3 } : { lo: 0.8, hi: 1.3 }) : (enteralMineralTargets().caP || { lo: 1.3, hi: 1.7 });
+    const caPRatio = pMol > 0 ? caMol / pMol : (caMol > 0 ? Infinity : 0);
+    const caPBand = tpnMode() ? { lo: 0.8, hi: 1.3 } : (enteralMineralTargets().caP || { lo: 0, hi: 1.4 });
     const caPFlag = (caPRatio < caPBand.lo || caPRatio > caPBand.hi) ? 'warn' : 'ok';
     const caPStatus = caPFlag === 'ok' ? 'IDEAL' : (caPRatio > caPBand.hi ? 'TOO MUCH CALCIUM' : 'TOO MUCH PHOSPHATE');
 
@@ -3127,14 +3428,16 @@
       }
       const body = rows.map(r => {
         const st = statusOf(parseFloat(r[1]), r[3]);
-        return `<tr><td>${r[0]}</td><td class="mono num">${r[1]} <small>${r[2]}</small></td><td class="mono">${rangeTxt(r[3], r[4])}</td><td><span class="flag ${st.cls}">${st.txt}</span></td></tr>`;
+        const targetText = r[0] === 'Ca : P (molar)' && !tpn ? '≤1.4' : rangeTxt(r[3], r[4]);
+        return `<tr><td>${r[0]}</td><td class="mono num">${r[1]} <small>${r[2]}</small></td><td class="mono">${targetText}</td><td><span class="flag ${st.cls}">${st.txt}</span></td></tr>`;
       }).join('');
       document.getElementById('nutDashboard').innerHTML = `
-        <div class="tt-head"><b>${isPreterm() ? 'Preterm' : 'Term'}</b> · ${document.getElementById('gGaWk').value}+${document.getElementById('gGaDy').value} wk · ${fmt(refWeight,0)} g · day ${dayNum} · ${tpn ? 'Feeds + IV/TPN' : 'Feeds only'}<br><span>${tgt.label} · ${tgt.phase}</span></div>
+        <div class="tt-head"><b>${isPreterm() ? 'Preterm' : 'Term'}</b> · ${document.getElementById('gGaWk').value}+${document.getElementById('gGaDy').value} wk · ${fmt(refWeight,0)} g · day ${dayNum} · ${tpn ? 'Feeds + IV/TPN' : 'Feeds only'}<br><span>${tgt.label} · ${tgt.phase}</span>${tpn && tgt.f > 0.05 ? '<small>Energy/protein target blend is estimated from fluid-volume share; it is not a prescribed target.</small>' : ''}</div>
         <div class="table-scroll"><table class="today-tbl"><thead><tr><th>Today</th><th>Delivered</th><th>Target</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`;
     }
 
     el.innerHTML = `
+      <div class="fluid-line" style="grid-column:1/-1;"><b>Clinical verification required</b><small>Feed and fortifier compositions are reference estimates. PN presets are legacy SGH formulations and are not verified against current Hospital Miri pharmacy bags. Confirm current product labels, fortifier preparation and the actual prescribed PN formulation with pharmacy before using these totals clinically.</small></div>
       <div class="readout" data-pn>
         <div class="rlabel"><span>GIR</span><span>${girBand.label}</span></div>
         <div class="rvalue">${fmt(gir,1)} mg/kg/min</div>
@@ -3212,14 +3515,14 @@
       <div class="readout">
         <div class="rlabel"><span>Ca : P molar ratio</span><span>bone mineralization</span></div>
         <div class="rvalue">${fmt(caPRatio,2)} : 1</div>
-        <div class="rsub">Target ${caPBand.lo}–${caPBand.hi} : 1 (${tpnMode() ? 'parenteral' : 'enteral'})</div>
+        <div class="rsub">Target ${tpnMode() ? `${caPBand.lo}–${caPBand.hi}` : '≤1.4'} : 1 (${tpnMode() ? 'parenteral' : 'enteral'})</div>
         <span class="flag ${caPFlag}">${caPStatus}</span>
       </div>
       <div class="readout">
         <div class="rlabel"><span>Protein : energy ratio</span><span>g/100kcal</span></div>
         <div class="rvalue">${fmt(ratio,2)}</div>
-        <div class="rsub">Target 3–4 g/100kcal for catch-up growth</div>
-        <span class="flag ${ratioFlag}">${ratioFlag === 'ok' ? 'BALANCED' : (ratio < 3.0 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY')}</span>
+        <div class="rsub">Enteral reference 2.8–3.6 g/100 kcal; meaningful only when energy and protein targets are met</div>
+        <span class="flag ${ratioApplicable ? ratioFlag : ''}">${ratioStatus}</span>
       </div>
       <div class="readout" data-pn>
         <div class="rlabel"><span>${IV_FLUID_LABELS[ivType]} osmolarity</span><span>bag property</span></div>
@@ -3231,7 +3534,7 @@
       <div class="readout">
         <div class="rlabel"><span>Weight velocity</span><span>average method</span></div>
         <div class="rvalue">${fmt(vel.velocity,1)} g/kg/d</div>
-        <div class="rsub">Target ${vel.velTarget.range} (${vel.velTarget.band})</div>
+        <div class="rsub">Reference ${vel.velTarget.range} (${vel.velTarget.band})</div>
         <span class="flag ${(vel.velocity < parseFloat(vel.velTarget.range.split('–')[0]) || vel.velocity > parseFloat(vel.velTarget.range.split('–')[1])) ? 'warn' : 'ok'}">MEASURED</span>
       </div>
       <div class="readout">
@@ -3261,7 +3564,10 @@
     if (totalProtKg < tgt.pMin) flags.push(`Protein intake (${fmt(totalProtKg,2)} g/kg/d) is below today's target (${fmt(tgt.pMin,1)} g/kg/d, ${tgt.label}, ${tgt.phase}). Consider increasing amino acids or feed fortification by ~0.5 g/kg/d.`);
     if (gir > 12) flags.push(`GIR is high (${fmt(gir,1)} mg/kg/min, above max oxidation). Consider reducing dextrose concentration or infusion rate, especially if hyperglycaemia persists.`);
     else if (tpnMode() && gir < girBand.lo) flags.push(`GIR is below the ${girBand.label.toLowerCase()} target (${girBand.lo}–${girBand.hi} mg/kg/min). Consider advancing dextrose delivery if glucose tolerance allows.`);
-    if (isPreterm() && totalKcalKg >= 80 && ratio < 3.0) flags.push(`Protein-energy ratio is low (${fmt(ratio,2)} g/100kcal). Increase protein rather than calories alone.`);
+    if (!tpnMode() && isPreterm() && totalKcalKg >= tgt.eMin && totalKcalKg <= tgt.eMax &&
+        totalProtKg >= tgt.pMin && totalProtKg <= tgt.pMax && ratio < 2.8) {
+      flags.push(`Enteral protein:energy ratio is below 2.8 g/100 kcal (${fmt(ratio,2)}). Review nutrient composition and feeding plan; do not use the ratio alone to direct changes.`);
+    }
     if (caPRatio > caPBand.hi && totalPKg > 0 && (tpnMode() || isPreterm())) flags.push(`Ca:P molar ratio is high (${fmt(caPRatio,2)}:1) — relative phosphate deficiency; watch for hypophosphatemia, especially early in refeeding.`);
     else if (caPRatio < caPBand.lo && caPRatio > 0 && (tpnMode() || isPreterm())) flags.push(`Ca:P molar ratio is low (${fmt(caPRatio,2)}:1) — relative calcium deficiency relative to phosphate intake.`);
     if (osm > 900) flags.push(`${IV_FLUID_LABELS[ivType]} osmolarity (${fmt(osm,0)} mOsm/L) exceeds the typical peripheral-line threshold — central access recommended.`);
@@ -3283,11 +3589,72 @@
 
     renderSodiumSupplement(totalNaKg, refKg);
 
-    latestNutritionSnapshot = { totalKcalKg, eMax: tgt.eMin, totalProtKg, pMax: tgt.pMin };
+    latestNutritionSnapshot = null; // populated below from the same existing calculation outputs
+
+
+  // ---- Daily nutrition handover summary: presentation only; reuses existing calculations ----
+  function renderHandoverSummary(snapshot){
+    const box = document.getElementById('handoverText');
+    if (!box || !snapshot) return;
+    const pid = (document.getElementById('bPid').value || '').trim() || 'Not entered';
+    const ga = document.getElementById('gGaWk').value
+      ? document.getElementById('gGaWk').value + 'w ' + (document.getElementById('gGaDy').value || '0') + 'd'
+      : 'Not entered';
+    const dob = document.getElementById('bDobDt').value || 'Not entered';
+    const birthWt = document.getElementById('bWt').value || 'Not entered';
+    const latestWt = document.getElementById('latestWt').value || 'Not entered';
+    const mode = snapshot.mode === 'tpn' ? 'Enteral + IV/PN' : 'Enteral only';
+    const velocity = snapshot.weightVelocity == null ? 'Not available (need serial weights)' : fmt(snapshot.weightVelocity,1) + ' g/kg/day';
+    const lines = [
+      'NEONUTRITION — DAILY NUTRITION SUMMARY',
+      'Generated: ' + new Date().toLocaleString(),
+      'Patient ID: ' + pid + ' | DOB: ' + dob + ' | GA at birth: ' + ga,
+      'Birth weight: ' + birthWt + ' g | Latest weight: ' + latestWt + ' g',
+      'Day of life: ' + snapshot.day + ' | Reference weight used: ' + fmt(snapshot.refWeight,0) + ' g',
+      'Regimen: ' + mode + ' | Enteral volume: ' + fmt(snapshot.feedVol,1) + ' mL/kg/day | Total fluid: ' + fmt(snapshot.tfi,1) + ' mL/kg/day',
+      'ENERGY: ' + fmt(snapshot.totalKcalKg,0) + ' kcal/kg/day (target minimum ' + fmt(snapshot.eMax,0) + ')',
+      '  Enteral ' + fmt(snapshot.enteralKcalKg,0) + ' + PN glucose ' + fmt(snapshot.pnGlucoseKcalKg,0) + ' + PN amino acids ' + fmt(snapshot.pnProteinKcalKg,0) + ' + lipid ' + fmt(snapshot.lipidKcalKg,0) + ' kcal/kg/day',
+      'PROTEIN: ' + fmt(snapshot.totalProtKg,2) + ' g/kg/day (target minimum ' + fmt(snapshot.pMax,2) + ')',
+      '  Enteral ' + fmt(snapshot.enteralProtKg,2) + ' + PN amino acids ' + fmt(snapshot.pnAaKg,2) + ' g/kg/day',
+      'WEIGHT VELOCITY: ' + velocity,
+      '',
+      'Clinical decision support only. Verify patient details, actual product composition, fluid balance and prescribed regimen against the patient record and local protocol.'
+    ];
+    box.value = lines.join(String.fromCharCode(10));
+  }
+
+  const copyHandoverBtn = document.getElementById('copyHandoverBtn');
+  if (copyHandoverBtn) copyHandoverBtn.addEventListener('click', async () => {
+    const box = document.getElementById('handoverText');
+    const status = document.getElementById('handoverStatus');
+    if (!box || !box.value.trim()) { if (status) status.textContent = 'No summary is available yet.'; return; }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(box.value);
+      } else {
+        box.focus(); box.select();
+        const copied = document.execCommand('copy');
+        if (!copied) throw new Error('Clipboard permission unavailable');
+        box.setSelectionRange(0,0);
+      }
+      if (status) status.textContent = 'Summary copied. Check patient identifiers before sharing.';
+    } catch (e) {
+      if (status) status.textContent = 'Copy was blocked by the browser. Select the summary text and copy it manually.';
+      box.focus(); box.select();
+    }
+  });
 
     // Feed the sticky live-summary strip so totals stay visible while scrolling
     const fluidTgtNow = totalFluidTarget(refWeight, dayNum);
     const tfiNow = volMlKgDay + ((ivType === 'none' ? 0 : ivMlDay) + lipidMlDay + kvoMlDayForCalc) / refKg;
+    latestNutritionSnapshot = {
+      totalKcalKg, eMax: tgt.eMin, totalProtKg, pMax: tgt.pMin,
+      enteralKcalKg, pnGlucoseKcalKg, pnProteinKcalKg, lipidKcalKg,
+      enteralProtKg, pnAaKg, feedVol: volMlKgDay, tfi: tfiNow,
+      day: dayNum, refWeight, mode: tpnMode() ? 'tpn' : 'enteral',
+      weightVelocity: vel.velocity
+    };
+    renderHandoverSummary(latestNutritionSnapshot);
     updateLiveSummary({
       tfi: tfiNow, tfiState: (tfiNow < fluidTgtNow.lo - 10 || tfiNow > fluidTgtNow.hi + 10) ? 'warn' : 'ok',
       kcal: totalKcalKg, kcalState: totalKcalKg < tgt.eMin ? 'warn' : 'ok',
@@ -3383,7 +3750,7 @@
     const table = document.getElementById('deficitTable');
     const body = document.getElementById('deficitBody');
     const summary = document.getElementById('deficitSummary');
-    if (energyLog.length === 0) { table.style.display = 'none'; body.innerHTML = ''; summary.innerHTML = ''; return; }
+    if (energyLog.length === 0) { table.style.display = 'none'; body.innerHTML = ''; summary.innerHTML = ''; renderLongitudinalDashboard(); return; }
     table.style.display = '';
 
     const sorted = energyLog.slice().sort((a, b) => a.dol - b.dol);
@@ -3407,10 +3774,10 @@
 
     summary.innerHTML = `
       <div class="readout">
-        <div class="rlabel"><span>Cumulative energy deficit</span><span>${sorted.length} day${sorted.length > 1 ? 's' : ''} logged</span></div>
+        <div class="rlabel"><span>Cumulative energy balance vs minimum phase target</span><span>${sorted.length} day${sorted.length > 1 ? 's' : ''} logged</span></div>
         <div class="rvalue">${cumulative > 0 ? '−' : '+'}${fmt(Math.abs(cumulative),0)} kcal/kg</div>
-        <div class="rsub">Average ${avgDeficit > 0 ? '−' : '+'}${fmt(Math.abs(avgDeficit),0)} kcal/kg/d over the logged period</div>
-        <span class="flag ${cumulative > 50 ? 'warn' : 'ok'}">${cumulative > 50 ? 'SIGNIFICANT SHORTFALL' : 'TRACKING'}</span>
+        <div class="rsub">Average ${avgDeficit > 0 ? '−' : '+'}${fmt(Math.abs(avgDeficit),0)} kcal/kg/d; mixed PN/enteral targets are estimated</div>
+        <span class="flag ${cumulative > 0 ? 'warn' : 'ok'}">${cumulative > 0 ? 'SHORTFALL RECORDED' : 'NO CUMULATIVE SHORTFALL'}</span>
       </div>
       <div class="readout">
         <div class="rlabel"><span>Days below protein target</span><span>of ${sorted.length} logged</span></div>
@@ -3418,6 +3785,7 @@
         <div class="rsub">${proteinShortDays > 0 ? 'Consider whether protein has kept pace with energy advancement' : 'Protein has met target on every logged day'}</div>
       </div>
     `;
+    renderLongitudinalDashboard();
   }
 
   document.getElementById('logDeficitBtn').addEventListener('click', () => {
@@ -3579,7 +3947,7 @@
       ${chartSvgMarkup('h')}
       <h3 style="font-size:15px; margin:16px 0 6px;">Measurement log</h3>
       ${tableHtml}
-      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">Fenton third-generation preterm growth chart (2025), fentongrowth.ca — percentile curves digitised from the published chart. Generated ${new Date().toLocaleString()}. For clinical reference only.</p>
+      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">Fenton 2025 percentile curves are digitised approximations; Z-scores are interpolated from five percentile knots and are not official LMS values. Verify borderline results with the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>. Generated ${new Date().toLocaleString()}.</p>
     `;
     document.getElementById('printArea').querySelectorAll('.entries-table').forEach(t => t.style.display = '');
   }
@@ -3676,7 +4044,8 @@
 
     const energyFlag = (totalKcal < tgt.eMin || totalKcal > tgt.eMax) ? 'warn' : 'ok';
     const proteinFlag = (totalProt < tgt.pMin || totalProt > tgt.pMax) ? 'warn' : 'ok';
-    const ratioFlag = (ratio < 3.0 || ratio > 4.0) ? 'warn' : 'ok';
+    const per = proteinEnergyRatioStatus(ratio, totalKcal, totalProt, tgt.eMin, tgt.eMax, tgt.pMin, tgt.pMax, !pnOn);
+    const ratioApplicable = per.applicable, ratioFlag = per.flag, ratioStatus = per.status;
 
     let velRangeParts = velTarget ? velTarget.range.split('–') : null;
     let velLo = velRangeParts ? parseFloat(velRangeParts[0]) : null;
@@ -3698,14 +4067,14 @@
       <div class="readout">
         <div class="rlabel"><span>Protein : energy ratio</span><span>g/100kcal</span></div>
         <div class="rvalue">${fmt(ratio,2)}</div>
-        <div class="rsub">Target 3–4 g/100kcal for catch-up growth</div>
-        <span class="flag ${ratioFlag}">${ratioFlag === 'ok' ? 'BALANCED' : (ratio < 3.0 ? 'ENERGY-HEAVY' : 'PROTEIN-HEAVY')}</span>
+        <div class="rsub">Reference 2.8–3.6 g/100 kcal; interpret only when energy and protein targets are met</div>
+        <span class="flag ${ratioFlag}">${ratioStatus}</span>
       </div>
       ${velocity !== null ? `
       <div class="readout">
         <div class="rlabel"><span>Measured weight gain</span><span>last interval</span></div>
         <div class="rvalue">${fmt(velocity,1)} g/kg/d</div>
-        <div class="rsub">Target ${velTarget.range} (${velTarget.band})</div>
+        <div class="rsub">Reference ${velTarget.range} (${velTarget.band})</div>
         <span class="flag ${(velLo!==null && velocity < velLo) || (velHi!==null && velocity > velHi) ? 'warn' : 'ok'}">MEASURED</span>
       </div>` : ''}
     `;
@@ -3758,13 +4127,12 @@
 
   // ===========================================================================
   // MICRONUTRIENT STATUS TRACKER
-  // Targets: ESPGHAN 2021 enteral recommendations (Nutritional Care of Preterm
-  // Infants, 2nd ed.). Iron target is birth/best-weight banded; others fixed.
+  // Targets: ESPGHAN 2022 enteral recommendations. Vitamin D is entered in IU/day
+  // and assessed after conversion to IU/kg/day using the current best weight.
   // ===========================================================================
   function ironTargetRange(bwG){
-    if (bwG < 1500) return [2, 3];
-    if (bwG < 2000) return [2, 2];
-    return [1, 2];
+    if (!isPreterm() || bwG >= 2000) return null;
+    return [2, 3];
   }
 
   function microStatus(value, lo, hi){
@@ -3778,25 +4146,33 @@
 
   function renderMicroTracker(){
     const bwVal = parseFloat(document.getElementById('bWt').value);
-    const best = bestWeight();
-    const refW = best != null ? Math.max(bwVal || 0, best) : (bwVal || 0);
-    const [feLo, feHi] = ironTargetRange(refW || 1000);
-    document.getElementById('microFeTarget').textContent = `${feLo}–${feHi}`;
+    const refW = getRefWeight();
+    const ironRange = ironTargetRange(refW || 1000);
+    const [feLo, feHi] = ironRange || [0, 0];
+    document.getElementById('microFeTarget').textContent = ironRange ? `${feLo}–${feHi}` : 'Individualise';
 
     const checks = [
       { id: 'microFe', status: 'microFeStatus', lo: feLo, hi: feHi },
-      { id: 'microVitD', status: 'microVitDStatus', lo: 400, hi: 1000 },
+      { id: 'microVitD', status: 'microVitDStatus', lo: 400, hi: 700, upper: 1000, weightBased: true },
       { id: 'microZn', status: 'microZnStatus', lo: 2.0, hi: 3.0 },
       { id: 'microCu', status: 'microCuStatus', lo: 120, hi: 230 },
       { id: 'microSe', status: 'microSeStatus', lo: 7, hi: 10 },
       { id: 'microI', status: 'microIStatus', lo: 10, hi: 55 }
     ];
     checks.forEach(c => {
-      const val = parseFloat(document.getElementById(c.id).value);
+      const rawVal = parseFloat(document.getElementById(c.id).value);
       const statusEl = document.getElementById(c.status);
-      if (isNaN(val)) { statusEl.innerHTML = ''; return; }
-      const s = microStatus(val, c.lo, c.hi);
-      statusEl.innerHTML = `<span class="micro-badge ${s}">${microStatusLabel(s)}</span>`;
+      if (c.id === 'microFe' && !ironRange) { statusEl.innerHTML = '<span class="micro-badge yellow">Individualise by feeding and iron status</span>'; return; }
+      if (isNaN(rawVal)) { statusEl.innerHTML = ''; return; }
+      if (c.weightBased) {
+        if (!(refW > 0)) { statusEl.innerHTML = '<span class="micro-badge yellow">Enter weight</span>'; return; }
+        const vitD = vitaminDIntakeStatus(rawVal, refW, isPreterm());
+        const vitDDisplay = vitD.basis === 'preterm' ? `${fmt(vitD.iuKgDay,0)} IU/kg/d` : `${fmt(rawVal,0)} IU/day`;
+        statusEl.innerHTML = `<span class="micro-badge ${vitD.status}">${vitD.label} · ${vitDDisplay}</span>`;
+      } else {
+        const status = microStatus(rawVal, c.lo, c.hi);
+        statusEl.innerHTML = `<span class="micro-badge ${status}">${microStatusLabel(status)}</span>`;
+      }
     });
   }
 
@@ -4562,13 +4938,14 @@
     const day = parseInt(document.getElementById('day').value) || 0;
     const vol = parseFloat(document.getElementById('vol').value) || 0;
     if (!ref || isNaN(ref)) return { mode: 'tpn', why: 'Enter birth weight to get a route suggestion.' };
-    const wean = ref <= 1250 ? 130 : 120;
-    if (vol >= wean) return { mode: 'enteral', why: `Feeds ${fmt(vol,0)} mL/kg/d have reached the ${wean} mL/kg/d TPN-weaning threshold.` };
-    if (ref < 1250) return { mode: 'tpn', why: 'Weight <1250 g — TPN from day 1 until feeds reach 130 mL/kg/d.' };
-    if (day >= 3 && vol < 50) return { mode: 'tpn', why: 'Day ≥3 with feeds <50 mL/kg/d — supplemental TPN advised.' };
+    const gaBirth = GA_WK + GA_DY / 7;
+    const preterm = isPreterm();
+    if (preterm && vol >= 120) return { mode: 'enteral', why: 'Enteral intake has reached 120 mL/kg/day; review PN cessation once feeds are tolerated and nutrient intake is adequate.' };
+    if (preterm && gaBirth < 31) return { mode: 'tpn', why: 'Born before 31+0 weeks — consider PN from birth (Malaysian Paediatric Protocols 5th Edition).' };
+    if (preterm && day >= 3 && vol < 50) return { mode: 'tpn', why: 'Born at or after 31+0 weeks with insufficient enteral progress by 72 hours — consider supplemental PN.' };
     const ft = totalFluidTarget(ref, day);
-    if (vol < ft.lo - 10) return { mode: 'tpn', why: `Feeds ${fmt(vol,0)} mL/kg/d are below today's fluid target (${ft.lo} mL/kg/d) — IV top-up needed.` };
-    return { mode: 'enteral', why: 'Feeds meet today\'s fluid target — no parenteral support needed.' };
+    if (vol < ft.lo - 10) return { mode: 'tpn', why: `Feeds ${fmt(vol,0)} mL/kg/d are below today's fluid target (${ft.lo} mL/kg/d) — IV fluid top-up may be required.` };
+    return { mode: 'enteral', why: 'Feeds meet today\'s fluid target; reassess the route if clinical condition or feeding tolerance changes.' };
   }
 
   function renderModeHint(sg){
@@ -4647,6 +5024,67 @@
   }
 
 
+  // Validate backup envelopes before touching local storage. Keep legacy v1
+  // records compatible, but reject malformed nested data and unsafe object keys.
+  function isFiniteBackupNumber(value){ return value != null && value !== '' && Number.isFinite(Number(value)); }
+
+  function validatePatientBackup(parsed){
+    if (!parsed || parsed.app !== 'NeoNutrition' || parsed.backupVersion !== 1) {
+      throw new Error('This is not a supported NeoNutrition backup file.');
+    }
+    const imported = parsed.patients;
+    if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
+      throw new Error('The backup patient list is invalid.');
+    }
+    const keys = Object.keys(imported);
+    if (!keys.length) throw new Error('The backup contains no patient records.');
+    const dangerousKeys = ['__proto__', 'prototype', 'constructor'];
+    keys.forEach(key => {
+      const record = imported[key];
+      if (!key.trim() || dangerousKeys.includes(key)) throw new Error('The backup contains an invalid patient record key.');
+      if (!record || typeof record !== 'object' || Array.isArray(record)
+          || !record.fields || typeof record.fields !== 'object' || Array.isArray(record.fields)) {
+        throw new Error('A patient record is malformed. No records were restored.');
+      }
+      if (record.sex != null && !['boy', 'girl'].includes(record.sex)) throw new Error('A patient record has an invalid sex value.');
+      if (record.mode != null && !['tpn', 'enteral'].includes(record.mode)) throw new Error('A patient record has an invalid nutrition mode.');
+      if (record.toggles != null && (typeof record.toggles !== 'object' || Array.isArray(record.toggles))) {
+        throw new Error('A patient record has invalid toggle settings.');
+      }
+      Object.values(record.fields).forEach(value => {
+        if (value != null && !['string', 'number', 'boolean'].includes(typeof value)) {
+          throw new Error('A patient record contains an invalid form value.');
+        }
+      });
+      ['entries', 'energyLog'].forEach(name => {
+        if (record[name] != null && !Array.isArray(record[name])) throw new Error('A patient record contains invalid ' + name + ' data.');
+        (record[name] || []).forEach(item => {
+          if (!item || typeof item !== 'object' || Array.isArray(item) || !isFiniteBackupNumber(item.dol)) {
+            throw new Error('A patient record contains malformed ' + name + ' data.');
+          }
+          if (name === 'entries' && !isFiniteBackupNumber(item.wt)) {
+            throw new Error('A growth record is missing a valid weight.');
+          }
+          if (name === 'energyLog' && !['totalKcalKg', 'totalProtKg', 'eMax', 'pMax'].every(k => isFiniteBackupNumber(item[k]))) {
+            throw new Error('A nutrition log record is incomplete.');
+          }
+        });
+      });
+    });
+    return imported;
+  }
+
+  function mergePatientRecords(existing, imported){
+    const merged = Object.assign(Object.create(null), existing || {});
+    let added = 0, skipped = 0;
+    Object.keys(imported).forEach(key => {
+      if (Object.prototype.hasOwnProperty.call(merged, key)) { skipped++; return; }
+      merged[key] = imported[key];
+      added++;
+    });
+    return { patients: merged, added, skipped };
+  }
+
   // ---- Patient data backup / restore (browser-local records only) ----
   // Export a portable JSON backup. Restore merges records and never silently
   // overwrites an existing record with the same key.
@@ -4690,29 +5128,11 @@
       }
       try {
         const parsed = JSON.parse(await file.text());
-        const imported = parsed && parsed.app === 'NeoNutrition' && parsed.backupVersion === 1
-          ? parsed.patients : null;
-        if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
-          throw new Error('This is not a supported NeoNutrition backup file.');
-        }
-        const keys = Object.keys(imported);
-        if (!keys.length) throw new Error('The backup contains no patient records.');
-        const validKeys = keys.filter(key => {
-          const record = imported[key];
-          return record && typeof record === 'object' && !Array.isArray(record)
-            && record.fields && typeof record.fields === 'object' && !Array.isArray(record.fields);
-        });
-        if (!validKeys.length) throw new Error('No valid patient records were found in the backup.');
-        const existing = getSavedPatients();
-        let added = 0, skipped = 0;
-        validKeys.forEach(key => {
-          if (Object.prototype.hasOwnProperty.call(existing, key)) { skipped++; return; }
-          existing[key] = imported[key];
-          added++;
-        });
-        if (!setSavedPatients(existing)) throw new Error('Unable to save restored records. Check available browser storage.');
+        const imported = validatePatientBackup(parsed);
+        const result = mergePatientRecords(getSavedPatients(), imported);
+        if (!setSavedPatients(result.patients)) throw new Error('Unable to save restored records. Check available browser storage.');
         refreshPatientList();
-        setPatientStatus('Restore complete: ' + added + ' added, ' + skipped + ' existing record(s) skipped.');
+        setPatientStatus('Restore complete: ' + result.added + ' added, ' + result.skipped + ' existing record(s) skipped.');
       } catch (err) {
         setPatientStatus('Restore failed: ' + (err && err.message ? err.message : 'Invalid backup file.'));
       }
