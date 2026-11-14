@@ -2288,10 +2288,29 @@
   function exportFentonCsv(){
     const sex = GSEX === 'boy' ? 'M' : 'F';
     const gaBirth = GA_WK + GA_DY/7;
-    const rows = [['Sex','GA (weeks)','Weight (g)','Head (cm)','Length (cm)']];
+    const dataType = gaBirth >= 37 ? 'BirthSize' : 'Growth';
+    // Match the official SingleBabyExample.csv workbook layout:
+    // metadata in columns A:B, followed by the exact measurement headers.
+    const rows = [
+      ['Title','NeoGrowth Export'],
+      ['Number',''],
+      ['Date of birth',''],
+      ['GA at birth',gaBirth.toFixed(5)],
+      ['Sex',sex],
+      ['Language','English'],
+      ['Data Type',dataType],
+      ['GA (weeks)','Weight (g)','Head (cm)','Length (cm)']
+    ];
     entries.slice().sort((a,b)=>a.dol-b.dol).forEach(e=>{
       const ga = gaBirth + Number(e.dol||0)/7;
-      rows.push([sex,ga.toFixed(4),Number.isFinite(Number(e.wt))?Number(e.wt):'',e.hc!=null?Number(e.hc):'',e.len!=null?Number(e.len):'']);
+      const hasMeasurement = Number.isFinite(Number(e.wt)) || e.hc!=null || e.len!=null;
+      if (!hasMeasurement) return;
+      rows.push([
+        ga.toFixed(5),
+        Number.isFinite(Number(e.wt))?Number(e.wt):'',
+        e.hc!=null?Number(e.hc):'',
+        e.len!=null?Number(e.len):''
+      ]);
     });
     const csv = rows.map(row=>row.map(v=>{const t=String(v);return (t.includes(',')||t.includes('"')||t.includes('\n'))?'"'+t.replaceAll('"','""')+'"':t;}).join(',')).join('\r\n');
     const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
