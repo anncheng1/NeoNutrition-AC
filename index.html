@@ -2410,7 +2410,7 @@
     const gaBirth = GA_WK + GA_DY / 7;
     const hasOutOfRangePma = entries.some(e => {
       const pma = gaBirth + Number(e.dol) / 7;
-      return pma > 50 || pma < 22.5 || (e.len != null && pma < 23.5);
+      return pma > FENTON_MAX_PMA || pma < FENTON_MIN_PMA.w || (e.len != null && pma < FENTON_MIN_PMA.l);
     });
     const warning = gaBirth >= 37
       ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; no Fenton chart is displayed for term-born infants.</div>'
