@@ -1569,7 +1569,8 @@
 
     <div class="card">
       <h3><span class="num">03</span>Plot on the Fenton growth chart</h3>
-      <p>Birth measurements are plotted automatically as day 0. Log further serial measurements below to build the trajectory against the Fenton third-generation (2025) percentile curves (P3 · P10 · P50 · P90 · P97) by postmenstrual age. Curve values were digitised from the published 2025 charts (agreement within ~0.02 kg / ~0.2 cm of the printed lines); confirm borderline calls near the 3rd or 10th percentile against the paper chart.</p>
+      <p>Birth measurements are plotted automatically as day 0. Log further serial measurements below to build the trajectory against the Fenton third-generation (2025) reference curves (P3 · P10 · P50 · P90 · P97) by postmenstrual age.</p>
+      <div class="opt-note warn"><b>Clinical calculation limitation:</b> this embedded chart uses digitised percentile knots and interpolated Z-scores; it does not contain the official Fenton 2025 LMS parameters. Percentiles and Z-scores are estimates, not validated clinical outputs. Do not use borderline or extreme results for clinical classification or treatment decisions without checking the official Fenton 2025 calculator. Measurements outside the reference age range are now shown as N/A rather than assigned a clamped percentile.</div>
 
       <div class="growth-toolbar">
         <div>
@@ -1603,7 +1604,7 @@
       </div>
 
       <table class="entries-table" id="entriesTable" style="display:none;">
-        <thead><tr><th>DOL</th><th>PMA</th><th>Wt</th><th>%ile</th><th>Len</th><th>%ile</th><th>HC</th><th>%ile</th><th></th></tr></thead>
+        <thead><tr><th>DOL</th><th>PMA</th><th>Wt</th><th>Approx. %ile</th><th>Len</th><th>Approx. %ile</th><th>HC</th><th>Approx. %ile</th><th></th></tr></thead>
         <tbody id="entriesBody"></tbody>
       </table>
 
@@ -2182,8 +2183,13 @@
   let energyLog = [];
 
   const FENTON_Z = [-1.8808, -1.2816, 0, 1.2816, 1.8808]; // z for P3, P10, P50, P90, P97
+  // Fenton 2025 published age boundaries (weeks + days). The embedded
+  // digitised curves remain approximate; these limits prevent edge clamping
+  // from returning a percentile outside the stated reference range.
+  const FENTON_MIN_PMA = { w: 22 + 4/7, h: 22 + 4/7, l: 23 + 4/7 };
+  const FENTON_MAX_PMA = 50;
   function fentonRowInterp(sex, wk, metric){
-    const minWeek = metric === 'l' ? 23.5 : 22.5;
+    const minWeek = FENTON_MIN_PMA[metric] || (metric === 'l' ? 23 + 4/7 : 22 + 4/7);
     const w = Math.max(minWeek, Math.min(50, wk));
     const lo = Math.min(49, Math.floor(w)), f = w - lo;
     const a = FENTON[sex][metric][lo - 22], b = FENTON[sex][metric][lo + 1 - 22];
@@ -2229,8 +2235,9 @@
   }
 
   function pctForMetric(metric, sex, pma, val){
-    const wk = Math.max(22, Math.min(50, pma));
-    return pctLabel(val, fentonRowInterp(sex, wk, metric));
+    if (!Number.isFinite(Number(val)) || !Number.isFinite(Number(pma))
+        || pma < FENTON_MIN_PMA[metric] || pma > FENTON_MAX_PMA) return 'N/A';
+    return pctLabel(Number(val), fentonRowInterp(sex, pma, metric));
   }
 
   function metricValue(e, metric){
@@ -2255,7 +2262,7 @@
     if (first && last && first !== last && last.dol > first.dol) {
       const firstPma = GA_WK + GA_DY / 7 + first.dol / 7;
       const lastPma = GA_WK + GA_DY / 7 + last.dol / 7;
-      if (GA_WK + GA_DY / 7 >= 37 || firstPma < 22.5 || lastPma > 50) {
+      if (GA_WK + GA_DY / 7 >= 37 || firstPma < FENTON_MIN_PMA.w || firstPma > FENTON_MAX_PMA || lastPma < FENTON_MIN_PMA.w || lastPma > FENTON_MAX_PMA) {
         zText = 'Outside validated range';
         zDetail = 'Use an appropriate term infant reference or official Fenton 2025 LMS calculator for these ages';
       } else {
@@ -2319,17 +2326,20 @@
 
   function chartSvgMarkup(metric){
     const gaB = GA_WK + GA_DY / 7;
+    if (gaB >= 37) return '<div class="chart-empty">Fenton preterm growth plotting is not intended for infants born at term. Select an appropriate term infant growth standard.</div>';
+    const minPma = FENTON_MIN_PMA[metric], maxPma = FENTON_MAX_PMA;
     const pts = entries
       .map(e => ({ dol: e.dol, val: metricValue(e, metric) }))
-      .filter(p => p.val != null && !isNaN(p.val))
-      .map(p => ({ pma: gaB + p.dol / 7, val: p.val }));
+      .filter(p => p.val != null && Number.isFinite(Number(p.val)))
+      .map(p => ({ pma: gaB + p.dol / 7, val: p.val }))
+      .filter(p => p.pma >= minPma && p.pma <= maxPma);
 
     if (pts.length === 0) {
-      return `<div class="chart-empty">No ${METRIC_LABEL_MAP[metric]} values logged yet — add a point with this measurement.</div>`;
+      return `<div class="chart-empty">No ${METRIC_LABEL_MAP[metric]} measurements within the Fenton 2025 age range (${Math.floor(minPma)}+${Math.round((minPma % 1) * 7)}/7 to 50+0 weeks). Check the age or use the appropriate reference.</div>`;
     }
 
-    let xMin = Math.max(22, Math.floor(Math.min(24, ...pts.map(p => p.pma))) - 1);
-    let xMax = Math.min(50, Math.ceil(Math.max(40, ...pts.map(p => p.pma))) + 1);
+    let xMin = Math.max(minPma, Math.floor(Math.min(24, ...pts.map(p => p.pma))) - 1);
+    let xMax = Math.min(maxPma, Math.ceil(Math.max(40, ...pts.map(p => p.pma))) + 1);
     if (xMax - xMin < 6) xMax = Math.min(50, xMin + 6);
 
     const samples = [];
@@ -2400,11 +2410,11 @@
     const gaBirth = GA_WK + GA_DY / 7;
     const hasOutOfRangePma = entries.some(e => {
       const pma = gaBirth + Number(e.dol) / 7;
-      return pma > 50 || pma < 22.5 || (e.len != null && pma < 23.5);
+      return pma > FENTON_MAX_PMA || pma < FENTON_MIN_PMA.w || (e.len != null && pma < FENTON_MIN_PMA.l);
     });
     const warning = gaBirth >= 37
-      ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; this chart is shown for visual context only.</div>'
-      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (weight/OFC 22+4 to 50 weeks; length 23+4 to 50 weeks PMA). Do not interpret clamped chart values beyond this range.</div>' : '');
+      ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; no Fenton chart is displayed for term-born infants.</div>'
+      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (weight/OFC 22+4 to 50+0 weeks; length 23+4 to 50+0 weeks PMA). Out-of-range measurements are excluded from the plotted reference comparison.</div>' : '');
     document.getElementById('growthChartSvg').innerHTML = warning + chartSvgMarkup(GMETRIC);
   }
 
@@ -2429,11 +2439,18 @@
   document.getElementById('gGaDy').addEventListener('input', function(){ GA_DY = parseFloat(this.value) || 0; onBirthDetailsChange(); if (typeof renderFluidTarget === 'function') { renderFluidTarget(); renderFluids(); } });
 
   document.getElementById('addEntryBtn').addEventListener('click', () => {
-    const dol = parseInt(document.getElementById('eDol').value);
-    const wt = parseFloat(document.getElementById('eWt').value);
-    const len = document.getElementById('eLen').value ? parseFloat(document.getElementById('eLen').value) : null;
-    const hc = document.getElementById('eHc').value ? parseFloat(document.getElementById('eHc').value) : null;
-    if (isNaN(dol) || isNaN(wt)) { alert('Enter at least a postnatal day and weight.'); return; }
+    const dolRaw = document.getElementById('eDol').value;
+    const wtRaw = document.getElementById('eWt').value;
+    const lenRaw = document.getElementById('eLen').value;
+    const hcRaw = document.getElementById('eHc').value;
+    const dol = Number(dolRaw), wt = Number(wtRaw);
+    const len = lenRaw !== '' ? Number(lenRaw) : null;
+    const hc = hcRaw !== '' ? Number(hcRaw) : null;
+    if (dolRaw === '' || !Number.isInteger(dol) || dol < 0 || dol > 250) { alert('Postnatal day must be a whole number from 0 to 250.'); return; }
+    if (wtRaw === '' || !Number.isFinite(wt) || wt < 300 || wt > 6000) { alert('Enter a valid weight from 300 to 6000 g.'); return; }
+    if (len !== null && (!Number.isFinite(len) || len < 20 || len > 60)) { alert('Length must be between 20 and 60 cm, or left blank.'); return; }
+    if (hc !== null && (!Number.isFinite(hc) || hc < 15 || hc > 45)) { alert('Head circumference must be between 15 and 45 cm, or left blank.'); return; }
+    if (entries.some(e => Number(e.dol) === dol)) { alert('A measurement is already recorded for this postnatal day. Review or remove the existing entry before adding another, to avoid duplicate-day velocity calculations.'); return; }
     entries.push({ _id: Date.now() + Math.random(), dol, wt, len, hc });
     document.getElementById('eWt').value = '';
     document.getElementById('eLen').value = '';
@@ -2475,10 +2492,14 @@
   }
 
   function pctNumeric(metric, sex, pma, val){
-    return 100 * normCdf(zFromRow(val, fentonRowInterp(sex, pma, metric)));
+    if (!Number.isFinite(Number(val)) || !Number.isFinite(Number(pma))
+        || pma < FENTON_MIN_PMA[metric] || pma > FENTON_MAX_PMA) return null;
+    return 100 * normCdf(zFromRow(Number(val), fentonRowInterp(sex, pma, metric)));
   }
   function zNumeric(metric, sex, pma, val){
-    return zFromRow(val, fentonRowInterp(sex, pma, metric));
+    if (!Number.isFinite(Number(val)) || !Number.isFinite(Number(pma))
+        || pma < FENTON_MIN_PMA[metric] || pma > FENTON_MAX_PMA) return null;
+    return zFromRow(Number(val), fentonRowInterp(sex, pma, metric));
   }
   function pctLabelWrap(num){
     if (num < 3) return '<3rd %ile';
@@ -2509,8 +2530,8 @@
     if (isNaN(wt)) { el.innerHTML = ''; return; }
 
     const gaBirth = GA_WK + GA_DY / 7;
-    if (gaBirth < 22.5) {
-      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The embedded Fenton 2025 reference begins at 22+4 weeks. Do not classify birth size below this gestation using this app.</p></div>';
+    if (gaBirth < FENTON_MIN_PMA.w || gaBirth > FENTON_MAX_PMA) {
+      el.innerHTML = '<div class="sga-banner warn"><h4>Birth-size percentile unavailable</h4><p>The embedded Fenton 2025 growth reference covers 22+4 to 50+0 weeks. Do not classify birth size outside this range using this app.</p></div>';
       return;
     }
     if (gaBirth >= 37) {
@@ -2518,7 +2539,7 @@
       return;
     }
     const wtPctNum = pctNumeric('w', GSEX, gaBirth, wt / 1000);
-    const lenPctNum = len != null && gaBirth >= 23.5 ? pctNumeric('l', GSEX, gaBirth, len) : null;
+    const lenPctNum = len != null ? pctNumeric('l', GSEX, gaBirth, len) : null;
     const ofcPctNum = ofc != null ? pctNumeric('h', GSEX, gaBirth, ofc) : null;
 
     let category, detail, cls = '';
