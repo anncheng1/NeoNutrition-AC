@@ -1568,8 +1568,8 @@
     </div>
 
     <div class="card">
-      <h3><span class="num">03</span>Plot on the Fenton growth chart</h3>
-      <p>Birth measurements are plotted automatically as day 0. Log further serial measurements below to build the trajectory against the Fenton third-generation (2025) reference curves (P3 · P10 · P50 · P90 · P97) by postmenstrual age.</p>
+      <h3><span class="num">03</span>Patient growth trajectory</h3>
+      <p>Birth measurements are plotted automatically as day 0. Log serial measurements to view the baby's trajectory by postmenstrual age. Official Fenton 2025 centiles and Z-scores are obtained separately using the CSV export and official Plotter.</p>
       <div class="opt-note warn"><b>Official reference workflow:</b> This app does not calculate Fenton centiles or Z-scores. It exports measurements in a format for the official Fenton 2025 Plotter. Import the CSV there, choose Growth monitoring for preterm longitudinal growth or BirthSize for term birth-size evaluation, then calculate the official results. No estimated centiles are shown here.</div>
 
       <div class="opt-note info"><b>Official Fenton 2025 calculator</b><p>Export the current baby's sex, gestational age and serial measurements, then import the CSV into the official Plotter to calculate centiles and Z-scores.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;"><button class="btn-add" type="button" id="exportFentonCsvBtn">⬇ Export Fenton CSV</button><a class="btn-add" style="text-decoration:none;background:var(--ink);" href="https://fentongrowth.ca/" target="_blank" rel="noopener">Open official Fenton Plotter ↗</a></div></div>
@@ -2154,14 +2154,7 @@
   });
   render();
 
-  // ===========================================================================
-  // GROWTH CHART MODULE — Fenton third-generation (2025) preterm growth chart
-  // Percentile values [P3, P10, P50, P90, P97] for each completed week 22–50,
-  // digitised from the published 2025 boys/girls charts (fentongrowth.ca).
-  // Curves equal the WHO Growth Standard at 50 weeks. Length before 23.5 wk and
-  // values above the printed chart area are extrapolated.
-  // ===========================================================================
-  // Fenton 2025 results are delegated to the official Plotter.
+  // GROWTH CHART MODULE — measurement entry and export to official Fenton 2025 Plotter.\n  // Fenton 2025 results are delegated to the official Plotter.
   // No digitised percentile knots or unlicensed LMS parameters are embedded.
   const FENTON_MIN_PMA = { w: 22 + 4/7, h: 22 + 4/7, l: 23 + 4/7 };
   const FENTON_MAX_PMA = 50;
@@ -2393,21 +2386,6 @@
     return { dolFloat, dolInt: dayDiff, dob, now };
   }
 
-  function pctNumeric(metric, sex, pma, val){
-    if (!Number.isFinite(Number(val)) || !Number.isFinite(Number(pma))
-        || pma < FENTON_MIN_PMA[metric] || pma > FENTON_MAX_PMA) return null;
-    return 100 * normCdf(zFromRow(Number(val), fentonRowInterp(sex, pma, metric)));
-  }
-  function zNumeric(metric, sex, pma, val){
-    if (!Number.isFinite(Number(val)) || !Number.isFinite(Number(pma))
-        || pma < FENTON_MIN_PMA[metric] || pma > FENTON_MAX_PMA) return null;
-    return zFromRow(Number(val), fentonRowInterp(sex, pma, metric));
-  }
-  function pctLabelWrap(num){
-    if (num < 3) return '<3rd %ile';
-    if (num > 97) return '>97th %ile';
-    return ordinal(num) + ' %ile';
-  }
 
   function renderDolChips(){
     const chipsEl = document.getElementById('dolChips');
@@ -3832,7 +3810,7 @@
       ${chartSvgMarkup('h')}
       <h3 style="font-size:15px; margin:16px 0 6px;">Measurement log</h3>
       ${tableHtml}
-      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">Fenton 2025 percentile curves are digitised approximations; Z-scores are interpolated from five percentile knots and are not official LMS values. Verify borderline results with the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 calculator</a>. Generated ${new Date().toLocaleString()}.</p>
+      <p style="font-size:10.5px; color:#8B95A1; margin-top:18px;">This report displays patient measurements only. Fenton 2025 centiles and Z-scores must be calculated using the <a href="https://fentongrowth.ca/" target="_blank" rel="noopener">official Fenton 2025 Plotter</a> after importing the exported CSV. Generated ${new Date().toLocaleString()}.</p>
     `;
     document.getElementById('printArea').querySelectorAll('.entries-table').forEach(t => t.style.display = '');
   }
