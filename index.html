@@ -2280,7 +2280,7 @@
     });
     const warning = gaBirth >= 37
       ? '<div class="opt-note warn"><b>Reference limitation:</b> Fenton 2025 is a preterm growth reference. Term-born infants should be plotted on an appropriate term infant standard; no Fenton chart is displayed for term-born infants.</div>'
-      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the embedded Fenton 2025 range (weight/OFC 22+4 to 50+0 weeks; length 23+4 to 50+0 weeks PMA). Out-of-range measurements are excluded from the plotted reference comparison.</div>' : '');
+      : (hasOutOfRangePma ? '<div class="opt-note warn"><b>Reference limitation:</b> one or more measurements are outside the Fenton 2025 supported age range (weight/OFC 22+4 to 50+0 weeks; length 23+4 to 50+0 weeks PMA). Out-of-range measurements are excluded from the patient-only plot and should be checked against the official tool.</div>' : '');
     document.getElementById('growthChartSvg').innerHTML = warning + chartSvgMarkup(GMETRIC);
   }
 
@@ -2303,7 +2303,7 @@
     ];
     entries.slice().sort((a,b)=>a.dol-b.dol).forEach(e=>{
       const ga = gaBirth + Number(e.dol||0)/7;
-      const hasMeasurement = Number.isFinite(Number(e.wt)) || e.hc!=null || e.len!=null;
+      const hasMeasurement = (e.wt!=null && Number.isFinite(Number(e.wt))) || e.hc!=null || e.len!=null;
       if (!hasMeasurement) return;
       rows.push([
         ga.toFixed(5),
