@@ -910,8 +910,6 @@
     .ls-item{min-height:44px !important; padding:5px 4px !important; text-align:center;}
     .ls-item .ls-val{font-size:15px !important;}
     .ls-item .ls-lbl{font-size:8px !important; letter-spacing:0 !important;}
-    /* Quick-start cards only on the Baby step of a new patient (the step chips do the same job) */
-    .workflow-guide.guide-hidden{display:none;}
     /* Patient bar: picker on its own row, buttons share the next row evenly */
     .patient-bar{display:flex; flex-wrap:wrap;}
     .patient-bar select{flex:1 1 100% !important;}
@@ -927,6 +925,38 @@
     .ls-item .ls-val{font-size:13px !important;}
   }
 
+
+  /* ---- Landing: start-here card (Nov 2026 redesign) ---- */
+  .workflow-guide.guide-hidden{display:none !important;}
+  .live-sum.is-empty{display:none !important;}
+  .workflow-guide{background:#FBFCFB !important;color:#16302E;border:0 !important;padding:22px !important;border-radius:20px !important;box-shadow:0 14px 34px rgba(0,0,0,.22) !important;margin:0 0 20px !important;}
+  .wf-kicker{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#2F8F84;}
+  .wf-head h2{margin:6px 0 5px;font-size:22px;line-height:1.2;color:#10302D;letter-spacing:-.025em;font-family:inherit;font-weight:800;}
+  .wf-head p{margin:0;color:#5E716E;font-size:13.5px;line-height:1.45;}
+  .wf-list{display:grid;gap:1px;margin-top:18px;background:#E6EEEC;border:1px solid #E6EEEC;border-radius:16px;overflow:hidden;}
+  .wf-row{display:flex;align-items:center;gap:13px;width:100%;min-height:64px;padding:11px 14px;background:#fff;border:0;text-align:left;cursor:pointer;color:inherit;font:inherit;transition:background .15s ease;}
+  .wf-row:hover{background:#F6FAF9;} .wf-row:active{background:#EDF6F3;}
+  .wf-row:focus-visible{outline:3px solid #F3C879;outline-offset:-3px;}
+  .wf-ico{position:relative;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:#E6F3F0;display:grid;place-items:center;color:#1F6E65;}
+  .wf-ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .wf-ico i{position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;border-radius:10px;background:#1F6E65;color:#fff;font-size:10.5px;font-weight:800;font-style:normal;line-height:15px;text-align:center;border:2px solid #fff;}
+  .wf-row.done .wf-ico{background:#E3F4EA;color:#2B8A5C;} .wf-row.done .wf-ico i{background:#2B8A5C;}
+  .wf-txt{flex:1;min-width:0;}
+  .wf-txt b{display:block;font-size:15.5px;font-weight:700;color:#10302D;}
+  .wf-txt small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:#6B7C79;}
+  .wf-go{flex:0 0 auto;color:#9AB3AE;font-size:24px;line-height:1;}
+  .wf-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+  .wf-primary,.wf-secondary{flex:1 1 200px;min-height:52px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;}
+  .wf-primary{border:0;background:#1F6E65;color:#fff;box-shadow:0 6px 16px rgba(31,110,101,.28);}
+  .wf-primary:active{transform:translateY(1px);}
+  .wf-secondary{border:1px solid #CFE0DC;background:#fff;color:#1F6E65;}
+  .wf-secondary span{display:inline-block;min-width:22px;margin-left:6px;padding:1px 7px;border-radius:10px;background:#E6F3F0;font-size:12.5px;}
+  .workflow-guide .workflow-safety{margin-top:16px;padding-top:10px;border-top:1px solid #E8EFED;}
+  .workflow-guide .workflow-safety summary{color:#6B7C79 !important;font-size:12px !important;font-weight:600;min-height:44px;}
+  .workflow-guide .workflow-safety summary::before{color:#2F8F84;}
+  .workflow-guide .guide-note{color:#5E716E !important;font-size:12px !important;}
+  @media(min-width:900px){ .wf-list{grid-template-columns:repeat(4,minmax(0,1fr));} .wf-row{flex-direction:column;align-items:flex-start;min-height:132px;padding:16px;} .wf-go{display:none;} .wf-actions{max-width:560px;} }
+  @media(max-width:420px){ .workflow-guide{padding:18px 16px !important;} .wf-head h2{font-size:20px;} }
 </style>
 </head>
 <body>
@@ -960,38 +990,38 @@
   </nav>
   <div class="calc-panel">
     <section class="workflow-guide" id="workflowGuide" aria-labelledby="workflowTitle">
-      <div class="workflow-heading">
-        <div><span class="workflow-kicker">QUICK START</span><h2 id="workflowTitle">Your daily nutrition workflow</h2>
-          <p>Follow the steps in order. Tap a card to go straight to that section.</p></div>
-        <span class="workflow-mark" aria-hidden="true">4<br><small>steps</small></span>
+      <div class="wf-head">
+        <span class="wf-kicker">New nutrition review</span>
+        <h2 id="workflowTitle">Four steps to today’s plan</h2>
+        <p>Enter the baby, then feeds. Results update live as you type.</p>
       </div>
-      <div class="guide-steps">
-        <button type="button" class="guide-step workflow-card" data-workflow-step="baby" aria-label="Step 1: Enter baby details">
-          <span class="guide-art art-baby" aria-hidden="true">
-            <svg viewBox="0 0 120 88" role="img"><path d="M28 66c3-15 16-24 32-24s29 9 32 24v9H28z" fill="#D9F0EA"/><path d="M42 49c-4-12 2-25 15-28 13-3 25 5 25 18 0 8-5 14-13 17l-7 10-12-8c-5-2-7-5-8-9z" fill="#F2C9A9"/><path d="M49 43c4-4 9-5 14-3" fill="none" stroke="#9B6A55" stroke-width="2" stroke-linecap="round"/><path d="M39 65c8 7 33 9 43 0" fill="none" stroke="#3B8E82" stroke-width="4" stroke-linecap="round"/><circle cx="77" cy="19" r="7" fill="#F3C879"/><path d="M19 24l7 4m-3-12 3 7" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/></svg>
-          </span>
-          <span class="guide-copy"><b><i>1</i> Baby</b><span>Birth details, weight and measurements</span></span><span class="guide-arrow">›</span>
+      <div class="wf-list">
+        <button type="button" class="wf-row workflow-card" data-workflow-step="baby" aria-label="Step 1: Baby — Birth details, gestation and weight">
+          <span class="wf-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20c1-4 3.5-6 7-6s6 2 7 6"/></svg><i>1</i></span>
+          <span class="wf-txt"><b>Baby</b><small>Birth details, gestation and weight</small></span>
+          <span class="wf-go" aria-hidden="true">›</span>
         </button>
-        <button type="button" class="guide-step workflow-card" data-workflow-step="feeds" aria-label="Step 2: Enter milk feeds">
-          <span class="guide-art art-feed" aria-hidden="true">
-            <svg viewBox="0 0 120 88" role="img"><path d="M24 57c7-14 20-21 34-17 8 2 12 9 18 10 8 1 14-4 21-2 8 3 11 11 8 19H36c-8 0-13-3-12-10z" fill="#D9F0EA"/><path d="M36 47c7-11 18-15 28-11 7 3 10 8 15 11-5 9-13 14-25 13-9-1-15-5-18-13z" fill="#F2C9A9"/><path d="M69 32c7-7 17-8 23-2" fill="none" stroke="#F2C9A9" stroke-width="8" stroke-linecap="round"/><path d="M27 66c18 7 47 8 68 0" fill="none" stroke="#3B8E82" stroke-width="4" stroke-linecap="round"/><path d="M84 16c0-5 8-5 8 0v4h-8z" fill="#F3C879"/><path d="M88 20v11" stroke="#F3C879" stroke-width="4" stroke-linecap="round"/></svg>
-          </span>
-          <span class="guide-copy"><b><i>2</i> Feeds</b><span>Milk type, volume, frequency and fortifier</span></span><span class="guide-arrow">›</span>
+        <button type="button" class="wf-row workflow-card" data-workflow-step="feeds" aria-label="Step 2: Feeds — Milk type, volume and fortifier">
+          <span class="wf-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v3l-2 3v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V3"/><path d="M8 13h8"/></svg><i>2</i></span>
+          <span class="wf-txt"><b>Feeds</b><small>Milk type, volume and fortifier</small></span>
+          <span class="wf-go" aria-hidden="true">›</span>
         </button>
-        <button type="button" class="guide-step workflow-card" data-workflow-step="iv" aria-label="Step 3: Enter IV fluids and parenteral nutrition if used">
-          <span class="guide-art art-iv" aria-hidden="true">
-            <svg viewBox="0 0 120 88" role="img"><path d="M53 10h14v9H53z" fill="#F3C879"/><path d="M47 19h26v43a8 8 0 0 1-8 8h-10a8 8 0 0 1-8-8z" fill="#D9F0EA" stroke="#3B8E82" stroke-width="3"/><path d="M49 43h22v19a6 6 0 0 1-6 6h-10a6 6 0 0 1-6-6z" fill="#8FCFC2"/><path d="M60 70v9m0 0c0 4 8 4 8 0" fill="none" stroke="#3B8E82" stroke-width="3" stroke-linecap="round"/><path d="M37 18v12m-6-6h12" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/><path d="M80 26l8 8m0-8-8 8" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/></svg>
-          </span>
-          <span class="guide-copy"><b><i>3</i> IV / PN <em>if used</em></b><span>Fluids, TPN, lipid and other infusions</span></span><span class="guide-arrow">›</span>
+        <button type="button" class="wf-row workflow-card" data-workflow-step="iv" aria-label="Step 3: IV / PN — Fluids, TPN and lipid — only if used">
+          <span class="wf-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3h8v9a4 4 0 0 1-8 0z"/><path d="M12 16v5M8 8h8"/></svg><i>3</i></span>
+          <span class="wf-txt"><b>IV / PN</b><small>Fluids, TPN and lipid — only if used</small></span>
+          <span class="wf-go" aria-hidden="true">›</span>
         </button>
-        <button type="button" class="guide-step workflow-card" data-workflow-step="results" aria-label="Step 4: Review nutrition results and handover">
-          <span class="guide-art art-review" aria-hidden="true">
-            <svg viewBox="0 0 120 88" role="img"><rect x="25" y="12" width="70" height="62" rx="8" fill="#F7F3EA" stroke="#3B8E82" stroke-width="3"/><path d="M37 57V45m13 12V34m13 23V40m13 17V27" stroke="#3B8E82" stroke-width="7" stroke-linecap="round"/><path d="M36 25h23" stroke="#F3C879" stroke-width="4" stroke-linecap="round"/><path d="M77 20l5 5 9-10" fill="none" stroke="#D68A56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="guide-copy"><b><i>4</i> Review</b><span>Intake vs targets, flags, growth and handover</span></span><span class="guide-arrow">›</span>
+        <button type="button" class="wf-row workflow-card" data-workflow-step="results" aria-label="Step 4: Review — Intake vs targets, flags and handover">
+          <span class="wf-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><i>4</i></span>
+          <span class="wf-txt"><b>Review</b><small>Intake vs targets, flags and handover</small></span>
+          <span class="wf-go" aria-hidden="true">›</span>
         </button>
       </div>
-      <details class="workflow-safety"><summary>Important: records and clinical use</summary>
+      <div class="wf-actions">
+        <button type="button" class="wf-primary" id="wfStartBtn">Start with baby details</button>
+        <button type="button" class="wf-secondary" id="wfOpenSavedBtn" hidden>Open saved patient <span id="wfSavedCount">0</span></button>
+      </div>
+      <details class="workflow-safety"><summary>Stored on this device only · reference aid, not a prescribing system</summary>
         <p class="guide-note">Records are stored in this browser, not synchronised between devices. Save regularly and back up securely; backups contain patient information. This is a clinical reference aid, not a prescribing system. Verify calculations, product labels and local protocols.</p>
       </details>
     </section>
@@ -4542,6 +4572,8 @@
     const l = document.getElementById('patientList');
     const keys = Object.keys(patients).sort((a, b) => (patients[b].savedAt || 0) - (patients[a].savedAt || 0));
     document.getElementById('patientCount').textContent = keys.length;
+    const wfSaved = document.getElementById('wfOpenSavedBtn');
+    if (wfSaved) { wfSaved.hidden = keys.length === 0; document.getElementById('wfSavedCount').textContent = keys.length; }
     if (!keys.length) { l.innerHTML = '<div class="pl-empty">No saved patients on this device.</div>'; return; }
     l.innerHTML = keys.map(k => {
       const p = patients[k];
@@ -4723,10 +4755,18 @@
       b.textContent = txt; b.className = 'badge' + (cls ? ' ' + cls : ''); b.style.display = txt ? '' : 'none';
     };
     const babyOk = parseFloat(document.getElementById('bWt').value) > 0 && parseFloat(document.getElementById('gGaWk').value) > 0;
-    set('baby', babyOk ? '✓' : '!', babyOk ? 'ok' : '');
+    const babyStarted = ['bWt', 'gGaWk', 'bDobDt'].some(id => document.getElementById(id).value);
+    set('baby', babyOk ? '✓' : (babyStarted ? '!' : ''), babyOk ? 'ok' : '');
     set('feeds', (parseFloat(document.getElementById('fMlPerFeed').value) || 0) > 0 ? '✓' : '', 'ok');
     const n = window.__flagCount || 0;
     set('results', n ? String(n) : (babyOk ? '✓' : ''), n ? '' : 'ok');
+    const feedsOk = (parseFloat(document.getElementById('fMlPerFeed').value) || 0) > 0;
+    const done = { baby: babyOk, feeds: feedsOk };
+    document.querySelectorAll('#workflowGuide .wf-row').forEach((r, i) => {
+      const ok = !!done[r.dataset.workflowStep];
+      r.classList.toggle('done', ok);
+      const num = r.querySelector('.wf-ico i'); if (num) num.textContent = ok ? '✓' : String(i + 1);
+    });
   }
 
   function updateLiveSummary(v){
@@ -4737,6 +4777,8 @@
       it.classList.remove('ok', 'warn', 'danger');
       if (state) it.classList.add(state);
     };
+    const strip = document.getElementById('liveSummary');
+    if (strip) strip.classList.toggle('is-empty', !v);
     if (!v) { ['tfi', 'kcal', 'prot', 'gir'].forEach(k => set(k, '—', null)); return; }
     set('tfi', fmt(v.tfi, 0), v.tfiState);
     set('kcal', fmt(v.kcal, 0), v.kcalState);
@@ -4834,6 +4876,17 @@
       const target = STEPS.find(item => item.id === step);
       if (target) document.getElementById(target.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
+    const wfStart = document.getElementById('wfStartBtn');
+    if (wfStart) wfStart.addEventListener('click', () => {
+      goStep('baby', { scroll: false });
+      document.getElementById('birthDetailsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    const wfOpen = document.getElementById('wfOpenSavedBtn');
+    if (wfOpen) wfOpen.addEventListener('click', () => {
+      const list = document.getElementById('patientList');
+      if (list && list.hidden) document.getElementById('patientListBtn').click();
+      document.getElementById('secSaved').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
     let startStep = 'baby';
     try { startStep = window.sessionStorage.getItem('neoNutritionStep') || 'baby'; } catch (e) {}
     goStep(startStep, { scroll: false });
