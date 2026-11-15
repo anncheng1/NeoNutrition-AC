@@ -957,6 +957,53 @@
   .workflow-guide .guide-note{color:#5E716E !important;font-size:12px !important;}
   @media(min-width:900px){ .wf-list{grid-template-columns:repeat(4,minmax(0,1fr));} .wf-row{flex-direction:column;align-items:flex-start;min-height:132px;padding:16px;} .wf-go{display:none;} .wf-actions{max-width:560px;} }
   @media(max-width:420px){ .workflow-guide{padding:18px 16px !important;} .wf-head h2{font-size:20px;} }
+
+  /* ---- Growth screen + simplified Library (Nov 2026) ---- */
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .growth-section{max-width:1080px;margin:0 auto;padding:12px 24px 90px;}
+  .gv-head{margin-bottom:18px;}
+  .gv-head h2,.lib-topicbar h2{font-family:Inter,-apple-system,sans-serif;font-weight:800;letter-spacing:-.035em;font-size:25px;margin:0;color:#10302D;}
+  .gv-head p{color:#60717D;margin-top:6px;max-width:620px;font-size:14px;line-height:1.5;}
+  .tabs,.tab-select-wrap{display:none !important;}
+  .lib-section.is-index .panel{display:none !important;}
+  .lib-search{display:flex;align-items:center;gap:10px;min-height:50px;padding:0 14px;margin-bottom:14px;background:#fff;border:1px solid #DCE6E4;border-radius:14px;box-shadow:0 2px 8px rgba(20,48,60,.05);}
+  .lib-search:focus-within{border-color:#2F8F84;box-shadow:0 0 0 3px rgba(47,143,132,.15);}
+  .lib-search svg{flex:0 0 20px;width:20px;height:20px;fill:none;stroke:#7A8D8A;stroke-width:2;stroke-linecap:round;}
+  .lib-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:16px;color:#10302D;min-height:48px;}
+  .lib-list{display:grid;gap:1px;background:#E6EEEC;border:1px solid #E6EEEC;border-radius:16px;overflow:hidden;}
+  .lib-item{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;padding:12px 16px;background:#fff;border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:background .15s ease;}
+  .lib-item[hidden]{display:none;}
+  .lib-item:hover{background:#F6FAF9;} .lib-item:active{background:#EDF6F3;}
+  .lib-item:focus-visible{outline:3px solid #F3C879;outline-offset:-3px;}
+  .lib-num{flex:0 0 38px;height:38px;border-radius:11px;background:#E6F3F0;color:#1F6E65;display:grid;place-items:center;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .lib-txt{flex:1;min-width:0;}
+  .lib-txt b{display:block;font-size:15.5px;font-weight:700;color:#10302D;}
+  .lib-txt small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:#6B7C79;}
+  .lib-go{color:#9AB3AE;font-size:24px;line-height:1;}
+  .lib-empty{margin:18px 4px;color:#6B7C79;font-size:14px;}
+  .lib-topicbar{position:sticky;top:0;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin:0 -24px 16px;padding:10px 24px 12px;background:rgba(244,247,247,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #E1E9EB;}
+  .lib-topicbar[hidden]{display:none;}
+  .lib-back{min-height:40px;padding:0 4px;margin-left:-4px;border:0;background:transparent;color:#1F6E65;font:inherit;font-size:15px;font-weight:700;cursor:pointer;}
+  .lib-topicbar h2{font-size:22px;}
+  @media(min-width:900px){ .lib-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media(max-width:760px){
+    .growth-section{padding:10px 14px 96px;}
+    .lib-topicbar{margin:0 -14px 14px;padding:8px 14px 10px;}
+    .gv-head h2{font-size:23px;}
+  }
+  /* Info boxes sitting directly on light cards need dark text (they were styled for the dark calculator panel) */
+  :is(.card > .opt-note, .card > .collapsible-content > .opt-note){color:#334441;background:#EEF5F3;}
+  :is(.card > .opt-note, .card > .collapsible-content > .opt-note, #growthChartSvg .opt-note).warn{color:#5A4114;background:#FFF4E0;}
+  :is(.card > .opt-note, .card > .collapsible-content > .opt-note).coral{color:#6A2A1D;background:#FCECE7;}
+  :is(.card > .opt-note, .card > .collapsible-content > .opt-note, #growthChartSvg .opt-note) :is(b,strong){color:inherit;font-weight:700;}
+  :is(.card > .opt-note, .card > .collapsible-content > .opt-note) a:not(.btn-add){color:#1F6E65;}
+  /* Readout tiles sitting directly on light cards (e.g. longitudinal review) */
+  :is(.card > .readout-grid, .card > .collapsible-content > .readout-grid) > .readout{background:#F6FAF9;border:1px solid #E1EBE8;}
+  :is(.card > .readout-grid, .card > .collapsible-content > .readout-grid) > .readout .rvalue{color:#10302D;}
+  :is(.card > .readout-grid, .card > .collapsible-content > .readout-grid) > .readout .rlabel{color:#2F7F75;}
+  :is(.card > .readout-grid, .card > .collapsible-content > .readout-grid) > .readout .rsub{color:#5E716E;}
+  .nut-calc .opt-note :is(ul,ol,li,p){color:inherit;}
+  .lib-go,.wf-go{color:#7E9893 !important;}
 </style>
 </head>
 <body>
@@ -972,7 +1019,8 @@
   <div class="hero-right">
     <div class="view-tabs" role="tablist" aria-label="App section">
       <button type="button" data-view="calc" class="active">Calculator</button>
-      <button type="button" data-view="lib">Reference</button>
+      <button type="button" data-view="growth">Growth</button>
+      <button type="button" data-view="lib">Library</button>
     </div>
     <span class="net-badge" id="netBadge">Works offline</span>
   </div>
@@ -1102,7 +1150,7 @@
           <input type="number" id="latestOfc" min="15" max="45" step="0.1" placeholder="optional">
         </div>
       </div>
-      <p style="position:relative; z-index:1; font-size:12.5px; color:#8FB3AC; margin-top:12px;">Plotted on the Fenton chart (Growth tab). The higher of birth and latest weight is used as the reference weight.</p>
+      <p style="position:relative; z-index:1; font-size:12.5px; color:#8FB3AC; margin-top:12px;">Plotted on the Growth screen. The higher of birth and latest weight is used as the reference weight.</p>
       <div class="readout-grid" id="scheduleReadouts" style="margin-top:10px;"></div>
     </div>
 
@@ -1391,10 +1439,181 @@
   </div>
 </div>
 
+<div class="growth-section" id="growthView" style="display:none;">
+  <div class="gv-head" id="growthTop">
+    <h2>Growth</h2>
+    <p>Plot serial measurements, review the trend and print the growth report. Birth details and feeds come from the Calculator.</p>
+  </div>
+  <div class="panel active" id="growthPanel">    <div class="card">
+      <h3><span class="num">01</span>Patient growth trajectory</h3>
+      <p>Birth measurements are plotted automatically as day 0. Log serial measurements to view the baby's trajectory by postmenstrual age. Official Fenton 2025 centiles and Z-scores are obtained separately using the CSV export and official Plotter.</p>
+      <div class="opt-note warn"><b>Official reference workflow:</b> This app does not calculate Fenton centiles or Z-scores. It exports measurements in a format for the official Fenton 2025 Plotter. Import the CSV there, choose Growth monitoring for preterm longitudinal growth or BirthSize for term birth-size evaluation, then calculate the official results. No estimated centiles are shown here.</div>
+
+      <div class="opt-note info"><b>Official Fenton 2025 calculator</b><p>Export the current baby's sex, gestational age and serial measurements, then import the CSV into the official Plotter to calculate centiles and Z-scores.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;"><button class="btn-add" type="button" id="exportFentonCsvBtn">⬇ Export Fenton CSV</button><a class="btn-add" style="text-decoration:none;background:var(--ink);" href="https://fentongrowth.ca/" target="_blank" rel="noopener">Open official Fenton Plotter ↗</a></div></div>
+      <div class="growth-toolbar">
+        <div>
+          <div class="mini-field"><label>Metric plotted</label></div>
+          <div class="seg" id="gMetricSeg">
+            <button class="active" data-metric="w">Weight</button>
+            <button data-metric="l">Length</button>
+            <button data-metric="h">Head circ.</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry-form">
+        <div>
+          <label for="eDol">Postnatal day</label>
+          <input type="number" id="eDol" min="0" max="250" value="0">
+        </div>
+        <div>
+          <label for="eWt">Weight (g)</label>
+          <input type="number" id="eWt" min="300" max="6000" step="5" placeholder="e.g. 900">
+        </div>
+        <div>
+          <label for="eLen">Length (cm)</label>
+          <input type="number" id="eLen" min="20" max="60" step="0.1" placeholder="optional">
+        </div>
+        <div>
+          <label for="eHc">Head circ. (cm)</label>
+          <input type="number" id="eHc" min="15" max="45" step="0.1" placeholder="optional">
+        </div>
+        <button class="btn-add" id="addEntryBtn" type="button">+ Add point</button>
+      </div>
+
+      <table class="entries-table" id="entriesTable" style="display:none;">
+        <thead><tr><th>DOL</th><th>PMA</th><th>Wt</th><th>Official %ile</th><th>Len</th><th>Official %ile</th><th>HC</th><th>Official %ile</th><th></th></tr></thead>
+        <tbody id="entriesBody"></tbody>
+      </table>
+
+      <div class="chart-wrap">
+        <div class="chart-legend">
+          <span><i class="swatch" style="background:#1C2B39;"></i>Patient measurements only — official centiles are calculated on fentongrowth.ca</span>
+        </div>
+        <div id="growthChartSvg"><div class="chart-empty">Enter birth details above to plot the chart.</div></div>
+      </div>
+    </div>
+    <div class="card" id="longitudinalCard">
+      <h3><span class="num">02</span>Longitudinal growth &amp; nutrition review</h3>
+      <p class="tt-note">A summary of recorded serial measurements and logged daily nutrition snapshots. This is a trend aid, not a substitute for reviewing the full growth chart and clinical context.</p>
+      <div id="longitudinalDashboard" class="readout-grid" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h3><span class="num">03</span>Nutrition optimization from current intake</h3>
+      <p>Enter the current feeding regimen to calculate delivered calories and protein against evidence-based targets for the weight band, and get a suggested next lever if intake or growth velocity is off-target.</p>
+
+      <div class="nut-calc">
+        <div class="calc-head">
+          <h2>Intake &amp; Optimization</h2>
+          <span>USES LATEST PLOTTED WEIGHT · UPDATES LIVE</span>
+        </div>
+        <div class="nut-grid">
+          <div class="field">
+            <label for="nWt">Current weight (g)</label>
+            <input type="number" id="nWt" min="300" max="6000" step="5" placeholder="auto from chart">
+          </div>
+          <div class="field">
+            <label for="nVol">Enteral volume (mL/kg/d)</label>
+            <input type="number" id="nVol" min="0" max="220" value="150" step="5">
+          </div>
+          <div class="field">
+            <label for="nFeed">Feed type</label>
+            <select id="nFeed">
+              <option value="ebm">Unfortified EBM/donor milk</option>
+              <option value="ebmStdFort" selected>EBM + standard fortifier</option>
+              <option value="ebmHiFort">EBM + high-protein fortifier</option>
+              <option value="pretermFormula">Preterm formula (Dupro Preterm)</option>
+              <option value="termFormula">Term formula</option>
+              <option value="custom">Custom (enter below)</option>
+            </select>
+          </div>
+        </div>
+        <div class="nut-grid" id="customFeedRow" style="display:none;">
+          <div class="field">
+            <label for="nKcal100">Custom kcal / 100 mL</label>
+            <input type="number" id="nKcal100" min="50" max="120" step="1" value="80">
+          </div>
+          <div class="field">
+            <label for="nProt100">Custom protein g / 100 mL</label>
+            <input type="number" id="nProt100" min="1" max="4" step="0.1" value="2.0">
+          </div>
+        </div>
+
+        <label class="pn-check"><input type="checkbox" id="pnToggle"> Infant is also receiving supplemental parenteral nutrition</label>
+        <div class="nut-grid" id="pnFields" style="display:none;">
+          <div class="field">
+            <label for="nAA">PN amino acids (g/kg/d)</label>
+            <input type="number" id="nAA" min="0" max="4.5" step="0.1" value="0">
+          </div>
+          <div class="field">
+            <label for="nLipid">PN lipid (g/kg/d)</label>
+            <input type="number" id="nLipid" min="0" max="4" step="0.1" value="0">
+          </div>
+          <div class="field">
+            <label for="nGIR">Dextrose GIR (mg/kg/min)</label>
+            <input type="number" id="nGIR" min="0" max="14" step="0.5" value="0">
+          </div>
+        </div>
+
+        <div class="readout-grid" id="nutReadouts"></div>
+        <div id="optNote"></div>
+      </div>
+      <p style="margin-top:14px; font-size:12.5px;">Feed-type kcal/protein values are representative averages — adjust with Custom, or against your unit's actual fortifier/formula label (see Malaysian TPN and Local Supplements tabs for SGH-specific products).</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">04</span>Download &amp; print growth report</h3>
+      <p>Generates a print-ready page with patient identifier, birth/SGA summary, weight/length/OFC charts, and the measurement log — for the notes or handover.</p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn-add" id="printReportBtn" type="button">🖨️ Print growth report</button>
+        <button class="btn-add" id="downloadChartBtn" type="button" style="background:var(--ink);">⬇ Download current chart (PNG)</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="num">05</span>Target weight gain by postmenstrual age</h3>
+      <table>
+        <tr><th>PMA</th><th>Median target</th><th>Range</th></tr>
+        <tr><td class="mono">24–32 wks</td><td class="mono">20 g/kg/d</td><td class="mono">19–21</td></tr>
+        <tr><td class="mono">33–37 wks</td><td class="mono">17 g/kg/d</td><td class="mono">13–19</td></tr>
+        <tr><td class="mono">38–41 wks</td><td class="mono">9 g/kg/d</td><td class="mono">8–11</td></tr>
+      </table>
+      <p>Adapted from Fenton &amp; Kim (2013) and Landau-Crangle et al. (2018). Track using Z-scores: aim for weight and head-circumference Z-scores at discharge as close as possible (within ±0.5 SD) to birth Z-scores — a proxy for minimizing postnatal growth faltering.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="num">06</span>Charts to use</h3>
+        <p>Fenton growth chart until 50 weeks postmenstrual age, then transition to WHO growth standards.</p>
+      </div>
+      <div class="card">
+        <h3><span class="num">07</span>Risk factors for faltering growth</h3>
+        <ul>
+          <li>Prescribed vs. actual intake gap (interrupted for other infusions/antibiotics)</li>
+          <li>Elevated serum urea limiting protein advancement unnecessarily</li>
+          <li>Increased energy needs — BPD, congenital heart disease</li>
+          <li>Micronutrient depletion (sodium, zinc)</li>
+          <li>Malabsorption, e.g. high-output stoma</li>
+        </ul>
+      </div>
+    </div>
+  
+  </div>
+</div>
+
 <div class="lib-section">
   <div class="lib-head" id="libTop">
-    <h2>Reference Library</h2>
-    <p>Everything behind the calculator — parenteral practice, enteral advancement, fortification strategy, minerals, micronutrients, feeding tolerance, special populations, Malaysian standard TPN formulations, local supplements, refeeding syndrome, and metabolic bone disease.</p>
+    <h2>Library</h2>
+    <p>Quick clinical reference for neonatal nutrition. Tap a topic, or search.</p>
+  </div>
+  <div class="lib-index" id="libIndex">
+    <label class="lib-search"><span class="sr-only">Search the library</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" id="libSearch" placeholder="Search topics, e.g. iron, NEC, phosphate" autocomplete="off">
+    </label>
+    <div class="lib-list" id="libList"></div>
+    <p class="lib-empty" id="libEmpty" hidden>No topics match that search.</p>
+  </div>
+  <div class="lib-topicbar" id="libTopicBar" hidden>
+    <button type="button" class="lib-back" id="libBackBtn">‹ All topics</button>
+    <h2 id="libTopicTitle"></h2>
   </div>
 
   <div class="tab-select-wrap">
@@ -1409,7 +1628,6 @@
     <button class="tab-btn" data-tab="min">Minerals &amp; Vitamin D</button>
     <button class="tab-btn" data-tab="micro">Micronutrients</button>
     <button class="tab-btn" data-tab="tol">Feeding Tolerance &amp; NEC</button>
-    <button class="tab-btn" data-tab="growth">Growth Monitoring</button>
     <button class="tab-btn" data-tab="special">Special Populations</button>
     <button class="tab-btn" data-tab="mytpn">Malaysian TPN (SGH)</button>
     <button class="tab-btn" data-tab="mysupp">Local Supplements</button>
@@ -1538,6 +1756,58 @@
         <p>Continue fortification (up to 40–52 weeks PCA) if: growth restriction at discharge (weight &lt;10th percentile/−1 SD, or &gt;0.5 SD loss since birth), ongoing BPD or other medical issues, BUN &lt;3.2 mmol/L, or alkaline phosphatase &gt;600 IU/L / phosphorus &lt;1.6 mmol/L. Monitor growth closely to avoid overgrowth once continued at home.</p>
       </div>
     </div>
+      <div class="card">
+      <h3><span class="num">06</span>Fortification calculator</h3>
+      <p>Composition of EBM fortified with a given number of sachets, using manufacturer-labeled values for products available in Malaysia (per 4 sachets added to 100 mL milk).</p>
+
+      <div class="entry-form">
+        <div>
+          <label for="frtProduct">Fortifier product</label>
+          <select id="frtProduct">
+            <option value="enfamilHmf" selected>Enfamil HMF powder (4 sachets/100mL)</option>
+            <option value="smaBmf">Nestlé SMA Breast Milk Fortifier powder (4 sachets/100mL)</option>
+          </select>
+        </div>
+        <div>
+          <label for="frtVol">EBM volume (mL)</label>
+          <input type="number" id="frtVol" min="10" max="1000" step="10" value="100">
+        </div>
+        <div>
+          <label for="frtSachets">Sachets used (per this volume, scaled from per-100mL dosing)</label>
+          <input type="number" id="frtSachets" min="0" max="8" step="0.5" value="4">
+        </div>
+      </div>
+
+      <table class="entries-table" style="display:table;" id="frtTable">
+        <thead><tr><th>Per 100 mL fortified</th><th>Energy</th><th>Protein</th><th>Calcium</th><th>Phosphate</th></tr></thead>
+        <tbody id="frtBody"></tbody>
+      </table>
+      <p style="margin-top:10px; font-size:12.5px;">Base EBM assumed at 67 kcal, 1.4 g protein, 28 mg Ca, 14 mg P per 100 mL. Fortifier values from manufacturer labels (Nutritional Care of Preterm Infants, 2nd ed., Table 2) for products marketed in Malaysia — cross-check against the current product label, as formulations are periodically revised. Osmolality is not shown as it depends on final reconstitution and is not consistently label-declared.</p>
+    </div>
+    <div class="card">
+      <h3><span class="num">07</span>Dupro Preterm — concentration calculator</h3>
+      <p>Shows the resulting nutrient profile at a given calorie density (22–30 kcal/oz), scaled from Dupro Preterm's standard-dilution composition (80 kcal/100 mL). <strong>This does not give scoop/water reconstitution volumes</strong> — those aren't in the reference source used for this app and must be taken from the Dupro Preterm tin/product insert, since getting powder concentration wrong is a real safety risk.</p>
+
+      <div class="entry-form" style="grid-template-columns:1fr; margin-bottom:14px;">
+        <div>
+          <label for="fmDensity">Target density</label>
+          <select id="fmDensity">
+            <option value="22">22 kcal/oz</option>
+            <option value="24" selected>24 kcal/oz (standard dilution, ≈80 kcal/100mL)</option>
+            <option value="26">26 kcal/oz</option>
+            <option value="27">27 kcal/oz</option>
+            <option value="30">30 kcal/oz</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="entries-table" style="display:table;" id="fmTable">
+        <thead><tr><th>Per 100 mL at this density</th><th>Energy</th><th>Protein</th><th>Sodium</th><th>Calcium</th><th>Phosphate</th></tr></thead>
+        <tbody id="fmBody"></tbody>
+      </table>
+      <p style="margin-top:10px; font-size:12.5px;">Standard Dupro Preterm dilution (per the manufacturer's composition table) provides ≈80 kcal/100 mL, equivalent to ≈24 kcal/oz. Nutrient values at other densities are scaled proportionally from this reference point, which is a valid approximation since concentration and nutrient content scale together — but confirm the actual scoop count against the label before changing a prescription.</p>
+    </div>
+
   </div>
 
   <!-- MINERALS -->
@@ -1685,221 +1955,6 @@
   </div>
 
   <!-- GROWTH -->
-  <div class="panel" id="panel-growth">
-    <div class="card">
-      <h3><span class="num">01</span>Target weight gain by postmenstrual age</h3>
-      <table>
-        <tr><th>PMA</th><th>Median target</th><th>Range</th></tr>
-        <tr><td class="mono">24–32 wks</td><td class="mono">20 g/kg/d</td><td class="mono">19–21</td></tr>
-        <tr><td class="mono">33–37 wks</td><td class="mono">17 g/kg/d</td><td class="mono">13–19</td></tr>
-        <tr><td class="mono">38–41 wks</td><td class="mono">9 g/kg/d</td><td class="mono">8–11</td></tr>
-      </table>
-      <p>Adapted from Fenton &amp; Kim (2013) and Landau-Crangle et al. (2018). Track using Z-scores: aim for weight and head-circumference Z-scores at discharge as close as possible (within ±0.5 SD) to birth Z-scores — a proxy for minimizing postnatal growth faltering.</p>
-    </div>
-
-    <div class="card">
-      <p style="margin:0;"><strong>Birth details, SGA classification, feed volume, and the monitoring schedule are now set in the Bedside Target Calculator</strong> at the top of the page — everything below reads from those same values live, so you only enter them once.</p>
-    </div>
-
-    <div class="card" id="longitudinalCard">
-      <h3><span class="num">02</span>Longitudinal growth &amp; nutrition review</h3>
-      <p class="tt-note">A summary of recorded serial measurements and logged daily nutrition snapshots. This is a trend aid, not a substitute for reviewing the full growth chart and clinical context.</p>
-      <div id="longitudinalDashboard" class="readout-grid" aria-live="polite"></div>
-    </div>
-
-    <div class="card">
-      <h3><span class="num">03</span>Patient growth trajectory</h3>
-      <p>Birth measurements are plotted automatically as day 0. Log serial measurements to view the baby's trajectory by postmenstrual age. Official Fenton 2025 centiles and Z-scores are obtained separately using the CSV export and official Plotter.</p>
-      <div class="opt-note warn"><b>Official reference workflow:</b> This app does not calculate Fenton centiles or Z-scores. It exports measurements in a format for the official Fenton 2025 Plotter. Import the CSV there, choose Growth monitoring for preterm longitudinal growth or BirthSize for term birth-size evaluation, then calculate the official results. No estimated centiles are shown here.</div>
-
-      <div class="opt-note info"><b>Official Fenton 2025 calculator</b><p>Export the current baby's sex, gestational age and serial measurements, then import the CSV into the official Plotter to calculate centiles and Z-scores.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;"><button class="btn-add" type="button" id="exportFentonCsvBtn">⬇ Export Fenton CSV</button><a class="btn-add" style="text-decoration:none;background:var(--ink);" href="https://fentongrowth.ca/" target="_blank" rel="noopener">Open official Fenton Plotter ↗</a></div></div>
-      <div class="growth-toolbar">
-        <div>
-          <div class="mini-field"><label>Metric plotted</label></div>
-          <div class="seg" id="gMetricSeg">
-            <button class="active" data-metric="w">Weight</button>
-            <button data-metric="l">Length</button>
-            <button data-metric="h">Head circ.</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="entry-form">
-        <div>
-          <label for="eDol">Postnatal day</label>
-          <input type="number" id="eDol" min="0" max="250" value="0">
-        </div>
-        <div>
-          <label for="eWt">Weight (g)</label>
-          <input type="number" id="eWt" min="300" max="6000" step="5" placeholder="e.g. 900">
-        </div>
-        <div>
-          <label for="eLen">Length (cm)</label>
-          <input type="number" id="eLen" min="20" max="60" step="0.1" placeholder="optional">
-        </div>
-        <div>
-          <label for="eHc">Head circ. (cm)</label>
-          <input type="number" id="eHc" min="15" max="45" step="0.1" placeholder="optional">
-        </div>
-        <button class="btn-add" id="addEntryBtn" type="button">+ Add point</button>
-      </div>
-
-      <table class="entries-table" id="entriesTable" style="display:none;">
-        <thead><tr><th>DOL</th><th>PMA</th><th>Wt</th><th>Official %ile</th><th>Len</th><th>Official %ile</th><th>HC</th><th>Official %ile</th><th></th></tr></thead>
-        <tbody id="entriesBody"></tbody>
-      </table>
-
-      <div class="chart-wrap">
-        <div class="chart-legend">
-          <span><i class="swatch" style="background:#1C2B39;"></i>Patient measurements only — official centiles are calculated on fentongrowth.ca</span>
-        </div>
-        <div id="growthChartSvg"><div class="chart-empty">Enter birth details above to plot the chart.</div></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3><span class="num">03</span>Download &amp; print growth report</h3>
-      <p>Generates a print-ready page with patient identifier, birth/SGA summary, weight/length/OFC charts, and the measurement log — for the notes or handover.</p>
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <button class="btn-add" id="printReportBtn" type="button">🖨️ Print growth report</button>
-        <button class="btn-add" id="downloadChartBtn" type="button" style="background:var(--ink);">⬇ Download current chart (PNG)</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3><span class="num">04</span>Nutrition optimization from current intake</h3>
-      <p>Enter the current feeding regimen to calculate delivered calories and protein against evidence-based targets for the weight band, and get a suggested next lever if intake or growth velocity is off-target.</p>
-
-      <div class="nut-calc">
-        <div class="calc-head">
-          <h2>Intake &amp; Optimization</h2>
-          <span>USES LATEST PLOTTED WEIGHT · UPDATES LIVE</span>
-        </div>
-        <div class="nut-grid">
-          <div class="field">
-            <label for="nWt">Current weight (g)</label>
-            <input type="number" id="nWt" min="300" max="6000" step="5" placeholder="auto from chart">
-          </div>
-          <div class="field">
-            <label for="nVol">Enteral volume (mL/kg/d)</label>
-            <input type="number" id="nVol" min="0" max="220" value="150" step="5">
-          </div>
-          <div class="field">
-            <label for="nFeed">Feed type</label>
-            <select id="nFeed">
-              <option value="ebm">Unfortified EBM/donor milk</option>
-              <option value="ebmStdFort" selected>EBM + standard fortifier</option>
-              <option value="ebmHiFort">EBM + high-protein fortifier</option>
-              <option value="pretermFormula">Preterm formula (Dupro Preterm)</option>
-              <option value="termFormula">Term formula</option>
-              <option value="custom">Custom (enter below)</option>
-            </select>
-          </div>
-        </div>
-        <div class="nut-grid" id="customFeedRow" style="display:none;">
-          <div class="field">
-            <label for="nKcal100">Custom kcal / 100 mL</label>
-            <input type="number" id="nKcal100" min="50" max="120" step="1" value="80">
-          </div>
-          <div class="field">
-            <label for="nProt100">Custom protein g / 100 mL</label>
-            <input type="number" id="nProt100" min="1" max="4" step="0.1" value="2.0">
-          </div>
-        </div>
-
-        <label class="pn-check"><input type="checkbox" id="pnToggle"> Infant is also receiving supplemental parenteral nutrition</label>
-        <div class="nut-grid" id="pnFields" style="display:none;">
-          <div class="field">
-            <label for="nAA">PN amino acids (g/kg/d)</label>
-            <input type="number" id="nAA" min="0" max="4.5" step="0.1" value="0">
-          </div>
-          <div class="field">
-            <label for="nLipid">PN lipid (g/kg/d)</label>
-            <input type="number" id="nLipid" min="0" max="4" step="0.1" value="0">
-          </div>
-          <div class="field">
-            <label for="nGIR">Dextrose GIR (mg/kg/min)</label>
-            <input type="number" id="nGIR" min="0" max="14" step="0.5" value="0">
-          </div>
-        </div>
-
-        <div class="readout-grid" id="nutReadouts"></div>
-        <div id="optNote"></div>
-      </div>
-      <p style="margin-top:14px; font-size:12.5px;">Feed-type kcal/protein values are representative averages — adjust with Custom, or against your unit's actual fortifier/formula label (see Malaysian TPN and Local Supplements tabs for SGH-specific products).</p>
-    </div>
-
-    <div class="card">
-      <h3><span class="num">05</span>Fortification calculator</h3>
-      <p>Composition of EBM fortified with a given number of sachets, using manufacturer-labeled values for products available in Malaysia (per 4 sachets added to 100 mL milk).</p>
-
-      <div class="entry-form">
-        <div>
-          <label for="frtProduct">Fortifier product</label>
-          <select id="frtProduct">
-            <option value="enfamilHmf" selected>Enfamil HMF powder (4 sachets/100mL)</option>
-            <option value="smaBmf">Nestlé SMA Breast Milk Fortifier powder (4 sachets/100mL)</option>
-          </select>
-        </div>
-        <div>
-          <label for="frtVol">EBM volume (mL)</label>
-          <input type="number" id="frtVol" min="10" max="1000" step="10" value="100">
-        </div>
-        <div>
-          <label for="frtSachets">Sachets used (per this volume, scaled from per-100mL dosing)</label>
-          <input type="number" id="frtSachets" min="0" max="8" step="0.5" value="4">
-        </div>
-      </div>
-
-      <table class="entries-table" style="display:table;" id="frtTable">
-        <thead><tr><th>Per 100 mL fortified</th><th>Energy</th><th>Protein</th><th>Calcium</th><th>Phosphate</th></tr></thead>
-        <tbody id="frtBody"></tbody>
-      </table>
-      <p style="margin-top:10px; font-size:12.5px;">Base EBM assumed at 67 kcal, 1.4 g protein, 28 mg Ca, 14 mg P per 100 mL. Fortifier values from manufacturer labels (Nutritional Care of Preterm Infants, 2nd ed., Table 2) for products marketed in Malaysia — cross-check against the current product label, as formulations are periodically revised. Osmolality is not shown as it depends on final reconstitution and is not consistently label-declared.</p>
-    </div>
-
-    <div class="card">
-      <h3><span class="num">06</span>Dupro Preterm — concentration calculator</h3>
-      <p>Shows the resulting nutrient profile at a given calorie density (22–30 kcal/oz), scaled from Dupro Preterm's standard-dilution composition (80 kcal/100 mL). <strong>This does not give scoop/water reconstitution volumes</strong> — those aren't in the reference source used for this app and must be taken from the Dupro Preterm tin/product insert, since getting powder concentration wrong is a real safety risk.</p>
-
-      <div class="entry-form" style="grid-template-columns:1fr; margin-bottom:14px;">
-        <div>
-          <label for="fmDensity">Target density</label>
-          <select id="fmDensity">
-            <option value="22">22 kcal/oz</option>
-            <option value="24" selected>24 kcal/oz (standard dilution, ≈80 kcal/100mL)</option>
-            <option value="26">26 kcal/oz</option>
-            <option value="27">27 kcal/oz</option>
-            <option value="30">30 kcal/oz</option>
-          </select>
-        </div>
-      </div>
-
-      <table class="entries-table" style="display:table;" id="fmTable">
-        <thead><tr><th>Per 100 mL at this density</th><th>Energy</th><th>Protein</th><th>Sodium</th><th>Calcium</th><th>Phosphate</th></tr></thead>
-        <tbody id="fmBody"></tbody>
-      </table>
-      <p style="margin-top:10px; font-size:12.5px;">Standard Dupro Preterm dilution (per the manufacturer's composition table) provides ≈80 kcal/100 mL, equivalent to ≈24 kcal/oz. Nutrient values at other densities are scaled proportionally from this reference point, which is a valid approximation since concentration and nutrient content scale together — but confirm the actual scoop count against the label before changing a prescription.</p>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3><span class="num">07</span>Charts to use</h3>
-        <p>Fenton growth chart until 50 weeks postmenstrual age, then transition to WHO growth standards.</p>
-      </div>
-      <div class="card">
-        <h3><span class="num">08</span>Risk factors for faltering growth</h3>
-        <ul>
-          <li>Prescribed vs. actual intake gap (interrupted for other infusions/antibiotics)</li>
-          <li>Elevated serum urea limiting protein advancement unnecessarily</li>
-          <li>Increased energy needs — BPD, congenital heart disease</li>
-          <li>Micronutrient depletion (sodium, zinc)</li>
-          <li>Malabsorption, e.g. high-output stoma</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
   <!-- SPECIAL -->
   <div class="panel" id="panel-special">
     <div class="card">
@@ -4827,14 +4882,67 @@
     opts = opts || {};
     if (!document.getElementById('panel-' + name)) return;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+    document.querySelectorAll('.lib-section .panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+    setLibMode('topic', name);
     const sel = document.getElementById('tabSelect');
     if (sel && sel.value !== name) sel.value = name;
     const btn = document.querySelector(`.tab-btn[data-tab="${name}"]`);
     if (btn && btn.parentElement) btn.parentElement.scrollTo({ left: Math.max(0, btn.offsetLeft - 16), behavior: 'smooth' });
-    if (opts.scroll) { if (window.__view !== 'lib') showView('lib'); else document.getElementById('libTop').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    if (opts.scroll) { if (window.__view !== 'lib') showView('lib', { keepTopic: true }); window.scrollTo({ top: 0 }); }
     try { window.localStorage.setItem('neoNutritionTab', name); } catch (e) {}
     updateBottomNav();
+  }
+
+  const LIB_BLURB = {
+    pn: 'Starting PN, Ca:P ratio and monitoring',
+    en: 'Trophic feeds, advancement and PN taper',
+    fort: 'Who and when, fortifier choice, plus fortifier and Dupro calculators',
+    min: 'Calcium, phosphate, magnesium and vitamin D',
+    micro: 'Iron, zinc, selenium, iodine, vitamins E/K and status tracker',
+    tol: 'Gastric residuals, warning signs, reflux and NEC',
+    special: 'Disease-specific adjustment advisor and low-resource settings',
+    mytpn: 'SGH standard PN bags and which to use when',
+    mysupp: 'Appeton Baby Drops, folic acid and Maltofer',
+    refeed: 'Risk, monitoring and electrolyte management',
+    mbd: 'Screening, workup, treatment and TRP',
+    refs: 'Full reference list'
+  };
+  function setLibMode(mode, name){
+    const sec = document.querySelector('.lib-section');
+    if (!sec) return;
+    const topic = mode === 'topic';
+    sec.classList.toggle('is-topic', topic);
+    sec.classList.toggle('is-index', !topic);
+    document.getElementById('libIndex').hidden = topic;
+    document.getElementById('libTop').hidden = topic;
+    document.getElementById('libTopicBar').hidden = !topic;
+    if (topic) {
+      const btn = document.querySelector(`.tab-btn[data-tab="${name}"]`);
+      document.getElementById('libTopicTitle').textContent = btn ? btn.textContent.trim() : '';
+    }
+  }
+  function buildLibIndex(){
+    const list = document.getElementById('libList');
+    if (!list) return;
+    const topics = Array.from(document.querySelectorAll('.tab-btn')).map(b => ({ id: b.dataset.tab, label: b.textContent.trim() }));
+    list.innerHTML = topics.map((t, i) => `<button type="button" class="lib-item" data-topic="${t.id}">
+        <span class="lib-num">${String(i + 1).padStart(2, '0')}</span>
+        <span class="lib-txt"><b>${t.label}</b><small>${LIB_BLURB[t.id] || ''}</small></span>
+        <span class="lib-go" aria-hidden="true">›</span></button>`).join('');
+    list.querySelectorAll('.lib-item').forEach(b => b.addEventListener('click', () => activateTab(b.dataset.topic, { scroll: true })));
+    const search = document.getElementById('libSearch');
+    search.addEventListener('input', () => {
+      const q = search.value.trim().toLowerCase();
+      let shown = 0;
+      list.querySelectorAll('.lib-item').forEach(b => {
+        const panel = document.getElementById('panel-' + b.dataset.topic);
+        const hay = (b.textContent + ' ' + (panel ? panel.textContent : '')).toLowerCase();
+        const ok = !q || hay.includes(q);
+        b.hidden = !ok; if (ok) shown++;
+      });
+      document.getElementById('libEmpty').hidden = shown > 0;
+    });
+    document.getElementById('libBackBtn').addEventListener('click', () => { setLibMode('index'); window.scrollTo({ top: 0 }); });
   }
 
   function showView(v, opts){
@@ -4842,6 +4950,8 @@
     window.__view = v;
     document.getElementById('calcTop').style.display = v === 'calc' ? '' : 'none';
     document.querySelector('.lib-section').style.display = v === 'lib' ? '' : 'none';
+    document.getElementById('growthView').style.display = v === 'growth' ? '' : 'none';
+    if (v === 'lib' && !opts.keepTopic) setLibMode('index');
     const ft = document.querySelector('body > footer');
     if (ft) ft.style.display = v === 'lib' ? '' : 'none';
     document.querySelectorAll('.view-tabs button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
@@ -4854,7 +4964,7 @@
   function updateBottomNav(){
     const bnav = document.getElementById('bnav');
     if (!bnav) return;
-    const key = window.__view !== 'lib' ? 'calc' : (currentTab() === 'growth' ? 'growth' : 'lib');
+    const key = window.__view === 'growth' ? 'growth' : (window.__view === 'lib' ? 'lib' : 'calc');
     bnav.querySelectorAll('.bnav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === key));
   }
 
@@ -4893,6 +5003,7 @@
     updateStepBadges();
     document.querySelectorAll('#liveSummary .ls-item').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.target)));
 
+    buildLibIndex();
     // Library picker (phone) mirrors the tab strip
     const tabs = Array.from(document.querySelectorAll('.tab-btn')).map(b => ({ id: b.dataset.tab, label: b.textContent.trim() }));
     const sel = document.getElementById('tabSelect');
@@ -4917,7 +5028,7 @@
     // Reopen the last reference topic viewed on this device
     try {
       const last = window.localStorage.getItem('neoNutritionTab');
-      if (last && document.getElementById('panel-' + last)) activateTab(last);
+      if (last && document.getElementById('panel-' + last)) sel.value = last;
       else sel.value = currentTab();
     } catch (e) { sel.value = currentTab(); }
 
@@ -4933,13 +5044,9 @@
       if (nav === 'calc') {
         showView('calc');
       } else if (nav === 'growth') {
-        showView('lib');
-        activateTab('growth');
-        const card = document.getElementById('growthChartSvg').closest('.card');
-        if (card) { card.classList.remove('collapsed'); card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        showView('growth');
       } else if (nav === 'lib') {
         showView('lib');
-        activateTab(currentTab());
       } else if (nav === 'save') {
         document.getElementById('savePatientBtn').click();
         showToast(document.getElementById('patientActionStatus').textContent);
