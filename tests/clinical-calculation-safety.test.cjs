@@ -140,8 +140,9 @@ test('term-born infants are not classified using the embedded preterm growth dat
   context.GA_WK = 38;
   context.GA_DY = 0;
   context.renderSgaBanner();
-  assert.match(elements.sgaBanner.innerHTML, /Birth-size percentile unavailable/);
-  assert.match(elements.sgaBanner.innerHTML, /term-born infants/);
+  assert.match(elements.sgaBanner.innerHTML, /Birth-size classification requires official calculation/);
+  assert.match(elements.sgaBanner.innerHTML, /BirthSize/);
+  assert.match(elements.sgaBanner.innerHTML, /Do not use the preterm Growth dataset/);
 });
 
 test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
@@ -174,7 +175,8 @@ test('birth-size percentile is suppressed below the Fenton reference age', () =>
   context.GA_WK = 22;
   context.GA_DY = 3;
   context.renderSgaBanner();
-  assert.match(elements.sgaBanner.innerHTML, /begins at 22\+4 weeks/);
+  assert.ok(elements.sgaBanner.innerHTML.includes('Suggested official data type:</b> Growth'));
+  assert.ok(elements.sgaBanner.innerHTML.includes('This app no longer estimates SGA, AGA or LGA from digitised curves.'));
 });
 
 test('preterm weight-gain reference uses the MOH 15–25 g/kg/day range', () => {
