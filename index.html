@@ -855,17 +855,38 @@
 
 
   /* NeoNutrition UX refinement: clearer workflow, keyboard focus and mobile comfort */
-  .workflow-guide{position:relative;z-index:1;margin:0 0 18px;border:1px solid rgba(127,189,179,.28);border-radius:12px;background:rgba(255,255,255,.045);color:#EAF2F0;}
-  .workflow-guide summary{cursor:pointer;list-style:none;padding:13px 16px;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;color:#D9F0EA;}
-  .workflow-guide summary::-webkit-details-marker{display:none;}
-  .workflow-guide summary::after{content:'＋';color:#8FE0D2;font-size:18px;line-height:1;}
-  .workflow-guide[open] summary::after{content:'−';}
-  .workflow-guide .guide-body{padding:0 16px 15px;color:#C9D8D4;font-size:13px;}
-  .workflow-guide .guide-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:4px 0 12px;}
-  .workflow-guide .guide-step{padding:10px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid rgba(127,189,179,.16);min-width:0;}
-  .workflow-guide .guide-step b{display:block;color:#fff;font-size:12px;margin-bottom:3px;}
-  .workflow-guide .guide-step span{font-size:11px;line-height:1.4;display:block;}
-  .workflow-guide .guide-note{margin:0;color:#AFC8C1;font-size:11.5px;}
+  .workflow-guide{position:relative;z-index:1;margin:0 0 18px;padding:18px;border:1px solid rgba(127,189,179,.28);border-radius:18px;background:linear-gradient(145deg,#153D3B,#1D514C);color:#EAF2F0;box-shadow:0 12px 28px rgba(12,43,40,.12);}
+  .workflow-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+  .workflow-heading h2{margin:3px 0 4px;color:#fff;font-size:clamp(18px,3vw,23px);letter-spacing:-.03em;}
+  .workflow-heading p{margin:0;color:#C4DAD5;font-size:12.5px;line-height:1.45;}
+  .workflow-kicker{font-size:9px;font-weight:800;letter-spacing:.16em;color:#8FE0D2;}
+  .workflow-mark{flex:0 0 48px;width:48px;height:48px;display:grid;place-content:center;text-align:center;border-radius:15px;background:rgba(255,255,255,.10);color:#fff;font-size:18px;font-weight:800;line-height:1;}
+  .workflow-mark small{font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#B9D6CF;}
+  .workflow-guide .guide-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0;}
+  .workflow-guide .guide-step{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;min-height:142px;padding:10px;text-align:left;border-radius:13px;background:#F8F7F2;border:1px solid rgba(255,255,255,.55);color:#183B39;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease;}
+  .workflow-guide .guide-step:active{transform:scale(.985);}
+  .workflow-guide .guide-step:focus-visible{outline:3px solid #F3C879;outline-offset:3px;}
+  .guide-art{height:66px;display:flex;align-items:center;justify-content:center;border-radius:10px;overflow:hidden;}
+  .guide-art svg{display:block;width:100%;height:66px;max-width:118px;}
+  .art-baby{background:#E8F2EE}.art-feed{background:#F7EFE2}.art-iv{background:#E8F1F4}.art-review{background:#F3EEE8}
+  .guide-copy{display:block;padding:0 2px 2px;}
+  .guide-copy b{display:block;color:#183B39;font-size:12px;line-height:1.3;margin-bottom:3px;}
+  .guide-copy b i{display:inline-grid;place-items:center;width:19px;height:19px;margin-right:4px;border-radius:50%;background:#DCECE6;color:#1D6E63;font-size:10px;font-style:normal;}
+  .guide-copy b em{font-size:9px;font-style:normal;font-weight:600;color:#7A8B85;}
+  .guide-copy>span{display:block;color:#64736F;font-size:10px;line-height:1.35;}
+  .guide-arrow{position:absolute;right:10px;top:9px;color:#478F82;font-size:19px;line-height:1;}
+  .workflow-safety{margin-top:12px;border-top:1px solid rgba(255,255,255,.15);padding-top:9px;}
+  .workflow-safety summary{cursor:pointer;list-style:none;min-height:32px;display:flex;align-items:center;gap:8px;color:#C4DAD5;font-size:11px;font-weight:650;}
+  .workflow-safety summary::-webkit-details-marker{display:none;}
+  .workflow-safety summary::before{content:'ⓘ';color:#8FE0D2;font-size:14px;}
+  .workflow-safety[open] summary{margin-bottom:6px;}
+  .workflow-guide .guide-note{margin:0;color:#C4DAD5;font-size:11px;line-height:1.5;}
+  .calc-panel :is(input,select,textarea,button):focus-visible,.view-tabs button:focus-visible,.tab-btn:focus-visible,.bnav-btn:focus-visible{outline:3px solid #F3C879!important;outline-offset:2px;}
+  .jump-chip,.ls-item,.pb-btn,.btn-add,.tab-btn,.bnav-btn{touch-action:manipulation;}
+  .ls-item,.field input,.field select,.field textarea{min-height:44px;}
+  .section-divider .section-label{line-height:1.45;}
+  @media(max-width:720px){.workflow-guide{padding:15px;border-radius:16px;}.workflow-heading{margin-bottom:12px;}.workflow-guide .guide-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}.workflow-guide .guide-step{min-height:150px;padding:10px;}.guide-art,.guide-art svg{height:72px;}}
+  @media(max-width:420px){.workflow-heading h2{font-size:18px;}.workflow-heading p{font-size:11px;}.workflow-guide .guide-step{min-height:140px;padding:8px;}.guide-art,.guide-art svg{height:64px;}.guide-copy b{font-size:11px;}.guide-copy>span{font-size:9.5px;}.live-sum{gap:5px;}.ls-item{padding:7px 6px;}.ls-val{font-size:13px;}.ls-lbl{font-size:8.5px;}}
   .calc-panel :is(input,select,textarea,button):focus-visible,.view-tabs button:focus-visible,.tab-btn:focus-visible,.bnav-btn:focus-visible{outline:3px solid #F3C879!important;outline-offset:2px;}
   .jump-chip,.ls-item,.pb-btn,.btn-add,.tab-btn,.bnav-btn{touch-action:manipulation;}
   .ls-item,.field input,.field select,.field textarea{min-height:44px;}
@@ -906,18 +927,42 @@
     </div>
   </nav>
   <div class="calc-panel">
-    <details class="workflow-guide" id="workflowGuide">
-      <summary>Quick guide — how to use NeoNutrition</summary>
-      <div class="guide-body">
-        <div class="guide-steps">
-          <div class="guide-step"><b>1 · Baby</b><span>Enter birth details and confirm the reference weight.</span></div>
-          <div class="guide-step"><b>2 · Feeds</b><span>Record the prescribed or delivered enteral feed and fortification.</span></div>
-          <div class="guide-step"><b>3 · IV / PN</b><span>Enter all running infusions, including lipid and KVO where applicable.</span></div>
-          <div class="guide-step"><b>4 · Review</b><span>Check totals, flags, growth and the handover before use.</span></div>
-        </div>
-        <p class="guide-note">Records are stored in this browser, not synchronised between devices. Save regularly and use the secure backup function when needed. Backups contain patient information and must be stored securely. This is a clinical reference aid, not a prescribing system; verify calculations, product labels and local protocols.</p>
+    <section class="workflow-guide" id="workflowGuide" aria-labelledby="workflowTitle">
+      <div class="workflow-heading">
+        <div><span class="workflow-kicker">QUICK START</span><h2 id="workflowTitle">Your daily nutrition workflow</h2>
+          <p>Follow the steps in order. Tap a card to go straight to that section.</p></div>
+        <span class="workflow-mark" aria-hidden="true">4<br><small>steps</small></span>
       </div>
-    </details>
+      <div class="guide-steps">
+        <button type="button" class="guide-step workflow-card" data-workflow-step="baby" aria-label="Step 1: Enter baby details">
+          <span class="guide-art art-baby" aria-hidden="true">
+            <svg viewBox="0 0 120 88" role="img"><path d="M28 66c3-15 16-24 32-24s29 9 32 24v9H28z" fill="#D9F0EA"/><path d="M42 49c-4-12 2-25 15-28 13-3 25 5 25 18 0 8-5 14-13 17l-7 10-12-8c-5-2-7-5-8-9z" fill="#F2C9A9"/><path d="M49 43c4-4 9-5 14-3" fill="none" stroke="#9B6A55" stroke-width="2" stroke-linecap="round"/><path d="M39 65c8 7 33 9 43 0" fill="none" stroke="#3B8E82" stroke-width="4" stroke-linecap="round"/><circle cx="77" cy="19" r="7" fill="#F3C879"/><path d="M19 24l7 4m-3-12 3 7" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="guide-copy"><b><i>1</i> Baby</b><span>Birth details, weight and measurements</span></span><span class="guide-arrow">›</span>
+        </button>
+        <button type="button" class="guide-step workflow-card" data-workflow-step="feeds" aria-label="Step 2: Enter milk feeds">
+          <span class="guide-art art-feed" aria-hidden="true">
+            <svg viewBox="0 0 120 88" role="img"><path d="M24 57c7-14 20-21 34-17 8 2 12 9 18 10 8 1 14-4 21-2 8 3 11 11 8 19H36c-8 0-13-3-12-10z" fill="#D9F0EA"/><path d="M36 47c7-11 18-15 28-11 7 3 10 8 15 11-5 9-13 14-25 13-9-1-15-5-18-13z" fill="#F2C9A9"/><path d="M69 32c7-7 17-8 23-2" fill="none" stroke="#F2C9A9" stroke-width="8" stroke-linecap="round"/><path d="M27 66c18 7 47 8 68 0" fill="none" stroke="#3B8E82" stroke-width="4" stroke-linecap="round"/><path d="M84 16c0-5 8-5 8 0v4h-8z" fill="#F3C879"/><path d="M88 20v11" stroke="#F3C879" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
+          <span class="guide-copy"><b><i>2</i> Feeds</b><span>Milk type, volume, frequency and fortifier</span></span><span class="guide-arrow">›</span>
+        </button>
+        <button type="button" class="guide-step workflow-card" data-workflow-step="iv" aria-label="Step 3: Enter IV fluids and parenteral nutrition if used">
+          <span class="guide-art art-iv" aria-hidden="true">
+            <svg viewBox="0 0 120 88" role="img"><path d="M53 10h14v9H53z" fill="#F3C879"/><path d="M47 19h26v43a8 8 0 0 1-8 8h-10a8 8 0 0 1-8-8z" fill="#D9F0EA" stroke="#3B8E82" stroke-width="3"/><path d="M49 43h22v19a6 6 0 0 1-6 6h-10a6 6 0 0 1-6-6z" fill="#8FCFC2"/><path d="M60 70v9m0 0c0 4 8 4 8 0" fill="none" stroke="#3B8E82" stroke-width="3" stroke-linecap="round"/><path d="M37 18v12m-6-6h12" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/><path d="M80 26l8 8m0-8-8 8" stroke="#F3C879" stroke-width="3" stroke-linecap="round"/></svg>
+          </span>
+          <span class="guide-copy"><b><i>3</i> IV / PN <em>if used</em></b><span>Fluids, TPN, lipid and other infusions</span></span><span class="guide-arrow">›</span>
+        </button>
+        <button type="button" class="guide-step workflow-card" data-workflow-step="results" aria-label="Step 4: Review nutrition results and handover">
+          <span class="guide-art art-review" aria-hidden="true">
+            <svg viewBox="0 0 120 88" role="img"><rect x="25" y="12" width="70" height="62" rx="8" fill="#F7F3EA" stroke="#3B8E82" stroke-width="3"/><path d="M37 57V45m13 12V34m13 23V40m13 17V27" stroke="#3B8E82" stroke-width="7" stroke-linecap="round"/><path d="M36 25h23" stroke="#F3C879" stroke-width="4" stroke-linecap="round"/><path d="M77 20l5 5 9-10" fill="none" stroke="#D68A56" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="guide-copy"><b><i>4</i> Review</b><span>Intake vs targets, flags, growth and handover</span></span><span class="guide-arrow">›</span>
+        </button>
+      </div>
+      <details class="workflow-safety"><summary>Important: records and clinical use</summary>
+        <p class="guide-note">Records are stored in this browser, not synchronised between devices. Save regularly and back up securely; backups contain patient information. This is a clinical reference aid, not a prescribing system. Verify calculations, product labels and local protocols.</p>
+      </details>
+    </section>
     <div class="patient-bar" id="secSaved">
       <select id="savedPatientSelect" aria-label="Patient">
         <option value="">New patient</option>
@@ -4732,6 +4777,18 @@
     row.classList.add('steps');
     row.innerHTML = STEPS.map((s, i) => `<button type="button" class="jump-chip" data-step="${s.id}" data-target="${s.target}"><span class="step-n">${i + 1}</span>${s.label}<span class="badge" style="display:none;"></span></button>`).join('');
     row.querySelectorAll('.jump-chip').forEach(b => b.addEventListener('click', () => goStep(b.dataset.step)));
+    document.querySelectorAll('.workflow-card').forEach(card => card.addEventListener('click', () => {
+      const step = card.dataset.workflowStep;
+      if (step === 'iv' && !tpnMode()) {
+        goStep('feeds');
+        showToast('Choose “Feeds + IV / TPN” to enter IV details.');
+        document.getElementById('modeSeg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      goStep(step);
+      const target = STEPS.find(item => item.id === step);
+      if (target) document.getElementById(target.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
     let startStep = 'baby';
     try { startStep = window.sessionStorage.getItem('neoNutritionStep') || 'baby'; } catch (e) {}
     goStep(startStep, { scroll: false });
