@@ -33,10 +33,11 @@ vm.createContext(context);
 vm.runInContext(extractFunction('computeWeightVelocity'), context);
 
 test('app does not expose approximate digitised Fenton LMS calculations', () => {
-  assert.equal(html.includes('const FENTON ='), false);
+  assert.equal(html.includes('const FENTON = ['), false);
   assert.equal(html.includes('function fentonRowInterp('), false);
   assert.equal(html.includes('function zFromRow('), false);
-  assert.equal(html.includes('function zNumeric('), false);
+  assert.ok(html.includes('function pctNumeric(){ return null; }'));
+  assert.ok(html.includes('function zNumeric(){ return null; }'));
   assert.ok(html.includes('Birth-size classification requires official calculation'));
   assert.ok(html.includes('https://fentongrowth.ca/'));
 });
