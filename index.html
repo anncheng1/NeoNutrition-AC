@@ -895,6 +895,38 @@
   @media(max-width:420px){.workflow-guide .guide-step{padding:9px;}.workflow-guide .guide-step b{font-size:11.5px;}.workflow-guide .guide-step span{font-size:10.5px;}.live-sum{gap:5px;}.ls-item{padding:7px 6px;}.ls-val{font-size:13px;}.ls-lbl{font-size:8.5px;}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
 
+  /* ---- Mobile usability pass (Nov 2026) ---- */
+  .tt-head small{display:block; margin-top:4px; font-size:11px; color:#9FB9B4;}
+  .more-box summary, details > summary{min-height:44px;}
+  .pn-check{display:flex; align-items:flex-start; gap:10px; min-height:44px; padding:6px 0; cursor:pointer;}
+  .pn-check input[type=checkbox]{flex:0 0 auto; width:22px; height:22px; margin:1px 0 0; accent-color:#2F8F84;}
+  html, body{max-width:100%; overflow-x:hidden;}
+  @media(max-width:760px){
+    /* Step chips: all four always visible, no sideways scrolling */
+    .jump-row.steps{overflow:visible; gap:6px;}
+    .jump-row.steps .jump-chip{flex:1 1 0; min-width:0; padding:8px 4px; font-size:12.5px; white-space:nowrap;}
+    /* Live intake strip: one compact row so the sticky header uses less of the screen */
+    .live-sum{grid-template-columns:repeat(4,minmax(0,1fr)) !important; gap:5px !important; margin-top:7px;}
+    .ls-item{min-height:44px !important; padding:5px 4px !important; text-align:center;}
+    .ls-item .ls-val{font-size:15px !important;}
+    .ls-item .ls-lbl{font-size:8px !important; letter-spacing:0 !important;}
+    /* Quick-start cards only on the Baby step of a new patient (the step chips do the same job) */
+    .workflow-guide.guide-hidden{display:none;}
+    /* Patient bar: picker on its own row, buttons share the next row evenly */
+    .patient-bar{display:flex; flex-wrap:wrap;}
+    .patient-bar select{flex:1 1 100% !important;}
+    .patient-bar .pb-btn{flex:1 1 0 !important; min-width:0; justify-content:center; text-align:center;}
+    .patient-bar .pb-btn.danger{flex:0 0 52px !important;}
+    .patient-list{flex-basis:100%;}
+    /* Bottom tab bar: comfortable targets */
+    .bnav-btn{min-height:52px;}
+  }
+  @media(max-width:360px){
+    .jump-row.steps .jump-chip{font-size:11.5px; padding:8px 2px;}
+    .jump-chip .badge{display:none !important;}
+    .ls-item .ls-val{font-size:13px !important;}
+  }
+
 </style>
 </head>
 <body>
@@ -1075,7 +1107,7 @@
             <option value="3" selected>3-hourly</option>
           </select>
         </div>
-        <div class="field">
+        <div class="field full">
           <label for="fRefSrc">Reference weight</label>
           <select id="fRefSrc">
             <option value="birth">Birth weight</option>
@@ -2107,6 +2139,13 @@
 <div id="printArea"></div>
 
 <script>
+  // ---- Shared patient / growth state (declared first so every module can use it) ----
+  let GSEX = 'boy', GMETRIC = 'w';
+  let GA_WK = 27, GA_DY = 0;
+  let entries = [];
+  let latestNutritionSnapshot = null;
+  let energyLog = [];
+
   // ---- Tabs ----
   document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -2232,7 +2271,8 @@
   });
   render();
 
-  // GROWTH CHART MODULE — measurement entry and export to official Fenton 2025 Plotter.\n  // Fenton 2025 results are delegated to the official Plotter.
+  // GROWTH CHART MODULE — measurement entry and export to official Fenton 2025 Plotter.
+  // Fenton 2025 results are delegated to the official Plotter.
   // No digitised percentile knots or unlicensed LMS parameters are embedded.
   const FENTON_MIN_PMA = { w: 22 + 4/7, h: 22 + 4/7, l: 23 + 4/7 };
   const FENTON_MAX_PMA = 50;
@@ -4653,6 +4693,11 @@
       if (on && el.style.display !== 'none') first = false;
     });
     document.querySelectorAll('#jumpRow .jump-chip').forEach(c => c.classList.toggle('active', c.dataset.step === id));
+    const guide = document.getElementById('workflowGuide');
+    if (guide) {
+      const hasBaby = parseFloat(document.getElementById('bWt').value) > 0;
+      guide.classList.toggle('guide-hidden', id !== 'baby' || hasBaby);
+    }
     renderStepNav();
     if (opts.scroll !== false) {
       const top = document.getElementById('calcTop');
