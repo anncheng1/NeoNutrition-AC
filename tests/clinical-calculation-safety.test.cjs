@@ -140,8 +140,9 @@ test('term-born infants are not classified using the embedded preterm growth dat
   context.GA_WK = 38;
   context.GA_DY = 0;
   context.renderSgaBanner();
-  assert.match(elements.sgaBanner.innerHTML, /Birth-size percentile unavailable/);
-  assert.match(elements.sgaBanner.innerHTML, /term-born infants/);
+  assert.match(elements.sgaBanner.innerHTML, /Birth-size classification requires official calculation/);
+  assert.match(elements.sgaBanner.innerHTML, /BirthSize/);
+  assert.match(elements.sgaBanner.innerHTML, /Do not use the preterm Growth dataset/);
 });
 
 test('preterm enteral mineral targets match ESPGHAN 2022 ranges', () => {
