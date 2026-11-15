@@ -176,7 +176,7 @@ test('birth-size percentile is suppressed below the Fenton reference age', () =>
   context.GA_DY = 3;
   context.renderSgaBanner();
   assert.ok(elements.sgaBanner.innerHTML.includes('Suggested official data type:</b> Growth'));
-  assert.ok(elements.sgaBanner.innerHTML.includes('does not estimate SGA, AGA or LGA'));
+  assert.ok(elements.sgaBanner.innerHTML.includes('This app no longer estimates SGA, AGA or LGA from digitised curves.'));
 });
 
 test('preterm weight-gain reference uses the MOH 15–25 g/kg/day range', () => {
