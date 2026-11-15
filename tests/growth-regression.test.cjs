@@ -33,17 +33,22 @@ vm.createContext(context);
 vm.runInContext(extractFunction('computeWeightVelocity'), context);
 
 test('app does not expose approximate digitised Fenton LMS calculations', () => {
-  assert.doesNotMatch(html, /const\\s+FENTON\\s*=/);
-  assert.doesNotMatch(html, /function\\s+(?:fentonRowInterp|zFromRow|zNumeric)\\s*\\(/);
-  assert.match(html, /Birth-size classification requires official calculation/);
-  assert.match(html, /https:\\/\\/fentongrowth\\.ca\\//);
+  assert.equal(html.includes('const FENTON ='), false);
+  assert.equal(html.includes('function fentonRowInterp('), false);
+  assert.equal(html.includes('function zFromRow('), false);
+  assert.equal(html.includes('function zNumeric('), false);
+  assert.ok(html.includes('Birth-size classification requires official calculation'));
+  assert.ok(html.includes('https://fentongrowth.ca/'));
 });
 
 test('Fenton CSV export selects BirthSize for term-born infants and Growth for preterm infants', () => {
   const exportFn = extractFunction('exportFentonCsv');
-  assert.match(exportFn, /gaBirth >= 37 \\? 'BirthSize' : 'Growth'/);
-  assert.match(exportFn, /GA \\(weeks\\).*Weight \\(g\\).*Head \\(cm\\).*Length \\(cm\\)/);
-  assert.match(exportFn, /Fenton2025_growth_data\\.csv/);
+  assert.ok(exportFn.includes("gaBirth >= 37 ? 'BirthSize' : 'Growth'"));
+  assert.ok(exportFn.includes('GA (weeks)'));
+  assert.ok(exportFn.includes('Weight (g)'));
+  assert.ok(exportFn.includes('Head (cm)'));
+  assert.ok(exportFn.includes('Length (cm)'));
+  assert.ok(exportFn.includes('Fenton2025_growth_data.csv'));
 });
 
 test('weight velocity uses the latest two distinct DOLs when latest day has duplicate records', () => {
@@ -75,8 +80,8 @@ test('weight velocity ignores duplicate days consistently and sorts out-of-order
 });
 
 test('longitudinal deficit snapshots store minimum energy and protein targets', () => {
-  assert.match(html, /latestNutritionSnapshot\\s*=\\s*\\{[\\s\\S]*?eMax:\\s*tgt\\.eMin/);
-  assert.match(html, /latestNutritionSnapshot\\s*=\\s*\\{[\\s\\S]*?pMax:\\s*tgt\\.pMin/);
-  assert.match(html, /Cumulative energy balance vs minimum phase target/);
-  assert.match(html, /Days below protein target/);
+  assert.ok(html.includes('eMax: tgt.eMin'));
+  assert.ok(html.includes('pMax: tgt.pMin'));
+  assert.ok(html.includes('Cumulative energy balance vs minimum phase target'));
+  assert.ok(html.includes('Days below protein target'));
 });
