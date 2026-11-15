@@ -85,6 +85,16 @@ test('DOL follows local calendar date, not UTC 08:00 boundary', () => {
   assert.ok(result.dolFloat > 1.3 && result.dolFloat < 1.34);
 });
 
+test('date-and-time DOB (datetime-local input) is parsed, not ignored', () => {
+  const saved = elements.bDobDt.value;
+  elements.bDobDt.value = '2026-11-09T08:00';
+  const dob = context.getDOB();
+  assert.ok(dob, 'datetime-local value must produce a DOB');
+  assert.equal(dob.getDate(), 9);
+  assert.equal(context.computeDOL().dolInt, 1);
+  elements.bDobDt.value = saved;
+});
+
 test('preterm fluid schedule matches Malaysian Paediatric Protocols 5th Edition', () => {
   preterm = true;
   const expected = [60, 80, 100, 120, 140];

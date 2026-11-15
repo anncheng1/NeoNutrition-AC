@@ -2225,7 +2225,7 @@
 <div id="printArea"></div>
 
 <script>
-  const APP_VERSION = '2026.11.15-c';
+  const APP_VERSION = '2026.11.15-d';
 
   // ---- Shared patient / growth state (declared first so every module can use it) ----
   let GSEX = 'boy', GMETRIC = 'w';
@@ -2573,8 +2573,9 @@
   function getDOB(){
     const v = document.getElementById('bDobDt').value;
     if (!v) return null;
-    // HTML date inputs are date-only. Parse at local midnight, not UTC.
-    const parts = v.split('-').map(Number);
+    // Accepts date-only (YYYY-MM-DD) and datetime-local (YYYY-MM-DDTHH:MM) values.
+    // Day of life is counted by local calendar date, so parse at local midnight, not UTC.
+    const parts = v.split('T')[0].split('-').map(Number);
     if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
     const dob = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
     return Number.isNaN(dob.getTime()) ? null : dob;
