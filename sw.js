@@ -3,7 +3,7 @@
 // app always opens the latest version when online) and falls back to the
 // cached copy when offline. Icons/manifest are cache-first with background refresh.
 // Bump CACHE when files change so old caches are cleared.
-const CACHE = 'neonutrition-v2026-11-15-dobfix';
+const CACHE = 'neonutrition-v2026-11-15-lipidauto';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 const NETWORK_TIMEOUT_MS = 4000;
 

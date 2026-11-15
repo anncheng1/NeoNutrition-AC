@@ -2225,7 +2225,7 @@
 <div id="printArea"></div>
 
 <script>
-  const APP_VERSION = '2026.11.15-d';
+  const APP_VERSION = '2026.11.15-e';
 
   // ---- Shared patient / growth state (declared first so every module can use it) ----
   let GSEX = 'boy', GMETRIC = 'w';
@@ -3025,6 +3025,9 @@
     const targetMid = (target.lo + target.hi) / 2;
 
     const enteralMlKgDay = parseFloat(document.getElementById('vol').value) || 0;
+    // Keep the staged lipid plan current (day/weight changes) while a TPN bag is running
+    // and the user has not entered a manual lipid rate.
+    if (!lipidRateUserOverridden && TPN_TYPES.includes(document.getElementById('ivType').value)) autoStartLipid();
     const lipidRateVal = parseFloat(document.getElementById('lipidRate').value) || 0;
     const lipidMlKgDay = (lipidRateVal * 24) / refKg;
     const kvoRateVal = parseFloat(document.getElementById('kvoRate').value) || 0;
